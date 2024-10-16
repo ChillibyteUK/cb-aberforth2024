@@ -1,0 +1,20 @@
+.info_cards {
+    background-color: var(--col-light);
+    &__card {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+    }
+    &__icon {
+        aspect-ratio: 9 / 10;
+        width: 85px;
+        margin-bottom: 0.5rem;
+        place-self: center;
+    }
+    &__inner {
+        display: flex;
+        flex-direction: column;
+        p {
+            max-width: 26ch;
+        }
+    }
+}

@@ -1,0 +1,58 @@
+header {
+    background-color: white;
+    transition: var(--transition);
+
+    .navbar {
+        border-bottom: 1px solid hsla(0 0% 80% / 1);
+    }
+
+    a.nav-link {
+        color: var(--col-dark);
+        font-size: var(--fs-400);
+        transition: var(--transition);
+        @media (min-width:992px) {
+            &:hover {
+                color: var(--col-grey-400);
+            }
+        }
+    }
+
+    .logo-container {
+        max-width: 240px;
+        margin-right: 1rem;
+    }
+    .logo {
+        background-image: url(../img/aberforth-logo.svg);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        display: inline-block;
+        aspect-ratio: 240 / 13;
+        width: 240px;
+        max-width: 100%;
+    }
+
+    &.hide {
+        transform: translateY(-140px);
+    }
+
+    .dropdown-menu {
+        border-color: transparent;
+        border-radius: 0;
+        background-color: var(--col-blue-400);
+        a {
+            color: var(--col-dark);
+        }
+        .dropdown-item {
+            padding: 0 1rem;
+            line-height: 24px;
+            padding-block: 5px;
+            transition: background-color var(--transition), color var(--transition);
+            &:hover {
+                color: white;
+                background-color: var(--col-grey-400);
+                opacity: 1;
+            }
+        }
+    }
+}

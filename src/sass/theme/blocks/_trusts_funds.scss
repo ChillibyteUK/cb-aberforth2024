@@ -1,0 +1,33 @@
+.trusts_funds {
+    background-color: var(--col-blue-200);
+    &__card {
+        height: 100%;
+        border: 1px solid var(--_bg);
+        background-color: white;
+    }
+    &__header {
+        padding: 1.5rem;
+        background-color: var(--_bg);
+        color: var(--_fg);
+    }
+    &__inner {
+        padding: 1rem 1.5rem;
+    }
+}
+
+.theme--asc {
+    --_bg: var(--col-green-400);
+    --_fg: white;
+}
+.theme--agvi {
+    --_bg: var(--col-yellow-400);
+    --_fg: var(--col-dark);
+}
+.theme--auksc {
+    --_bg: var(--col-blue-900);
+    --_fg: white;
+}
+.theme--asli {
+    --_bg: var(--col-orange-400);
+    --_fg: var(--col-dark);
+}

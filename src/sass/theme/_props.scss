@@ -1,0 +1,66 @@
+$col-primary: #5D7F9C;
+$col-dark: #666666;
+$col-darkest: #4A4A4A;
+$col-light: #F2F2F2;
+
+:root {
+
+    /* Colours */
+    --hsl-dark: 0 0% 20%; // black
+    --col-dark: hsl(var(--hsl-dark));
+  
+    --hsl-light: 0 0% 98%; // light grey
+    --col-light: hsl(var(--hsl-light));
+  
+    --hsl-grey-400: 0 0% 40%; // mid grey
+    --col-grey-400: hsl(var(--hsl-grey-400));
+  
+    --hsl-grey-200: 0 0% 80%; // grey
+    --col-grey-200: hsl(var(--hsl-grey-200));
+  
+    --hsl-yellow-400: 46 94% 44%; // value income - yellow
+    --col-yellow-400: hsl(var(--hsl-yellow-400));
+  
+    --hsl-orange-400: 23 83% 57%; // split - orange
+    --col-orange-400: hsl(var(--hsl-orange-400));
+    
+    --hsl-green-400: 166 40% 17%; // smaller - dk green
+    --col-green-400: hsl(var(--hsl-green-400));
+
+    --hsl-blue-900: 225 37% 20%; // small - blue
+    --col-blue-900: hsl(var(--hsl-blue-900));
+
+    --hsl-blue-700: 213 46% 26%; // link blue
+    --col-blue-700: hsl(var(--hsl-blue-700));
+  
+    --hsl-blue-600: 213 57% 67%; // dk mid blue
+    --col-blue-600: hsl(var(--hsl-blue-600));
+  
+    --hsl-blue-400: 213 61% 86%; // mid blue
+    --col-blue-400: hsl(var(--hsl-blue-400));
+  
+    --hsl-blue-200: 212 60% 95%; // light blue
+    --col-blue-200: hsl(var(--hsl-blue-200));
+
+    /* Font Sizes */
+    --fs-900: clamp(1.875rem, calc(1.5rem + 1.15vw), 2.8125rem); /* H1: scales between 30px (narrow) and 45px (wide) */
+    --fs-800: clamp(1.5625rem, calc(1.25rem + 0.75vw), 1.875rem); /* H2: scales between 25px (narrow) and 30px (wide) */
+    --fs-700: clamp(1.375rem, calc(1.25rem + 0.4vw), 1.5625rem); /* H3: scales between 22px (narrow) and 25px (wide) */
+    --fs-400: 1rem; /* Body: stays at 16px */
+    --fs-300: 0.875rem; /* Small: stays at 14px */
+
+    /* Font Families */
+    --ff-body: 'Test Untitled Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --ff-heading: 'Bembo', Georgia, 'Times New Roman', Times, serif;
+
+    /* Font Weights */
+    --fw-400: 400;
+
+    /* Effects */
+    --transition: 250ms ease-out;
+
+    /* Site General */
+    --h-top: 90px;
+    --h-top-desktop: 125px;
+
+}

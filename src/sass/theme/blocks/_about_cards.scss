@@ -1,0 +1,13 @@
+.about_cards {
+    &__card {
+        border: 1px solid var(--col-blue-600);
+        background-color: var(--col-light);
+        padding: 1rem 1.5rem 1.5rem 1.5rem;
+        text-align: center;
+    }
+    &__icon {
+        aspect-ratio: 9 / 10;
+        width: 85px;
+        margin-bottom: 0.5rem;
+    }
+}
