@@ -1,0 +1,227 @@
+{
+    "key": "group_6710f7fa527e3",
+    "title": "CB Fund Accordion",
+    "fields": [
+        {
+            "key": "field_6710f7faa4d35",
+            "label": "CB Fund Accordion",
+            "name": "",
+            "aria-label": "",
+            "type": "message",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "new_lines": "wpautop",
+            "esc_html": 0
+        },
+        {
+            "key": "field_6710f81ca4d36",
+            "label": "Aberforth Smaller Companies Trust plc",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_6710f82da4d37",
+            "label": "Intro",
+            "name": "asc_intro",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "allow_in_bindings": 1,
+            "rows": "",
+            "placeholder": "",
+            "new_lines": ""
+        },
+        {
+            "key": "field_671112fe88579",
+            "label": "Aberforth Geared Value & Income Trust plc",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_671113198857a",
+            "label": "Intro",
+            "name": "agvi_intro",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "allow_in_bindings": 0,
+            "rows": "",
+            "placeholder": "",
+            "new_lines": ""
+        },
+        {
+            "key": "field_671113278857b",
+            "label": "Aberforth UK Small Companies Fund",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_671113448857c",
+            "label": "Investing Intro",
+            "name": "auksc_investing_intro",
+            "aria-label": "",
+            "type": "wysiwyg",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "allow_in_bindings": 1,
+            "tabs": "all",
+            "toolbar": "full",
+            "media_upload": 1,
+            "delay": 0
+        },
+        {
+            "key": "field_67111959a8434",
+            "label": "Dealing Intro",
+            "name": "auksc_dealing_intro",
+            "aria-label": "",
+            "type": "wysiwyg",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "allow_in_bindings": 1,
+            "tabs": "all",
+            "toolbar": "full",
+            "media_upload": 1,
+            "delay": 0
+        },
+        {
+            "key": "field_6711196da8435",
+            "label": "Docs",
+            "name": "auksc_docs",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layout": "table",
+            "pagination": 0,
+            "min": 0,
+            "max": 0,
+            "collapsed": "",
+            "button_label": "Add Row",
+            "rows_per_page": 20,
+            "sub_fields": [
+                {
+                    "key": "field_67111977a8436",
+                    "label": "Files",
+                    "name": "files",
+                    "aria-label": "",
+                    "type": "file",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "return_format": "array",
+                    "library": "all",
+                    "min_size": "",
+                    "max_size": "",
+                    "mime_types": "",
+                    "allow_in_bindings": 0,
+                    "parent_repeater": "field_6711196da8435"
+                }
+            ]
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "block",
+                "operator": "==",
+                "value": "acf\/cb-fund-accordion"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "modified": 1729173955
+}

@@ -34,7 +34,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
+            "default_value": "Subscribe to our mailing list",
             "maxlength": "",
             "allow_in_bindings": 0,
             "placeholder": "",
@@ -98,5 +98,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1729094313
+    "modified": 1729153422
 }

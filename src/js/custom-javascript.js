@@ -52,10 +52,10 @@
   // Header background
   document.addEventListener('scroll', function() {
       var nav = document.getElementById('navbar');
-      var primaryNav = document.getElementById('primaryNav');
-      if (!primaryNav.classList.contains('show')) {
-          nav.classList.toggle('scrolled', window.scrollY > nav.offsetHeight);
-      }
+    //   var primaryNav = document.getElementById('primaryNav');
+    //   if (!primaryNav.classList.contains('show')) {
+    //       nav.classList.toggle('scrolled', window.scrollY > nav.offsetHeight);
+    //   }
       document.querySelectorAll('.dropdown-menu').forEach(function(dropdown) {
           dropdown.classList.remove('show');
       });
@@ -66,21 +66,21 @@
   });
 
   // Toggle navdark class on nav toggle button click
-  document.getElementById('navToggle').addEventListener('click', function() {
-      var nav = document.getElementById('navbar');
-      nav.classList.toggle('navdark');
-  });
+//   document.getElementById('navToggle').addEventListener('click', function() {
+//       var nav = document.getElementById('navbar');
+//       nav.classList.toggle('navdark');
+//   });
 
   // Hide menu on click outside
-  document.body.addEventListener('click', function(event) {
-      if (!event.target.closest('.navbar')) {
-          var navbarCollapse = document.querySelector('.navbar .navbar-collapse');
-          if (navbarCollapse) {
-              var collapseInstance = bootstrap.Collapse.getInstance(navbarCollapse);
-              if (collapseInstance) {
-                  collapseInstance.hide();
-              }
-          }
-      }
-  });
+//   document.body.addEventListener('click', function(event) {
+//       if (!event.target.closest('.navbar')) {
+//           var navbarCollapse = document.querySelector('.navbar .navbar-collapse');
+//           if (navbarCollapse) {
+//               var collapseInstance = bootstrap.Collapse.getInstance(navbarCollapse);
+//               if (collapseInstance) {
+//                   collapseInstance.hide();
+//               }
+//           }
+//       }
+//   });
 })();

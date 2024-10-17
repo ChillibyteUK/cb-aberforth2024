@@ -24,6 +24,9 @@ session_start();
     <link rel="preload"
         href="<?=get_stylesheet_directory_uri()?>/fonts/test-untitled-sans.woff2"
         as="font" type="font/woff2" crossorigin="anonymous">
+    <link rel="preload"
+        href="<?=get_stylesheet_directory_uri()?>/fonts/test-untitled-sans-500.woff2"
+        as="font" type="font/woff2" crossorigin="anonymous">
     <?php
 if (!is_user_logged_in()) {
     if (get_field('ga_property', 'options')) {

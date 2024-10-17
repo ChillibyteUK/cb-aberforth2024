@@ -2,8 +2,12 @@
 $partner_link = get_field('partnership_link');
 $philosophy_link = get_field('philosophy_link');
 $team_link = get_field('team_link');
+
+$has_bg = get_field('invert');
+$bg = is_array($has_bg) && isset($has_bg[0]) && $has_bg[0] == 'Yes' ? 'about_cards--inverse' : '';
+
 ?>
-<section class="about_cards py-5">
+<section class="about_cards <?=$bg?> py-5">
     <div class="container-xl">
         <h2 class="text-center mb-4">About Aberforth</h2>
         <div class="text-center w-constrained mx-auto mb-5"><?=get_field('intro')?></div>

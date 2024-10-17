@@ -36,6 +36,7 @@
   --ff-heading: "Bembo", Georgia, "Times New Roman", Times, serif;
   /* Font Weights */
   --fw-400: 400;
+  --fw-500: 500;
   /* Effects */
   --transition: 250ms ease-out;
   /* Site General */

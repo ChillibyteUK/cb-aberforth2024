@@ -12,13 +12,39 @@
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "",
+                "width": "75",
                 "class": "",
                 "id": ""
             },
             "message": "",
             "new_lines": "wpautop",
             "esc_html": 0
+        },
+        {
+            "key": "field_6710ca412ae01",
+            "label": "Invert",
+            "name": "invert",
+            "aria-label": "",
+            "type": "checkbox",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "Yes": "Yes"
+            },
+            "default_value": [],
+            "return_format": "value",
+            "allow_custom": 0,
+            "allow_in_bindings": 0,
+            "layout": "vertical",
+            "toggle": 0,
+            "save_custom": 0,
+            "custom_choice_button_text": "Add new choice"
         },
         {
             "key": "field_670fcd6fdc126",
@@ -81,7 +107,7 @@
             "max_width": "",
             "max_height": "",
             "max_size": "",
-            "mime_types": "",
+            "mime_types": "svg",
             "allow_in_bindings": 0,
             "preview_size": "thumbnail"
         },
@@ -99,7 +125,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
+            "default_value": "The Partnership",
             "maxlength": "",
             "allow_in_bindings": 0,
             "placeholder": "",
@@ -120,7 +146,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
+            "default_value": "The history behind Aberforth and how we work as a partnership.",
             "maxlength": "",
             "allow_in_bindings": 0,
             "placeholder": "",
@@ -202,7 +228,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
+            "default_value": "Our Philosophy",
             "maxlength": "",
             "allow_in_bindings": 0,
             "placeholder": "",
@@ -223,7 +249,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
+            "default_value": "We keep our business simple so we can focus on the best returns.",
             "maxlength": "",
             "allow_in_bindings": 0,
             "placeholder": "",
@@ -305,7 +331,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
+            "default_value": "The Team",
             "maxlength": "",
             "allow_in_bindings": 0,
             "placeholder": "",
@@ -326,7 +352,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
+            "default_value": "Our focused and knowledgeable investment management team.",
             "maxlength": "",
             "allow_in_bindings": 0,
             "placeholder": "",
@@ -369,5 +395,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1729088895
+    "modified": 1729153637
 }

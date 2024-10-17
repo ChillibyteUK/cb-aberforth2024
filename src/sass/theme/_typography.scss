@@ -12,6 +12,13 @@
     font-weight: 400;
     src: url('../fonts/test-untitled-sans.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
+@font-face {
+    font-display: swap;
+    font-family: 'Test Untitled Sans';
+    font-style: normal;
+    font-weight: 500;
+    src: url('../fonts/test-untitled-sans-500.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
 
 :root {
     font-variant-ligatures: none;
@@ -66,6 +73,9 @@ small, .has-small-font-size,.fs-300 {
 .fw-400 {
     font-weight: var(--fw-400);
 }
+strong, .fw-bold, .fw-500 {
+    font-weight: var(--fw-500);
+}
 
 .text-balance {
     text-wrap: balance;
@@ -75,6 +85,6 @@ small, .has-small-font-size,.fs-300 {
     max-width: 65ch;
 }
 
-p:not([class]) {
-    max-width: 70ch;
-}
+// p:not([class]) {
+//     max-width: 70ch;
+// }

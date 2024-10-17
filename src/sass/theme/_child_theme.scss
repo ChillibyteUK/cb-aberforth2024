@@ -91,6 +91,11 @@ main {
     padding-inline: 0;
 }
 
+.yoast-breadcrumbs {
+    @extend .container-xl;
+    @extend .mb-4;
+    font-size: var(--fs-300);
+}
 
 // show stuff that overflows horizontally
 // * {

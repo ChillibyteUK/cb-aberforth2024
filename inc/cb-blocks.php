@@ -47,6 +47,15 @@ function acf_blocks()
             'mode'	=> 'edit',
             'supports' => array('mode' => false),
         ));
+        acf_register_block_type(array(
+            'name'				=> 'cb_fund_accordion',
+            'title'				=> __('CB Fund Accordion'),
+            'category'			=> 'layout',
+            'icon'				=> 'cover-image',
+            'render_template'	=> 'page-templates/blocks/cb_fund_accordion.php',
+            'mode'	=> 'edit',
+            'supports' => array('mode' => false),
+        ));
     }
 }
 add_action('acf/init', 'acf_blocks');
@@ -64,7 +73,9 @@ function core_image_block_type_args($args, $name)
     if ($name == 'core/list') {
         $args['render_callback'] = 'modify_core_add_container';
     }
-
+    // if ($name == 'yoast-seo/breadcrumbs') {
+    //     $args['render_callback'] = 'modify_core_add_container';
+    // }
     return $args;
 }
 

@@ -420,3 +420,24 @@ function pluralise($quantity, $singular, $plural=null) {
             return $singular.'s';
     }
 }
+
+function get_all_block_names_from_content($id) {
+    // Parse blocks from the content
+    $content = get_post_field('post_content', $id);
+    $blocks = parse_blocks($content);
+    $block_names = [];
+
+    // Recursively find all block names
+    foreach ($blocks as $block) {
+        if (isset($block['blockName']) && !empty($block['blockName'])) {
+            $block_names[] = $block['blockName'];
+        }
+        if (isset($block['innerBlocks']) && !empty($block['innerBlocks'])) {
+            $inner_block_names = get_all_block_names_from_content(serialize_blocks($block['innerBlocks']));
+            $block_names = array_merge($block_names, $inner_block_names);
+        }
+    }
+
+    // Remove duplicates and reindex
+    return array_values(array_unique($block_names));
+}

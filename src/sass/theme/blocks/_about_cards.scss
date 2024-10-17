@@ -10,4 +10,11 @@
         width: 85px;
         margin-bottom: 0.5rem;
     }
+
+    &--inverse {
+        background-color: var(--col-light);
+        .about_cards__card {
+            background-color: white;
+        }
+    }
 }
