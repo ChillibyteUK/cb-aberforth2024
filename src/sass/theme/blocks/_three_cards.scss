@@ -1,4 +1,4 @@
-.about_cards {
+.three_cards {
     &__card {
         border: 1px solid var(--col-blue-600);
         background-color: var(--col-light);
@@ -13,7 +13,7 @@
 
     &--inverse {
         background-color: var(--col-light);
-        .about_cards__card {
+        .three_cards__card {
             background-color: white;
         }
     }

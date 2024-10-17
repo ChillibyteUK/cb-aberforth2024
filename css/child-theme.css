@@ -21849,42 +21849,45 @@ header .dropdown-menu .dropdown-item:hover {
   --_fg: var(--col-dark);
 }
 
-.about_cards__card {
+.three_cards__card {
   border: 1px solid var(--col-blue-600);
   background-color: var(--col-light);
   padding: 1rem 1.5rem 1.5rem 1.5rem;
   text-align: center;
 }
-.about_cards__icon {
+.three_cards__icon {
   aspect-ratio: 9/10;
   width: 85px;
   margin-bottom: 0.5rem;
 }
-.about_cards--inverse {
+.three_cards--inverse {
   background-color: var(--col-light);
 }
-.about_cards--inverse .about_cards__card {
+.three_cards--inverse .three_cards__card {
   background-color: white;
 }
 
-.info_cards {
+.two_cards {
   background-color: var(--col-light);
 }
-.info_cards__card {
+.two_cards--blue {
+  background-color: var(--col-blue-200);
+}
+.two_cards__card {
   display: grid;
   grid-template-columns: 1fr 2fr;
 }
-.info_cards__icon {
+.two_cards__icon {
   aspect-ratio: 9/10;
   width: 85px;
   margin-bottom: 0.5rem;
   place-self: center;
 }
-.info_cards__inner {
+.two_cards__inner {
   display: flex;
   flex-direction: column;
 }
-.info_cards__inner p {
+.two_cards__inner p {
   max-width: 26ch;
 }
 

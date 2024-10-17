@@ -31,10 +31,10 @@ function acf_blocks()
         ));
         acf_register_block_type(array(
             'name'				=> 'cb_info_cards',
-            'title'				=> __('CB Info Cards'),
+            'title'				=> __('CB Two Cards'),
             'category'			=> 'layout',
             'icon'				=> 'cover-image',
-            'render_template'	=> 'page-templates/blocks/cb_info_cards.php',
+            'render_template'	=> 'page-templates/blocks/cb_two_cards.php',
             'mode'	=> 'edit',
             'supports' => array('mode' => false),
         ));

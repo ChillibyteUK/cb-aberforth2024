@@ -1,5 +1,8 @@
-.info_cards {
+.two_cards {
     background-color: var(--col-light);
+    &--blue {
+        background-color: var(--col-blue-200);
+    }
     &__card {
         display: grid;
         grid-template-columns: 1fr 2fr;

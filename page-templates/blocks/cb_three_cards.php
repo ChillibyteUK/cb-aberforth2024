@@ -4,11 +4,11 @@ $card2_link = get_field('card2_link') ?? null;
 $card3_link = get_field('card3_link') ?? null;
 
 $has_bg = get_field('invert');
-$bg = is_array($has_bg) && isset($has_bg[0]) && $has_bg[0] == 'Yes' ? 'about_cards--inverse' : '';
+$bg = is_array($has_bg) && isset($has_bg[0]) && $has_bg[0] == 'Yes' ? 'three_cards--inverse' : '';
 
 $class = $block['className'] ?? 'py-5';
 ?>
-<section class="about_cards <?=$bg?> <?=$class?>">
+<section class="three_cards <?=$bg?> <?=$class?>">
     <div class="container-xl">
         <?php
         if (get_field('title') ?? null) {
@@ -24,13 +24,13 @@ $class = $block['className'] ?? 'py-5';
         ?>
         <div class="row g-4">
             <div class="col-md-4">
-                <div class="about_cards__card">
+                <div class="three_cards__card">
                     <?php
                     if (get_field('card1_icon') ?? null) {
-                        echo wp_get_attachment_image(get_field('card1_icon'),'full',false,array('class' => 'about_cards__icon'));
+                        echo wp_get_attachment_image(get_field('card1_icon'),'full',false,array('class' => 'three_cards__icon'));
                     }
                     else {
-                        echo '<div class="about_cards__icon"></div>';
+                        echo '<div class="three_cards__icon"></div>';
                     }
                     ?>
                     <h3><?=get_field('card1_title')?></h3>
@@ -45,13 +45,13 @@ $class = $block['className'] ?? 'py-5';
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="about_cards__card">
+                <div class="three_cards__card">
                     <?php
                     if (get_field('card2_icon') ?? null) {
-                        echo wp_get_attachment_image(get_field('card2_icon'),'full',false,array('class' => 'about_cards__icon'));
+                        echo wp_get_attachment_image(get_field('card2_icon'),'full',false,array('class' => 'three_cards__icon'));
                     }
                     else {
-                        echo '<div class="about_cards__icon"></div>';
+                        echo '<div class="three_cards__icon"></div>';
                     }
                     ?>
                     <h3><?=get_field('card2_title')?></h3>
@@ -66,13 +66,13 @@ $class = $block['className'] ?? 'py-5';
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="about_cards__card">
+                <div class="three_cards__card">
                     <?php
                     if (get_field('card3_icon') ?? null) {
-                        echo wp_get_attachment_image(get_field('card3_icon'),'full',false,array('class' => 'about_cards__icon'));
+                        echo wp_get_attachment_image(get_field('card3_icon'),'full',false,array('class' => 'three_cards__icon'));
                     }
                     else {
-                        echo '<div class="about_cards__icon"></div>';
+                        echo '<div class="three_cards__icon"></div>';
                     }
                     ?>
                     <h3><?=get_field('card3_title')?></h3>

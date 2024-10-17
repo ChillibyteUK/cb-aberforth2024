@@ -1,10 +1,10 @@
 {
     "key": "group_670fde47de742",
-    "title": "CB Info Cards",
+    "title": "CB Two Cards",
     "fields": [
         {
             "key": "field_670fde480d6df",
-            "label": "CB Info Cards",
+            "label": "CB Two Cards",
             "name": "",
             "aria-label": "",
             "type": "message",
@@ -12,7 +12,7 @@
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "",
+                "width": "75",
                 "class": "",
                 "id": ""
             },
@@ -21,8 +21,34 @@
             "esc_html": 0
         },
         {
+            "key": "field_671137ac621c9",
+            "label": "Background",
+            "name": "background",
+            "aria-label": "",
+            "type": "radio",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "25",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "Grey": "Grey",
+                "Blue": "Blue"
+            },
+            "default_value": "Grey",
+            "return_format": "value",
+            "allow_null": 0,
+            "other_choice": 0,
+            "allow_in_bindings": 0,
+            "layout": "horizontal",
+            "save_other_choice": 0
+        },
+        {
             "key": "field_670fde4814e99",
-            "label": "Literature Library",
+            "label": "Card 1",
             "name": "",
             "aria-label": "",
             "type": "tab",
@@ -41,7 +67,7 @@
         {
             "key": "field_670fde48188e2",
             "label": "Icon",
-            "name": "library_icon",
+            "name": "card1_icon",
             "aria-label": "",
             "type": "image",
             "instructions": "",
@@ -67,7 +93,7 @@
         {
             "key": "field_670fde481c3eb",
             "label": "Title",
-            "name": "library_title",
+            "name": "card1_title",
             "aria-label": "",
             "type": "text",
             "instructions": "",
@@ -88,7 +114,7 @@
         {
             "key": "field_670fde481fd1c",
             "label": "Intro",
-            "name": "library_intro",
+            "name": "card1_intro",
             "aria-label": "",
             "type": "text",
             "instructions": "",
@@ -109,7 +135,7 @@
         {
             "key": "field_670fde48238e7",
             "label": "Link",
-            "name": "library_link",
+            "name": "card1_link",
             "aria-label": "",
             "type": "link",
             "instructions": "",
@@ -125,7 +151,7 @@
         },
         {
             "key": "field_670fde48273b3",
-            "label": "How to invest",
+            "label": "Card 2",
             "name": "",
             "aria-label": "",
             "type": "tab",
@@ -144,7 +170,7 @@
         {
             "key": "field_670fde482afe3",
             "label": "Icon",
-            "name": "invest_icon",
+            "name": "card2_icon",
             "aria-label": "",
             "type": "image",
             "instructions": "",
@@ -170,7 +196,7 @@
         {
             "key": "field_670fde482ecbe",
             "label": "Title",
-            "name": "invest_title",
+            "name": "card2_title",
             "aria-label": "",
             "type": "text",
             "instructions": "",
@@ -191,7 +217,7 @@
         {
             "key": "field_670fde48328b5",
             "label": "Intro",
-            "name": "invest_intro",
+            "name": "card2_intro",
             "aria-label": "",
             "type": "text",
             "instructions": "",
@@ -212,7 +238,7 @@
         {
             "key": "field_670fde4836338",
             "label": "Link",
-            "name": "invest_link",
+            "name": "card2_link",
             "aria-label": "",
             "type": "link",
             "instructions": "",
@@ -245,5 +271,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1729093599
+    "modified": 1729181645
 }
