@@ -22,10 +22,10 @@ function acf_blocks()
         ));
         acf_register_block_type(array(
             'name'				=> 'cb_about_cards',
-            'title'				=> __('CB About Cards'),
+            'title'				=> __('CB Three Cards'),
             'category'			=> 'layout',
             'icon'				=> 'cover-image',
-            'render_template'	=> 'page-templates/blocks/cb_about_cards.php',
+            'render_template'	=> 'page-templates/blocks/cb_three_cards.php',
             'mode'	=> 'edit',
             'supports' => array('mode' => false),
         ));

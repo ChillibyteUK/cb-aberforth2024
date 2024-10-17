@@ -4,11 +4,11 @@
         <div class="accordion" id="fundAccordion">
             <div class="accordion-item">
                 <h2 class="accordion-header">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#asc" aria-expanded="true" aria-controls="asc">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#asc" aria-expanded="true" aria-controls="asc">
                         Aberforth Smaller Companies Trust plc
                     </button>
                 </h2>
-                <div id="asc" class="accordion-collapse collapse show" data-bs-parent="#fundAccordion">
+                <div id="asc" class="accordion-collapse collapse" data-bs-parent="#fundAccordion">
                     <div class="accordion-body">
                         <div class="nav nav-tabs">
                             <button class="nav-link active" id="asc-investing-tab" data-bs-toggle="tab" data-bs-target="#asc-investing" type="button" role="tab" aria-controls="asc-investing" aria-selected="true">Investing Information</button>
@@ -144,6 +144,7 @@
                             </div>
                             <div class="tab-pane fade px-0" id="auksc-dealing" aria-labelledby="auksc-dealing-tab">
                                 <div class="p-4"><?=get_field('auksc_dealing_intro')?></div>
+
                             </div>
                         </div>
                     </div>

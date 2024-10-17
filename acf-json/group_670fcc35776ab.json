@@ -1,10 +1,10 @@
 {
     "key": "group_670fcc35776ab",
-    "title": "CB About Cards",
+    "title": "CB Three Cards",
     "fields": [
         {
             "key": "field_670fcc365009c",
-            "label": "CB About Cards",
+            "label": "CB Three Cards",
             "name": "",
             "aria-label": "",
             "type": "message",
@@ -19,6 +19,45 @@
             "message": "",
             "new_lines": "wpautop",
             "esc_html": 0
+        },
+        {
+            "key": "field_671124843d12a",
+            "label": "General",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_67112bdbe9327",
+            "label": "Title",
+            "name": "title",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "75",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "About Aberforth",
+            "maxlength": "",
+            "allow_in_bindings": 0,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
         },
         {
             "key": "field_6710ca412ae01",
@@ -69,7 +108,7 @@
         },
         {
             "key": "field_670fcc445009d",
-            "label": "The Partnership",
+            "label": "Card 1",
             "name": "",
             "aria-label": "",
             "type": "tab",
@@ -88,7 +127,7 @@
         {
             "key": "field_670fccbe500a6",
             "label": "Icon",
-            "name": "partnership_icon",
+            "name": "card1_icon",
             "aria-label": "",
             "type": "image",
             "instructions": "",
@@ -114,7 +153,7 @@
         {
             "key": "field_670fcc525009e",
             "label": "Title",
-            "name": "partnership_title",
+            "name": "card1_title",
             "aria-label": "",
             "type": "text",
             "instructions": "",
@@ -135,7 +174,7 @@
         {
             "key": "field_670fcc5d5009f",
             "label": "Intro",
-            "name": "partnership_intro",
+            "name": "card1_intro",
             "aria-label": "",
             "type": "text",
             "instructions": "",
@@ -156,7 +195,7 @@
         {
             "key": "field_670fcc67500a0",
             "label": "Link",
-            "name": "partnership_link",
+            "name": "card1_link",
             "aria-label": "",
             "type": "link",
             "instructions": "",
@@ -172,7 +211,7 @@
         },
         {
             "key": "field_670fcc75500a1",
-            "label": "Our Philosophy",
+            "label": "Card 2",
             "name": "",
             "aria-label": "",
             "type": "tab",
@@ -191,7 +230,7 @@
         {
             "key": "field_670fcc9d500a4",
             "label": "Icon",
-            "name": "philosophy_icon",
+            "name": "card2_icon",
             "aria-label": "",
             "type": "image",
             "instructions": "",
@@ -217,7 +256,7 @@
         {
             "key": "field_670fcc80500a2",
             "label": "Title",
-            "name": "philosophy_title",
+            "name": "card2_title",
             "aria-label": "",
             "type": "text",
             "instructions": "",
@@ -238,7 +277,7 @@
         {
             "key": "field_670fcc90500a3",
             "label": "Intro",
-            "name": "philosophy_intro",
+            "name": "card2_intro",
             "aria-label": "",
             "type": "text",
             "instructions": "",
@@ -259,7 +298,7 @@
         {
             "key": "field_670fccb1500a5",
             "label": "Link",
-            "name": "philosophy_link",
+            "name": "card2_link",
             "aria-label": "",
             "type": "link",
             "instructions": "",
@@ -275,7 +314,7 @@
         },
         {
             "key": "field_670fccd5500a7",
-            "label": "The Team",
+            "label": "Card 3",
             "name": "",
             "aria-label": "",
             "type": "tab",
@@ -294,7 +333,7 @@
         {
             "key": "field_670fcce1500a8",
             "label": "Icon",
-            "name": "team_icon",
+            "name": "card3_icon",
             "aria-label": "",
             "type": "image",
             "instructions": "",
@@ -320,7 +359,7 @@
         {
             "key": "field_670fccf1500a9",
             "label": "Title",
-            "name": "team_title",
+            "name": "card3_title",
             "aria-label": "",
             "type": "text",
             "instructions": "",
@@ -341,7 +380,7 @@
         {
             "key": "field_670fccf9500aa",
             "label": "Intro",
-            "name": "team_intro",
+            "name": "card3_intro",
             "aria-label": "",
             "type": "text",
             "instructions": "",
@@ -362,7 +401,7 @@
         {
             "key": "field_670fcd01500ab",
             "label": "Link",
-            "name": "team_link",
+            "name": "card3_link",
             "aria-label": "",
             "type": "link",
             "instructions": "",
@@ -395,5 +434,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1729153637
+    "modified": 1729178609
 }
