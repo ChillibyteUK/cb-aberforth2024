@@ -10,42 +10,44 @@
                 // Define the XML URL
                 $url = get_field('ticker') ?? null;
 
-                // Load the XML data
-                $xmlContent = file_get_contents($url);
-                if ($xmlContent === false) {
-                    die("Error: Unable to load XML data.");
-                }
+                if ($url) {
+                    // Load the XML data
+                    $xmlContent = file_get_contents($url);
+                    if ($xmlContent === false) {
+                        die("Error: Unable to load XML data.");
+                    }
 
-                // Parse the XML data
-                $xml = simplexml_load_string($xmlContent);
-                if ($xml === false) {
-                    die("Error: Failed to parse XML.");
-                }
+                    // Parse the XML data
+                    $xml = simplexml_load_string($xmlContent);
+                    if ($xml === false) {
+                        die("Error: Failed to parse XML.");
+                    }
 
-                $shares = isset($xml->share) ? $xml->share : [$xml];
+                    $shares = isset($xml->share) ? $xml->share : [$xml];
 
-                // Display the data for each share
-                foreach ($shares as $share) {
-                    // Convert XML to JSON and then to an associative array for easy access
-                    $json = json_encode($share);
-                    $data = json_decode($json, true);
+                    // Display the data for each share
+                    foreach ($shares as $share) {
+                        // Convert XML to JSON and then to an associative array for easy access
+                        $json = json_encode($share);
+                        $data = json_decode($json, true);
 
-                    if ($data) {
-                        $symbol = $data['Symbol'];
-                        $currentPrice = $data['CurrentPrice'];
-                        $change = $data['Change'];
-                        $date = $data['Date'];
-                        ?>
+                        if ($data) {
+                            $symbol = $data['Symbol'];
+                            $currentPrice = $data['CurrentPrice'];
+                            $change = $data['Change'];
+                            $date = $data['Date'];
+                            ?>
                     <div class="ticker">
                         <div class="ticker__date"><?=$date?></div>
                         <div class="ticker__symbol"><?=$symbol?></div>
                         <div class="ticker__price"><?=$currentPrice?></div>
                         <div class="ticker__change ticker__change--up"><?=$change?></div>
                     </div>
-                        <?php
-                    }
-                    else {
-                        echo 'Error: No data found.';
+                            <?php
+                        }
+                        else {
+                            echo 'Error: No data found.';
+                        }
                     }
                 }
                 ?>
