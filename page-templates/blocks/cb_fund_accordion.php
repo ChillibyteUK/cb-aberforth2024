@@ -4,19 +4,19 @@
         <div class="accordion" id="fundAccordion">
             <div class="accordion-item">
                 <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#asc" aria-expanded="true" aria-controls="asc">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ascot" aria-expanded="true" aria-controls="ascot">
                         Aberforth Smaller Companies Trust plc
                     </button>
                 </h2>
-                <div id="asc" class="accordion-collapse collapse" data-bs-parent="#fundAccordion">
+                <div id="ascot" class="accordion-collapse collapse" data-bs-parent="#fundAccordion">
                     <div class="accordion-body">
                         <div class="nav nav-tabs">
-                            <button class="nav-link active" id="asc-investing-tab" data-bs-toggle="tab" data-bs-target="#asc-investing" type="button" role="tab" aria-controls="asc-investing" aria-selected="true">Investing Information</button>
-                            <button class="nav-link" id="asc-price-tab" data-bs-toggle="tab" data-bs-target="#asc-price" type="button" role="tab" aria-controls="asc-price" aria-selected="false">Price Ordinary Shares</button>
+                            <button class="nav-link active" id="ascot-investing-tab" data-bs-toggle="tab" data-bs-target="#ascot-investing" type="button" role="tab" aria-controls="ascot-investing" aria-selected="true">Investing Information</button>
+                            <button class="nav-link" id="ascot-price-tab" data-bs-toggle="tab" data-bs-target="#ascot-price" type="button" role="tab" aria-controls="ascot-price" aria-selected="false">Price Ordinary Shares</button>
                         </div>
-                        <div class="tab-content" id="asc-content">
-                            <div class="tab-pane fade show active" id="asc-investing" aria-labelledby="asc-investing-tab">
-                                <div class="p-4"><?=get_field('asc_intro')?></div>
+                        <div class="tab-content" id="ascot-content">
+                            <div class="tab-pane fade show active" id="ascot-investing" aria-labelledby="ascot-investing-tab">
+                                <div class="p-4"><?=get_field('ascot_intro')?></div>
                                 <div class="row g-4">
                                     <div class="col-md-6 col-lg-3">
                                         <div class="fund_accordion__card d-grid">
@@ -55,7 +55,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade px-0" id="asc-price" aria-labelledby="asc-price-tab">
+                            <div class="tab-pane fade px-0" id="ascot-price" aria-labelledby="ascot-price-tab">
                                 <iframe src="https://irs.tools.investis.com/Clients/uk/aberforth/SM8/Default.aspx?culture=en-GB" width="100%" class="fund_accordion__iframe" height="700px" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe>
                             </div>
                         </div>
@@ -64,20 +64,20 @@
             </div>
             <div class="accordion-item">
                 <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#agvi" aria-expanded="false" aria-controls="agvi">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#agvit" aria-expanded="false" aria-controls="agvit">
                         Aberforth Geared Value &amp; Income Trust plc
                     </button>
                 </h2>
-                <div id="agvi" class="accordion-collapse collapse" data-bs-parent="#fundAccordion">
+                <div id="agvit" class="accordion-collapse collapse" data-bs-parent="#fundAccordion">
                     <div class="accordion-body">
                         <div class="nav nav-tabs">
-                            <button class="nav-link active" id="agvi-investing-tab" data-bs-toggle="tab" data-bs-target="#agvi-investing" type="button" role="tab" aria-controls="agvi-investing" aria-selected="true">Investing Information</button>
-                            <button class="nav-link" id="agvi-price-tab" data-bs-toggle="tab" data-bs-target="#agvi-price" type="button" role="tab" aria-controls="agvi-price" aria-selected="false">Price Ordinary Shares</button>
-                            <button class="nav-link" id="agvi-zero-tab" data-bs-toggle="tab" data-bs-target="#agvi-zero" type="button" role="tab" aria-controls="agvi-zero" aria-selected="false">Price Zero Dividend Preference Shares</button>
+                            <button class="nav-link active" id="agvit-investing-tab" data-bs-toggle="tab" data-bs-target="#agvit-investing" type="button" role="tab" aria-controls="agvit-investing" aria-selected="true">Investing Information</button>
+                            <button class="nav-link" id="agvit-price-tab" data-bs-toggle="tab" data-bs-target="#agvit-price" type="button" role="tab" aria-controls="agvit-price" aria-selected="false">Price Ordinary Shares</button>
+                            <button class="nav-link" id="agvit-zero-tab" data-bs-toggle="tab" data-bs-target="#agvit-zero" type="button" role="tab" aria-controls="agvit-zero" aria-selected="false">Price Zero Dividend Preference Shares</button>
                         </div>
-                        <div class="tab-content" id="agvi-content">
-                            <div class="tab-pane fade show active" id="agvi-investing" aria-labelledby="agvi-investing-tab">
-                                <div class="p-4"><?=get_field('agvi_intro')?></div>
+                        <div class="tab-content" id="agvit-content">
+                            <div class="tab-pane fade show active" id="agvit-investing" aria-labelledby="agvit-investing-tab">
+                                <div class="p-4"><?=get_field('agvit_intro')?></div>
                                 <div class="row g-4">
                                     <div class="col-md-6 col-lg-3">
                                         <div class="fund_accordion__card d-grid">
@@ -116,10 +116,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade px-0" id="agvi-price" aria-labelledby="agvi-price-tab">
+                            <div class="tab-pane fade px-0" id="agvit-price" aria-labelledby="agvit-price-tab">
                                 <iframe src="https://irs.tools.investis.com/Clients/uk/aberforth_geared_value/SM8/Default.aspx?culture=en-GB" width="100%" class="fund_accordion__iframe" height="700px" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe>
                             </div>
-                            <div class="tab-pane fade px-0" id="agvi-zero" aria-labelledby="agvi-zero-tab">
+                            <div class="tab-pane fade px-0" id="agvit-zero" aria-labelledby="agvit-zero-tab">
                                 <iframe src="https://irs.tools.investis.com/Clients/uk/aberforth_geared_value/SM8/Default1.aspx?culture=en-GB" width="100%" class="fund_accordion__iframe" height="700px" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe>
                             </div>
                         </div>
@@ -128,22 +128,22 @@
             </div>
             <div class="accordion-item">
                 <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#auksc" aria-expanded="false" aria-controls="auksc">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#afund" aria-expanded="false" aria-controls="afund">
                         Aberforth UK Small Companies Fund
                     </button>
                 </h2>
-                <div id="auksc" class="accordion-collapse collapse" data-bs-parent="#fundAccordion">
+                <div id="afund" class="accordion-collapse collapse" data-bs-parent="#fundAccordion">
                     <div class="accordion-body">
                         <div class="nav nav-tabs">
-                            <button class="nav-link active" id="auksc-investing-tab" data-bs-toggle="tab" data-bs-target="#auksc-investing" type="button" role="tab" aria-controls="auksc-investing" aria-selected="true">Buying, selling and transfers</button>
-                            <button class="nav-link" id="auksc-dealing-tab" data-bs-toggle="tab" data-bs-target="#auksc-dealing" type="button" role="tab" aria-controls="auksc-dealing" aria-selected="false">Dealing</button>
+                            <button class="nav-link active" id="afund-investing-tab" data-bs-toggle="tab" data-bs-target="#afund-investing" type="button" role="tab" aria-controls="afund-investing" aria-selected="true">Buying, selling and transfers</button>
+                            <button class="nav-link" id="afund-dealing-tab" data-bs-toggle="tab" data-bs-target="#afund-dealing" type="button" role="tab" aria-controls="afund-dealing" aria-selected="false">Dealing</button>
                         </div>
-                        <div class="tab-content" id="auksc-content">
-                            <div class="tab-pane fade show active" id="auksc-investing" aria-labelledby="auksc-investing-tab">
-                                <div class="p-4"><?=get_field('auksc_investing_intro')?></div>
+                        <div class="tab-content" id="afund-content">
+                            <div class="tab-pane fade show active" id="afund-investing" aria-labelledby="afund-investing-tab">
+                                <div class="p-4"><?=get_field('afund_investing_intro')?></div>
                             </div>
-                            <div class="tab-pane fade px-0" id="auksc-dealing" aria-labelledby="auksc-dealing-tab">
-                                <div class="p-4"><?=get_field('auksc_dealing_intro')?></div>
+                            <div class="tab-pane fade px-0" id="afund-dealing" aria-labelledby="afund-dealing-tab">
+                                <div class="p-4"><?=get_field('afund_dealing_intro')?></div>
 
                             </div>
                         </div>
