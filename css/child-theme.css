@@ -21833,30 +21833,71 @@ header .current_page_parent::after {
   background-color: white;
 }
 .trusts_funds__header {
-  padding: 1.5rem;
+  padding: 1.5rem 2rem;
   background-color: var(--_bg);
   color: var(--_fg);
 }
 .trusts_funds__inner {
-  padding: 1rem 1.5rem;
+  padding: 1rem 2rem 2rem 2rem;
+}
+.trusts_funds .lined {
+  border-top: 1px solid var(--col-grey-200);
+  border-bottom: 1px solid var(--col-grey-200);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.trusts_funds .lined .bar {
+  border-left: 1px solid var(--col-grey-200);
+}
+.trusts_funds .tickers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.trusts_funds .stats {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.trusts_funds .stats__title {
+  font-size: var(--fs-400);
+  font-weight: var(--fw-500);
+}
+.trusts_funds .stats__value {
+  font-size: 38px;
+  font-weight: var(--fw-500);
+}
+.trusts_funds .stats__date {
+  font-size: var(--fs-300);
 }
 
-.theme--asc {
+.theme--ascot {
   --_bg: var(--col-green-400);
   --_fg: white;
 }
+.theme--ascot .trusts_funds__inner {
+  display: grid;
+  gap: 1rem;
+  grid-template-rows: 5rem 3rem 7rem 3rem;
+}
 
-.theme--agvi {
+.theme--agvit {
   --_bg: var(--col-yellow-400);
   --_fg: var(--col-dark);
 }
+.theme--agvit .trusts_funds__inner {
+  display: grid;
+  gap: 1rem;
+  grid-template-rows: 5rem 3rem 7rem 3rem;
+}
 
-.theme--auksc {
+.theme--afund {
   --_bg: var(--col-blue-900);
   --_fg: white;
 }
 
-.theme--asli {
+.theme--aslit {
   --_bg: var(--col-orange-400);
   --_fg: var(--col-dark);
 }
