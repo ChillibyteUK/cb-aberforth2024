@@ -43,12 +43,7 @@
                         </div>
                         <div class="tickers">
                             <?php
-                            $url = 'https://irs.tools.investis.com/Clients/uk/aberforth_geared_value/XML/xml.aspx';
-                            // Load the XML data
-                            $xmlContent = file_get_contents($url);
-                            if ($xmlContent === false) {
-                                die("Error: Unable to load XML data.");
-                            }
+                            $xmlContent = get_option('agvit_pricing_data') ?? null;
 
                             // Parse the XML data
                             $xml = simplexml_load_string($xmlContent);
