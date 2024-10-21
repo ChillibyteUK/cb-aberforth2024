@@ -51,7 +51,7 @@ $json_data = [
 
 
 ?>
-<section class="dividends pb-5">
+<section class="dividends py-5">
     <div class="container-xl">
         <h2>Payment History</h2>
         <h3>Dividend history since inception</h3>
