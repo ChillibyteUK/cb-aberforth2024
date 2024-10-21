@@ -128,7 +128,6 @@ foreach ($csv_files as $file) {
             <div class="small mt-4">
                 <strong>Notes</strong><br>
                 <?= get_field('notes') ?? null ?>
-                <div class="mt-4">Past performance is not a guide to future performance, or a reliable indicator of future results or performance.</div>
             </div>
         </div>
     </div>

@@ -65,7 +65,7 @@
             "default_value": "",
             "maxlength": "",
             "allow_in_bindings": 0,
-            "rows": "",
+            "rows": 2,
             "placeholder": "",
             "new_lines": "wpautop"
         },
@@ -109,5 +109,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1729527545
+    "modified": 1729527679
 }
