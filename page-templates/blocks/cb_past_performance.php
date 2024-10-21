@@ -44,6 +44,13 @@ foreach ($csv_files as $file) {
 <section class="past_performance py-5">
     <div class="container-xl">
         <h2>Past Performance</h2>
+        <?php
+        if (get_field('preamble') ?? null) {
+        ?>
+            <div class="mb-4"><?= get_field('preamble') ?></div>
+        <?php
+        }
+        ?>
         <ul class="nav nav-tabs" id="performanceTabs" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="discrete-tab" data-bs-toggle="tab" data-bs-target="#discrete" type="button" role="tab" aria-controls="discrete" aria-selected="true">Discrete %</button>
