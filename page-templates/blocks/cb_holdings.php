@@ -70,7 +70,7 @@
         <?php
         // Display a link to show the full table
         if (count($data) > 10) {
-            echo "<a href='#' id='showFullTable'>Show Full Table (" . (count($rows_to_display) - 10) . " Rows)</a>";
+            echo "<a href='#' id='showFullTable'>Show Full Table (" . (count($rows_to_display) - 10) . ") Rows)</a>";
         }
 
         ?>

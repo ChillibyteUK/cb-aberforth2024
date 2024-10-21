@@ -22140,6 +22140,9 @@ header .dropdown.current-menu-item::after {
   color: var(--col-dark);
 }
 
+.fund_nav {
+  background-color: var(--col-light);
+}
 .fund_nav__card {
   background-color: var(--_bg);
   color: var(--_fg);
