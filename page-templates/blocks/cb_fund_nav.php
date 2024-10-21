@@ -1,7 +1,8 @@
 <?php
 $theme = strtolower(get_field('theme'));
+$bg = get_field('background') == 'White' ? 'fund_nav--white' : '';
 ?>
-<section class="fund_nav py-5">
+<section class="fund_nav <?= $bg ?> py-5">
     <div class="container-xl">
         <div class="text-center">
             <h2>Explore Aberforth Trusts &amp; Funds</h2>

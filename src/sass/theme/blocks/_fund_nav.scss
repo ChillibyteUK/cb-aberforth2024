@@ -1,5 +1,8 @@
 .fund_nav {
     background-color: var(--col-light);
+    &--white {
+        background-color: white;
+    }
     &__card {
         background-color: var(--_bg);
         color: var(--_fg);

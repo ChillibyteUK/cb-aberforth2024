@@ -1,10 +1,10 @@
 {
     "key": "group_671612a068750",
-    "title": "CB Fund Hero Nav",
+    "title": "CB Fund Navigation",
     "fields": [
         {
             "key": "field_671612a070d64",
-            "label": "CB Fund Nav",
+            "label": "CB Fund Navigation",
             "name": "",
             "aria-label": "",
             "type": "message",
@@ -47,6 +47,32 @@
             "allow_in_bindings": 0,
             "layout": "horizontal",
             "save_other_choice": 0
+        },
+        {
+            "key": "field_6716684c4c637",
+            "label": "Background",
+            "name": "background",
+            "aria-label": "",
+            "type": "radio",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "White": "White",
+                "Grey": "Grey"
+            },
+            "default_value": "Grey",
+            "return_format": "value",
+            "allow_null": 0,
+            "other_choice": 0,
+            "allow_in_bindings": 0,
+            "layout": "horizontal",
+            "save_other_choice": 0
         }
     ],
     "location": [
@@ -67,5 +93,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1729506260
+    "modified": 1729521786
 }

@@ -1,10 +1,10 @@
 {
-    "key": "group_67163016e6377",
-    "title": "CB Weightings",
+    "key": "group_67165c3e6ca2a",
+    "title": "CB Past Performance",
     "fields": [
         {
-            "key": "field_67163016ed966",
-            "label": "CB Weightings",
+            "key": "field_67165c3ef7ba0",
+            "label": "CB Past Performance",
             "name": "",
             "aria-label": "",
             "type": "message",
@@ -21,7 +21,7 @@
             "esc_html": 0
         },
         {
-            "key": "field_67163016f1653",
+            "key": "field_67165c5830d1f",
             "label": "Theme",
             "name": "theme",
             "aria-label": "",
@@ -47,6 +47,27 @@
             "allow_in_bindings": 0,
             "layout": "horizontal",
             "save_other_choice": 0
+        },
+        {
+            "key": "field_671666f31b3b6",
+            "label": "Notes",
+            "name": "notes",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "allow_in_bindings": 0,
+            "rows": 4,
+            "placeholder": "",
+            "new_lines": "br"
         }
     ],
     "location": [
@@ -54,7 +75,7 @@
             {
                 "param": "block",
                 "operator": "==",
-                "value": "acf\/cb-weightings"
+                "value": "acf\/cb-past-performance"
             }
         ]
     ],
@@ -67,5 +88,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1729518691
+    "modified": 1729521407
 }

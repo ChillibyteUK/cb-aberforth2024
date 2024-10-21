@@ -22143,6 +22143,9 @@ header .dropdown.current-menu-item::after {
 .fund_nav {
   background-color: var(--col-light);
 }
+.fund_nav--white {
+  background-color: white;
+}
 .fund_nav__card {
   background-color: var(--_bg);
   color: var(--_fg);
@@ -22183,6 +22186,22 @@ header .dropdown.current-menu-item::after {
   place-content: center;
   padding: 1rem;
   background-color: white;
+}
+
+.latest_nav {
+  background-color: var(--col-blue-200);
+}
+
+.past_performance .nav-tabs {
+  background-color: var(--col-blue-400);
+}
+.past_performance .nav-tabs .nav-link.active {
+  background-color: white;
+}
+.past_performance .nav-tabs .nav-link {
+  border-radius: 0;
+  border-color: var(--col-blue-400);
+  border-bottom: none;
 }
 
 main {
@@ -22274,6 +22293,15 @@ main a {
 
 .yoast-breadcrumbs {
   font-size: var(--fs-300);
+}
+
+.investis_iframe {
+  height: 950px;
+}
+@media (min-width: 754px) {
+  .investis_iframe {
+    height: 800px;
+  }
 }
 
 /*
