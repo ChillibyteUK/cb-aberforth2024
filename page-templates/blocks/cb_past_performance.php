@@ -11,30 +11,28 @@ $csv_files = [
 ];
 
 // Function to parse CSV into an array
-function parse_csv_to_array($filename)
-{
-    $filepath = $_SERVER['DOCUMENT_ROOT'] . '/feed/' . $filename;
+if (!function_exists('parse_csv_to_array')) {
+    function parse_csv_to_array($filename)
+    {
+        $filepath = $_SERVER['DOCUMENT_ROOT'] . '/feed/' . $filename;
 
-    if (!file_exists($filepath) || !is_readable($filepath)) {
-        echo "<script>console.log('Error: Unable to open or read the file: " . $filename . "');</script>";
-        return ["error" => "Unable to open the file."];
+        if (!file_exists($filepath) || !is_readable($filepath)) {
+            return ["error" => "Unable to open the file."];
+        }
+
+        $handle = fopen($filepath, 'r');
+        if ($handle === false) {
+            return ["error" => "Unable to read the file."];
+        }
+
+        $data = [];
+        while (($row = fgetcsv($handle, 1000, ",")) !== false) {
+            $data[] = $row;
+        }
+        fclose($handle);
+
+        return $data;
     }
-
-    $handle = fopen($filepath, 'r');
-    if ($handle === false) {
-        echo "<script>console.log('Error: Unable to read the file: " . $filename . "');</script>";
-        return ["error" => "Unable to read the file."];
-    }
-
-    echo "<script>console.log('Success: File opened successfully: " . $filename . "');</script>";
-
-    $data = [];
-    while (($row = fgetcsv($handle, 1000, ",")) !== false) {
-        $data[] = $row;
-    }
-    fclose($handle);
-
-    return $data;
 }
 
 // Parsing CSV files
