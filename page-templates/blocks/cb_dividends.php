@@ -1,7 +1,8 @@
 <?php
 
 // Get the filename from user input
-$filename = 'ASCOT_Dividends.csv'; // Replace this with dynamic input as needed
+$theme = get_field('theme');
+$filename = $theme . '_Dividends.csv';
 $filepath = $_SERVER['DOCUMENT_ROOT'] . '/feed/' . $filename;
 
 // Read the CSV file
