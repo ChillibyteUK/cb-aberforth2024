@@ -57,7 +57,7 @@ header {
     }
 
     .current_page_parent,
-    .current-page-ancestor,
+    .dropdown.current-page-ancestor,
     .dropdown.current-menu-item {
         position: relative;
         &::after {

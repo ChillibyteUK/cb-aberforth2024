@@ -21803,12 +21803,12 @@ header .dropdown-menu .dropdown-item:hover {
   opacity: 1;
 }
 header .current_page_parent,
-header .current-page-ancestor,
+header .dropdown.current-page-ancestor,
 header .dropdown.current-menu-item {
   position: relative;
 }
 header .current_page_parent::after,
-header .current-page-ancestor::after,
+header .dropdown.current-page-ancestor::after,
 header .dropdown.current-menu-item::after {
   content: "";
   position: absolute;
