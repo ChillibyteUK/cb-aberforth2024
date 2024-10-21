@@ -35,3 +35,33 @@
         }
     }
 }
+.fund_subnav {
+    &--ascot {
+        --_bg: var(--col-green-400);
+        --_fg: white;
+    }
+    &--agvit {
+        --_bg: var(--col-yellow-400);
+        --_fg: var(--col-dark);
+    }
+    &--afund {
+        --_bg: var(--col-blue-900);
+        --_fg: white;
+    }
+    &--aslit {
+        --_bg: var(--col-orange-400);
+        --_fg: var(--col-dark);
+    }
+
+    background-color: var(--_bg);
+    color: var(--_fg);
+    margin-bottom: 3rem;
+    a {
+        padding: 1rem 2rem;
+        color: var(--_fg);
+        &.active {
+            background-color: white;
+            color: var(--col-dark);
+        }
+    }
+}

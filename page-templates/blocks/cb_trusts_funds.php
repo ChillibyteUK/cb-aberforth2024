@@ -42,67 +42,73 @@
                             <span>Launched: 1 July 2014 <span class="mx-2 bar"></span> Planned wind up: 30 June 2031</span>
                         </div>
                         <div class="tickers">
-                        <?php
-                        $url = 'https://irs.tools.investis.com/Clients/uk/aberforth_geared_value/XML/xml.aspx';
-                                            // Load the XML data
-                        $xmlContent = file_get_contents($url);
-                        if ($xmlContent === false) {
-                            die("Error: Unable to load XML data.");
-                        }
-
-                        // Parse the XML data
-                        $xml = simplexml_load_string($xmlContent);
-                        if ($xml === false) {
-                            die("Error: Failed to parse XML.");
-                        }
-
-                        $shares = isset($xml->share) ? $xml->share : [$xml];
-
-                        // Display the data for each share
-                        foreach ($shares as $share) {
-                            // Convert XML to JSON and then to an associative array for easy access
-                            $json = json_encode($share);
-                            $data = json_decode($json, true);
-
-                            if ($data) {
-                                $symbol = $data['Symbol'];
-                                $currentPrice = $data['CurrentPrice'];
-                                $change = $data['Change'];
-                                $date = $data['Date'];
-                                ?>
-                        <div class="ticker">
-                            <div class="ticker__date"><?=$date?></div>
-                            <div class="ticker__symbol"><?=$symbol?></div>
-                            <div class="ticker__price"><?=$currentPrice?></div>
-                            <div class="ticker__change ticker__change--up"><?=$change?></div>
-                        </div>
-                                <?php
+                            <?php
+                            $url = 'https://irs.tools.investis.com/Clients/uk/aberforth_geared_value/XML/xml.aspx';
+                            // Load the XML data
+                            $xmlContent = file_get_contents($url);
+                            if ($xmlContent === false) {
+                                die("Error: Unable to load XML data.");
                             }
-                            else {
-                                echo 'Error: No data found.';
+
+                            // Parse the XML data
+                            $xml = simplexml_load_string($xmlContent);
+                            if ($xml === false) {
+                                die("Error: Failed to parse XML.");
                             }
-                        }
-                        ?>
+
+                            $shares = isset($xml->share) ? $xml->share : [$xml];
+
+                            // Display the data for each share
+                            foreach ($shares as $share) {
+                                // Convert XML to JSON and then to an associative array for easy access
+                                $json = json_encode($share);
+                                $data = json_decode($json, true);
+
+                                if ($data) {
+                                    $symbol = $data['Symbol'];
+                                    $currentPrice = $data['CurrentPrice'];
+                                    $change = $data['Change'];
+                                    // $date = $data['Date'];
+                                    $date = date('j M Y', strtotime(str_replace('/', '-', $data['Date'])));
+                            ?>
+                                    <div class="ticker">
+                                        <div class="ticker__date"><?= $date ?></div>
+                                        <div class="ticker__symbol"><?= $symbol ?></div>
+                                        <div class="ticker__price"><?= $currentPrice ?></div>
+                                        <div class="ticker__change ticker__change--up"><?= $change ?></div>
+                                    </div>
+                            <?php
+                                } else {
+                                    echo 'Error: No data found.';
+                                }
+                            }
+                            ?>
                         </div>
                         <div class="text-end">
-                            <a href="/trusts-and-funds/aberforth-smaller-companies-trust-plc/" class="button">Learn more</a>
+                            <a href="/trusts-and-funds/aberforth-geared-value-income-trust-plc/" class="button">Learn more</a>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="trusts_funds__card theme--afund">
+            <div class="col-md-6 d-flex">
+                <div class="trusts_funds__card theme--afund flex-grow-1 d-flex flex-column h-100">
                     <h3 class="trusts_funds__header">Aberforth UK Small Companies Fund</h3>
-                    <div class="trusts_funds__inner">
-                        <p>An Authorised Unit Trust. The Fund is managed by Aberforth Unit Trust Managers Limited and the Trustee is NatWest Trustee and Depositary Services Limited and is a limited issue fund in accordance with the regulations governing authorised unit trusts.</p>
+                    <div class="trusts_funds__inner flex-grow-1 d-flex flex-column justify-content-between">
+                        <p class="trusts_funds__content">An Authorised Unit Trust. The Fund is managed by Aberforth Unit Trust Managers Limited and the Trustee is NatWest Trustee and Depositary Services Limited and is a limited issue fund in accordance with the regulations governing authorised unit trusts.</p>
+                        <div class="text-end mt-auto">
+                            <a href="/trusts-and-funds/aberforth-uk-small-companies-fund/" class="button">Learn more</a>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="trusts_funds__card theme--aslit">
+            <div class="col-md-6 d-flex">
+                <div class="trusts_funds__card theme--aslit flex-grow-1 d-flex flex-column h-100">
                     <h3 class="trusts_funds__header">Aberforth Split Level Income Trust plc</h3>
-                    <div class="trusts_funds__inner">
-                        <p>A split capital investment trust with two classes of share - Ordinary Shares and Zero Dividend Preference (ZDP) Shares - both of which traded on the London Stock Exchange.</p>
+                    <div class="trusts_funds__inner flex-grow-1 d-flex flex-column justify-content-between">
+                        <p class="trusts_funds__content">A split capital investment trust with two classes of share – Ordinary Shares and Zero Dividend Preference (ZDP) Shares – both of which traded on the London Stock Exchange.</p>
+                        <div class="text-end mt-auto">
+                            <a href="/trusts-and-funds/aberforth-split-level-income-trust-plc/" class="button">Learn more</a>
+                        </div>
                     </div>
                 </div>
             </div>

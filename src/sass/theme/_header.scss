@@ -56,7 +56,9 @@ header {
         }
     }
 
-    .current_page_parent {
+    .current_page_parent,
+    .current-page-ancestor,
+    .dropdown.current-menu-item {
         position: relative;
         &::after {
             content: "";
@@ -68,6 +70,6 @@ header {
             margin-top: 21px; // 1.5rem - border width
         }
     }
-
+    
 
 }

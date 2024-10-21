@@ -1,10 +1,10 @@
 {
-    "key": "group_6712340d0b929",
-    "title": "CB Fund Hero",
+    "key": "group_671612a068750",
+    "title": "CB Fund Hero Nav",
     "fields": [
         {
-            "key": "field_6712340d16e86",
-            "label": "CB Fund Hero",
+            "key": "field_671612a070d64",
+            "label": "CB Fund Nav",
             "name": "",
             "aria-label": "",
             "type": "message",
@@ -21,7 +21,7 @@
             "esc_html": 0
         },
         {
-            "key": "field_67128e0ecbde6",
+            "key": "field_671612a0748dc",
             "label": "Theme",
             "name": "theme",
             "aria-label": "",
@@ -54,7 +54,7 @@
             {
                 "param": "block",
                 "operator": "==",
-                "value": "acf\/cb-fund-hero"
+                "value": "acf\/cb-fund-nav"
             }
         ]
     ],
@@ -67,5 +67,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1729271671
+    "modified": 1729499822
 }

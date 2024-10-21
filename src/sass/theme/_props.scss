@@ -18,17 +18,21 @@ $col-light: #F2F2F2;
     --hsl-grey-200: 0 0% 80%; // grey
     --col-grey-200: hsl(var(--hsl-grey-200));
   
-    --hsl-yellow-400: 46 94% 44%; // value income - yellow
+    --hsl-yellow-400: 46 94% 44%; // AGVIT value income - yellow
     --col-yellow-400: hsl(var(--hsl-yellow-400));
+    --col-agvit: hsl(var(--hsl-yellow-400));
   
-    --hsl-orange-400: 23 83% 57%; // split - orange
+    --hsl-orange-400: 23 83% 57%; // ASLIT split - orange
     --col-orange-400: hsl(var(--hsl-orange-400));
+    --col-aslit: hsl(var(--hsl-orange-400));
     
-    --hsl-green-400: 166 40% 17%; // smaller - dk green
+    --hsl-green-400: 166 40% 17%; // ASCOT smaller - dk green
     --col-green-400: hsl(var(--hsl-green-400));
+    --col-ascot: hsl(var(--hsl-green-400));
 
-    --hsl-blue-900: 225 37% 20%; // small - blue
+    --hsl-blue-900: 225 37% 20%; // AFUND small - blue
     --col-blue-900: hsl(var(--hsl-blue-900));
+    --col-afund: hsl(var(--hsl-blue-900));
 
     --hsl-blue-700: 213 46% 26%; // link blue
     --col-blue-700: hsl(var(--hsl-blue-700));
@@ -46,6 +50,7 @@ $col-light: #F2F2F2;
     --fs-900: clamp(1.875rem, calc(1.5rem + 1.15vw), 2.8125rem); /* H1: scales between 30px (narrow) and 45px (wide) */
     --fs-800: clamp(1.5625rem, calc(1.25rem + 0.75vw), 1.875rem); /* H2: scales between 25px (narrow) and 30px (wide) */
     --fs-700: clamp(1.375rem, calc(1.25rem + 0.4vw), 1.5625rem); /* H3: scales between 22px (narrow) and 25px (wide) */
+    --fs-500: clamp(1.125rem, calc(1.125rem + 0.5vw), 1.375rem); /* H4: scales between 18px (narrow) and 22px (wide) */
     --fs-400: 1rem; /* Body: stays at 16px */
     --fs-300: 0.875rem; /* Small: stays at 14px */
 

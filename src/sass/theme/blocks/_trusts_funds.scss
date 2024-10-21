@@ -1,17 +1,26 @@
 .trusts_funds {
     background-color: var(--col-blue-200);
+    .card {
+        border-radius: 0;
+    }
     &__card {
         height: 100%;
         border: 1px solid var(--_bg);
         background-color: white;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        border-radius: 0; /* Remove rounded corners */
     }
     &__header {
         padding: 1.5rem 2rem;
         background-color: var(--_bg);
         color: var(--_fg);
+        margin-bottom: 0;
     }
     &__inner {
         padding: 1rem 2rem 2rem 2rem;
+        flex-grow: 1;
     }
 
     .lined {
@@ -59,7 +68,7 @@
     .trusts_funds__inner {
         display: grid;
         gap: 1rem;
-        grid-template-rows: 5rem 3rem 7rem 3rem;
+        grid-template-rows: auto 3rem auto 3rem;
     }
 }
 .theme--agvit {
@@ -68,15 +77,25 @@
     .trusts_funds__inner {
         display: grid;
         gap: 1rem;
-        grid-template-rows: 5rem 3rem 7rem 3rem;
+        grid-template-rows: auto 3rem auto 3rem;
     }
 
 }
 .theme--afund {
     --_bg: var(--col-blue-900);
     --_fg: white;
+    .trusts_funds__inner {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
 }
 .theme--aslit {
     --_bg: var(--col-orange-400);
     --_fg: var(--col-dark);
+    .trusts_funds__inner {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
 }
