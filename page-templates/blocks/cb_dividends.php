@@ -53,6 +53,7 @@ $json_data = [
 ?>
 <section class="dividends pb-5">
     <div class="container-xl">
+        <h2>Payment History</h2>
         <h3>Dividend history since inception</h3>
         <div id="chartContainer" data-chart="<?= htmlspecialchars(json_encode($json_data), ENT_QUOTES, 'UTF-8') ?>"></div>
         <div class="small mt-4">
