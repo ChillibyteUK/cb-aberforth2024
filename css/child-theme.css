@@ -22172,6 +22172,16 @@ header .dropdown.current-menu-item::after {
   --_fg: var(--col-dark);
 }
 
+.holdings {
+  background-color: var(--col-blue-200);
+}
+.holdings #showFullTable {
+  display: grid;
+  place-content: center;
+  padding: 1rem;
+  background-color: white;
+}
+
 main {
   margin-top: var(--h-top);
 }

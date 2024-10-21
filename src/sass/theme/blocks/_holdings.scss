@@ -1,0 +1,10 @@
+.holdings {
+    background-color: var(--col-blue-200);
+    
+    #showFullTable {
+        display: grid;
+        place-content: center;
+        padding: 1rem;
+        background-color: white;
+    }
+}
