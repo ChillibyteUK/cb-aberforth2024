@@ -1,10 +1,10 @@
 {
-    "key": "group_67165c3e6ca2a",
-    "title": "CB Past Performance",
+    "key": "group_67167a9ec59d2",
+    "title": "CB Dividends",
     "fields": [
         {
-            "key": "field_67165c3ef7ba0",
-            "label": "CB Past Performance",
+            "key": "field_67167a9f8909b",
+            "label": "CB Dividends",
             "name": "",
             "aria-label": "",
             "type": "message",
@@ -21,7 +21,7 @@
             "esc_html": 0
         },
         {
-            "key": "field_67165c5830d1f",
+            "key": "field_67167ab0d6e25",
             "label": "Theme",
             "name": "theme",
             "aria-label": "",
@@ -49,7 +49,7 @@
             "save_other_choice": 0
         },
         {
-            "key": "field_671666f31b3b6",
+            "key": "field_67167acc5cfa0",
             "label": "Notes",
             "name": "notes",
             "aria-label": "",
@@ -75,7 +75,7 @@
             {
                 "param": "block",
                 "operator": "==",
-                "value": "acf\/cb-past-performance"
+                "value": "acf\/cb-dividends"
             }
         ]
     ],
@@ -88,5 +88,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1729526465
+    "modified": 1729526491
 }
