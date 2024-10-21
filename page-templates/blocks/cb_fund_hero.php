@@ -25,13 +25,13 @@ $funds = array(
                     // Load the XML data
                     $xmlContent = file_get_contents($feed);
                     if ($xmlContent === false) {
-                        die("Error: Unable to load XML data.");
+                        warn("Error: Unable to load XML data.");
                     }
 
                     // Parse the XML data
                     $xml = simplexml_load_string($xmlContent);
                     if ($xml === false) {
-                        die("Error: Failed to parse XML.");
+                        warn("Error: Failed to parse XML.");
                     }
 
                     $shares = isset($xml->share) ? $xml->share : [$xml];
