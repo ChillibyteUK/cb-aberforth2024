@@ -320,6 +320,26 @@ function fetch_and_update_pricing_data()
 add_action('check_pricing_data', 'fetch_and_update_pricing_data');
 
 
+add_action('rest_api_init', function () {
+    register_rest_route('custom/v1', '/save', [
+        'methods'  => 'POST',
+        'callback' => 'custom_save_function',
+        'permission_callback' => function () {
+            return is_user_logged_in(); // Add any relevant permission checks
+        }
+    ]);
+});
+
+function custom_save_function(WP_REST_Request $request)
+{
+    // Error handling during save
+    try {
+        // Your save logic here
+    } catch (Exception $e) {
+        echo "<script>console.log('Error: " . $e->getMessage() . "');</script>";
+    }
+}
+
 
 // black thumbnails - fix alpha channel
 /**
