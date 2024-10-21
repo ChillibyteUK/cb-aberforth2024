@@ -55,6 +55,10 @@ $json_data = [
     <div class="container-xl">
         <h3>Dividend history since inception</h3>
         <div id="chartContainer" data-chart="<?= htmlspecialchars(json_encode($json_data), ENT_QUOTES, 'UTF-8') ?>"></div>
+        <div class="small mt-4">
+            <strong>Notes</strong><br>
+            <?= get_field('notes') ?? null ?>
+        </div>
     </div>
 </section>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
