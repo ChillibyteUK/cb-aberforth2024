@@ -32,22 +32,22 @@ add_filter('theme_page_templates', 'child_theme_remove_page_template');
 function child_theme_remove_page_template($page_templates)
 {
     // unset($page_templates['page-templates/blank.php'],$page_templates['page-templates/empty.php'], $page_templates['page-templates/fullwidthpage.php'], $page_templates['page-templates/left-sidebarpage.php'], $page_templates['page-templates/right-sidebarpage.php'], $page_templates['page-templates/both-sidebarspage.php']);
-    unset($page_templates['page-templates/blank.php'],$page_templates['page-templates/empty.php'], $page_templates['page-templates/left-sidebarpage.php'], $page_templates['page-templates/right-sidebarpage.php'], $page_templates['page-templates/both-sidebarspage.php']);
+    unset($page_templates['page-templates/blank.php'], $page_templates['page-templates/empty.php'], $page_templates['page-templates/left-sidebarpage.php'], $page_templates['page-templates/right-sidebarpage.php'], $page_templates['page-templates/both-sidebarspage.php']);
     return $page_templates;
 }
 add_action('after_setup_theme', 'remove_understrap_post_formats', 11);
 function remove_understrap_post_formats()
 {
-    remove_theme_support('post-formats', array( 'aside', 'image', 'video' , 'quote' , 'link' ));
+    remove_theme_support('post-formats', array('aside', 'image', 'video', 'quote', 'link'));
 }
 
 if (function_exists('acf_add_options_page')) {
     acf_add_options_page(
         array(
-            'page_title' 	=> 'Site-Wide Settings',
-            'menu_title'	=> 'Site-Wide Settings',
-            'menu_slug' 	=> 'theme-general-settings',
-            'capability'	=> 'edit_posts',
+            'page_title'     => 'Site-Wide Settings',
+            'menu_title'    => 'Site-Wide Settings',
+            'menu_slug'     => 'theme-general-settings',
+            'capability'    => 'edit_posts',
         )
     );
 }
@@ -154,19 +154,19 @@ function register_cb_dashboard_widget()
 
 function cb_dashboard_widget_display()
 {
-    ?>
-<div style="display: flex; align-items: center; justify-content: space-around;">
-    <img style="width: 50%;"
-        src="<?= get_stylesheet_directory_uri().'/img/cb-full.jpg'; ?>">
-    <a class="button button-primary" target="_blank" rel="noopener nofollow noreferrer"
-        href="mailto:hello@www.chillibyte.co.uk/">Contact</a>
-</div>
-<div>
-    <p><strong>Thanks for choosing Chillibyte!</strong></p>
-    <hr>
-    <p>Got a problem with your site, or want to make some changes & need us to take a look for you?</p>
-    <p>Use the link above to get in touch and we'll get back to you ASAP.</p>
-</div>
+?>
+    <div style="display: flex; align-items: center; justify-content: space-around;">
+        <img style="width: 50%;"
+            src="<?= get_stylesheet_directory_uri() . '/img/cb-full.jpg'; ?>">
+        <a class="button button-primary" target="_blank" rel="noopener nofollow noreferrer"
+            href="mailto:hello@www.chillibyte.co.uk/">Contact</a>
+    </div>
+    <div>
+        <p><strong>Thanks for choosing Chillibyte!</strong></p>
+        <hr>
+        <p>Got a problem with your site, or want to make some changes & need us to take a look for you?</p>
+        <p>Use the link above to get in touch and we'll get back to you ASAP.</p>
+    </div>
 <?php
 }
 
@@ -192,8 +192,8 @@ function cc_gutenberg_register_files()
     // script file
     wp_register_script(
         'cc-block-script',
-        get_stylesheet_directory_uri() .'/js/block-script.js', // adjust the path to the JS file
-        array( 'wp-blocks', 'wp-edit-post' )
+        get_stylesheet_directory_uri() . '/js/block-script.js', // adjust the path to the JS file
+        array('wp-blocks', 'wp-edit-post')
     );
     // register block editor script
     register_block_type('cc/ma-block-files', array(
@@ -256,6 +256,71 @@ function cb_theme_enqueue()
 add_action('wp_enqueue_scripts', 'cb_theme_enqueue');
 
 
+// pricing data job
+// Add custom interval for cron jobs (2 minutes)
+function custom_cron_schedule($schedules)
+{
+    if (!isset($schedules["2min"])) {
+        $schedules["2min"] = array(
+            'interval' => 120, // 120 seconds = 2 minutes
+            'display'  => __('Every 2 Minutes')
+        );
+    }
+    return $schedules;
+}
+add_filter('cron_schedules', 'custom_cron_schedule');
+
+// Schedule the event if it's not already scheduled
+function schedule_pricing_check()
+{
+    if (!wp_next_scheduled('check_pricing_data')) {
+        wp_schedule_event(time(), '2min', 'check_pricing_data');
+    }
+}
+add_action('wp', 'schedule_pricing_check');
+
+// Fetch data from both URLs and update respective options
+function fetch_and_update_pricing_data()
+{
+    // Feed URLs
+    $ascot_feed = get_field('ascot_feed_url', 'option') ?? 'https://irs.tools.investis.com/clients/uk/aberforth/xml/xml.aspx';
+    $agvit_feed = get_field('agvit_feed_url', 'option') ?? 'https://irs.tools.investis.com/Clients/uk/aberforth_geared_value/XML/xml.aspx';
+    $feeds = [
+        'ascot_pricing_data' => $ascot_feed,
+        'agvit_pricing_data' => $agvit_feed
+    ];
+
+    // Loop through each feed and fetch the data
+    foreach ($feeds as $option_name => $url) {
+        // Fetch the data from the URL
+        $response = wp_remote_get($url);
+
+        // Check if the request was successful
+        if (is_wp_error($response)) {
+            // Log or handle the error (optional)
+            error_log('Failed to fetch ' . $option_name . ': ' . $response->get_error_message());
+            continue; // Skip this feed if the request fails
+        }
+
+        // Check if the response code is 200 (OK)
+        $response_code = wp_remote_retrieve_response_code($response);
+        if ($response_code != 200) {
+            // Log or handle the error
+            error_log('Failed to fetch ' . $option_name . ': HTTP ' . $response_code);
+            continue; // Skip this feed if the response is not OK
+        }
+
+        // Retrieve the body content (the XML data)
+        $data = wp_remote_retrieve_body($response);
+
+        // Store the data in WordPress options
+        update_option($option_name, $data); // Store XML in the respective option
+    }
+}
+add_action('check_pricing_data', 'fetch_and_update_pricing_data');
+
+
+
 // black thumbnails - fix alpha channel
 /**
  * Patch to prevent black PDF backgrounds.
@@ -299,4 +364,5 @@ add_action('wp_enqueue_scripts', 'cb_theme_enqueue');
 //     array_unshift($editors, ExtendedWpImageEditorImagick::class);
 
 //     return $editors;
-// });?>
+// });
+?>

@@ -2,7 +2,6 @@
 $fund = strtolower(get_field('theme'));
 $theme = 'fund_subnav--' . $fund;
 $sheet = get_field($fund . '_factsheet', 'option');
-$feed = get_field($fund . '_feed_url', 'option') ?? null;
 
 $funds = array(
     'ascot' => 'Aberforth Smaller Companies Trust plc',
@@ -10,6 +9,12 @@ $funds = array(
     'afund' => 'Aberforth UK Small Companies Fund',
     'aslit' => 'Aberforth Split Level Income Trust plc'
 );
+
+$fund_options = array(
+    'ascot' => 'ascot_pricing_data',
+    'agvit' => 'agvit_pricing_data'
+);
+$xmlContent = get_option($fund_options[$fund]) ?? null;
 
 ?>
 <section class="fund_hero pb-5">
@@ -21,13 +26,7 @@ $funds = array(
             </div>
             <div class="col-md-4 d-flex gap-4 justify-content-end">
                 <?php
-                if ($feed) {
-                    // Load the XML data
-                    $xmlContent = file_get_contents($feed);
-                    if ($xmlContent === false) {
-                        warn("Error: Unable to load XML data.");
-                    }
-
+                if ($xmlContent) {
                     // Parse the XML data
                     $xml = simplexml_load_string($xmlContent);
                     if ($xml === false) {
