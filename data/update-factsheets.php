@@ -1,9 +1,9 @@
 <?php
 // Load WordPress environment
-require_once(dirname(__FILE__, 3) . '/wp-load.php');
+require_once(dirname(__FILE__, 5) . '/wp-load.php');
 
 // Define the CSV file path
-$csv_file = dirname(__FILE__) . '/factsheets.csv';
+$csv_file = dirname(__FILE__) . '/funddocs.csv';
 
 // Initialise counters for reporting
 $updated_count = 0;
