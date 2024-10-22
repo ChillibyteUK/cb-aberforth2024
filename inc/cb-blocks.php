@@ -102,6 +102,15 @@ function acf_blocks()
             'supports' => array('mode' => false),
         ));
         acf_register_block_type(array(
+            'name'                => 'cb_data_table',
+            'title'                => __('CB Data Table'),
+            'category'            => 'layout',
+            'icon'                => 'cover-image',
+            'render_template'    => 'page-templates/blocks/cb_data_table.php',
+            'mode'    => 'edit',
+            'supports' => array('mode' => false),
+        ));
+        acf_register_block_type(array(
             'name'                => 'cb_past_performance',
             'title'                => __('CB Past Performance'),
             'category'            => 'layout',
