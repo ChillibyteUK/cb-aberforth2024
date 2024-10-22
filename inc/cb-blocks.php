@@ -93,15 +93,6 @@ function acf_blocks()
             'supports' => array('mode' => false),
         ));
         acf_register_block_type(array(
-            'name'                => 'cb_latest_nav',
-            'title'                => __('CB Latest NAV'),
-            'category'            => 'layout',
-            'icon'                => 'cover-image',
-            'render_template'    => 'page-templates/blocks/cb_latest_nav.php',
-            'mode'    => 'edit',
-            'supports' => array('mode' => false),
-        ));
-        acf_register_block_type(array(
             'name'                => 'cb_data_table',
             'title'                => __('CB Data Table'),
             'category'            => 'layout',
