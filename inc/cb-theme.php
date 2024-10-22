@@ -320,6 +320,174 @@ function fetch_and_update_pricing_data()
 add_action('check_pricing_data', 'fetch_and_update_pricing_data');
 
 
+// DOCUMENT LIBRARY TAXONOMY DOMINE
+function enqueue_custom_taxonomy_modal_script()
+{
+    // Enqueue the script only in the admin
+    if (is_admin()) {
+        wp_enqueue_script(
+            'custom-taxonomy-modal',
+            get_stylesheet_directory_uri() . '/js/custom-taxonomy-modal.js',
+            array('jquery'),
+            false,
+            true
+        );
+    }
+}
+add_action('admin_enqueue_scripts', 'enqueue_custom_taxonomy_modal_script');
+
+function fetch_taxonomy_terms_for_modal()
+{
+    $attachment_id = intval($_POST['attachment_id']);
+    $taxonomy = sanitize_text_field($_POST['taxonomy']);
+
+    if (!empty($taxonomy) && taxonomy_exists($taxonomy)) {
+        $terms = get_terms(array(
+            'taxonomy' => $taxonomy,
+            'hide_empty' => false,
+        ));
+
+        $selected_terms = wp_get_object_terms($attachment_id, $taxonomy, array('fields' => 'ids'));
+
+        ob_start();
+        foreach ($terms as $term) {
+            echo '<label>';
+            echo '<input type="checkbox" name="attachments[' . esc_attr($attachment_id) . '][' . esc_attr($taxonomy) . '][]" value="' . esc_attr($term->term_id) . '" ' . checked(in_array($term->term_id, $selected_terms), true, false) . '>';
+            echo esc_html($term->name);
+            echo '</label><br>';
+        }
+        $terms_html = ob_get_clean();
+
+        wp_send_json_success(array('terms_html' => $terms_html));
+    }
+
+    wp_send_json_error();
+}
+add_action('wp_ajax_fetch_taxonomy_terms', 'fetch_taxonomy_terms_for_modal');
+
+function save_taxonomy_terms_for_attachments($post_id)
+{
+    // Check if this is an attachment
+    if (get_post_type($post_id) !== 'attachment') {
+        return;
+    }
+
+    // Define the taxonomies you want to save
+    $taxonomies = ['doccat', 'doctype']; // Add your taxonomy slugs here
+
+    foreach ($taxonomies as $taxonomy) {
+        // Check if the taxonomy input is set and save the terms
+        if (isset($_POST['attachments'][$post_id][$taxonomy])) {
+            $terms = $_POST['attachments'][$post_id][$taxonomy];
+            if (is_array($terms)) {
+                // Save the taxonomy terms
+                wp_set_object_terms($post_id, array_map('intval', $terms), $taxonomy, false);
+            }
+        } else {
+            // If no terms are set, remove all terms for this taxonomy
+            wp_set_object_terms($post_id, [], $taxonomy, false);
+        }
+    }
+}
+add_action('edit_attachment', 'save_taxonomy_terms_for_attachments');
+
+// DOC LIBRARY SEARCH REGISTRATION
+// Add a rewrite rule to ensure the search query on a specific page works as expected.
+// add_action('init', 'add_custom_search_rewrite_rule');
+// function add_custom_search_rewrite_rule()
+// {
+//     add_rewrite_rule(
+//         '^literature-library/([^/]*)/?',
+//         'index.php?pagename=literature-library&s=$matches[1]',
+//         'top'
+//     );
+//     flush_rewrite_rules();
+// }
+
+// // Allow the 's' query variable for our specific template.
+// add_filter('query_vars', 'add_custom_query_vars');
+// function add_custom_query_vars($vars)
+// {
+//     $vars[] = 's'; // Adding the search query var so it's properly recognized.
+//     return $vars;
+// }
+
+
+// add_action('template_redirect', 'debug_custom_template');
+// function debug_custom_template()
+// {
+//     if (is_404()) {
+//         error_log('DEBUG: 404 triggered with URL: ' . $_SERVER['REQUEST_URI']);
+//     }
+// }
+
+// add_filter('template_include', 'use_literature_library_template', 99);
+// function use_literature_library_template($template)
+// {
+//     if (is_page('literature-library') && isset($_GET['s'])) {
+//         $new_template = locate_template(array('page-templates/literature_library.php'));
+//         if ($new_template) {
+//             return $new_template;
+//         }
+//     }
+//     return $template;
+// }
+
+/*
+add_action('pre_get_posts', 'add_search_to_custom_template');
+function add_search_to_custom_template($query)
+{
+    // Ensure it's the main query and we're on the right page
+    if (!is_admin() && $query->is_main_query() && (is_page('literature-library') || isset($_GET['s']))) {
+        // Set the post type to attachments and status to inherit for search queries on this page
+        if (isset($_GET['s']) && !empty($_GET['s'])) {
+            $query->set('post_type', 'attachment');
+            $query->set('post_status', 'inherit');
+        }
+    }
+}
+
+add_action('init', 'custom_search_rewrite_rule');
+function custom_search_rewrite_rule()
+{
+    add_rewrite_rule(
+        '^literature-library/?$',
+        'index.php?pagename=literature-library',
+        'top'
+    );
+    flush_rewrite_rules();
+}
+
+add_action('template_redirect', 'custom_template_redirect');
+function custom_template_redirect()
+{
+    if (is_page('literature-library') && get_query_var('s')) {
+        // Force WordPress to use the template for search queries on this page
+        include(get_page_template());
+        exit;
+    }
+}
+
+function add_query_vars_filter($vars)
+{
+    $vars[] = "s";
+    return $vars;
+}
+add_filter('query_vars', 'add_query_vars_filter');
+
+add_filter('template_include', 'use_literature_template_for_search', 99);
+function use_literature_template_for_search($template)
+{
+    if (is_page('literature-library') && get_query_var('s')) {
+        $new_template = locate_template(array('page-templates/literature_library.php'));
+        if ($new_template) {
+            return $new_template;
+        }
+    }
+    return $template;
+}
+    
+*/
 
 
 // black thumbnails - fix alpha channel
