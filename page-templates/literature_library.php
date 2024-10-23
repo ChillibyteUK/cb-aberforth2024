@@ -135,7 +135,7 @@ $end_post = min($paged * $args['posts_per_page'], $total_posts);
                                     $query->the_post();
                                     $attachment_url = wp_get_attachment_url( get_field('file', get_the_ID()) );
                                 ?>
-                                    <tr onclick="window.location.href='<?php echo $attachment_url; ?>'" style="cursor: pointer;">
+                                    <tr onclick="window.open('<?php echo $attachment_url; ?>', '_blank')" style="cursor: pointer;">
                                         <td><?php echo esc_html(get_the_terms(get_the_ID(), 'doccat')[0]->name ?? ''); ?></td>
                                         <td><?php echo esc_html(get_the_terms(get_the_ID(), 'doctype')[0]->name ?? ''); ?></td>
                                         <td><?php the_title(); ?></td>
