@@ -294,11 +294,13 @@ function fetch_and_update_pricing_data()
     foreach ($feeds as $option_name => $url) {
         // Fetch the data from the URL
         $response = wp_remote_get($url);
+        $current_time = current_time('Y-m-d H:i:s');
 
         // Check if the request was successful
         if (is_wp_error($response)) {
             // Log or handle the error (optional)
             error_log('Failed to fetch ' . $option_name . ': ' . $response->get_error_message());
+            update_option($option_name . '_last_failure', $current_time);
             continue; // Skip this feed if the request fails
         }
 
@@ -307,6 +309,7 @@ function fetch_and_update_pricing_data()
         if ($response_code != 200) {
             // Log or handle the error
             error_log('Failed to fetch ' . $option_name . ': HTTP ' . $response_code);
+            update_option($option_name . '_last_failure', $current_time);
             continue; // Skip this feed if the response is not OK
         }
 
@@ -315,9 +318,52 @@ function fetch_and_update_pricing_data()
 
         // Store the data in WordPress options
         update_option($option_name, $data); // Store XML in the respective option
+        update_option($option_name . '_last_success', $current_time);
     }
 }
 add_action('check_pricing_data', 'fetch_and_update_pricing_data');
+
+
+function display_pricing_data_status()
+{
+    // Get the latest data from WordPress options
+    $ascot_data = get_option('ascot_pricing_data');
+    $agvit_data = get_option('agvit_pricing_data');
+    $ascot_last_success = get_option('ascot_pricing_data_last_success');
+    $agvit_last_success = get_option('agvit_pricing_data_last_success');
+    $ascot_last_failure = get_option('ascot_pricing_data_last_failure');
+    $agvit_last_failure = get_option('agvit_pricing_data_last_failure');
+
+    // Initialise the output variable
+    $output = '<div class="pricing-data-status">';
+
+    // Check and display Ascot data
+    if ($ascot_data) {
+        $output .= '<h3>Ascot Pricing Data:</h3>';
+        $output .= '<pre>' . esc_html($ascot_data) . '</pre>';
+        $output .= '<p>Last successful update: ' . ($ascot_last_success ? esc_html($ascot_last_success) : 'N/A') . '</p>';
+    } else {
+        $output .= '<h3>Ascot Pricing Data:</h3>';
+        $output .= '<p style="color: red;">Failed to fetch the Ascot pricing data.</p>';
+        $output .= '<p>Last failure: ' . ($ascot_last_failure ? esc_html($ascot_last_failure) : 'N/A') . '</p>';
+    }
+
+    // Check and display AGVIT data
+    if ($agvit_data) {
+        $output .= '<h3>AGVIT Pricing Data:</h3>';
+        $output .= '<pre>' . esc_html($agvit_data) . '</pre>';
+        $output .= '<p>Last successful update: ' . ($agvit_last_success ? esc_html($agvit_last_success) : 'N/A') . '</p>';
+    } else {
+        $output .= '<h3>AGVIT Pricing Data:</h3>';
+        $output .= '<p style="color: red;">Failed to fetch the AGVIT pricing data.</p>';
+        $output .= '<p>Last failure: ' . ($agvit_last_failure ? esc_html($agvit_last_failure) : 'N/A') . '</p>';
+    }
+
+    $output .= '</div>';
+
+    return $output;
+}
+add_shortcode('pricing_data_status', 'display_pricing_data_status');
 
 
 // DOCUMENT LIBRARY TAXONOMY DOMINE

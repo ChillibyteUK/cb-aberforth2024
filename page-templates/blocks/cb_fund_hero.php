@@ -46,12 +46,15 @@ $xmlContent = get_option($fund_options[$fund]) ?? null;
                             $currentPrice = $data['CurrentPrice'];
                             $change = $data['Change'];
                             $date = $data['Date'];
+
+                            $change_status = ($change >= 0) ? 'ticker__change--up' : 'ticker__change--down';
+
                 ?>
                             <div class="ticker">
                                 <div class="ticker__date"><?= $date ?></div>
                                 <div class="ticker__symbol"><?= $symbol ?></div>
                                 <div class="ticker__price"><?= $currentPrice ?></div>
-                                <div class="ticker__change ticker__change--up"><?= $change ?></div>
+                                <div class="ticker__change <?=$change_status?>"><?= $change ?></div>
                             </div>
                 <?php
                         } else {

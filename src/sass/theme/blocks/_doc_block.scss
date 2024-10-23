@@ -1,0 +1,11 @@
+.doc_block {
+    table {
+        border-top: 1px solid var(--bs-border-color);
+    }
+    tr {
+        transition: background-color var(--transition);
+        &:hover {
+            background-color: var(--col-grey-200);
+        }
+    }
+}
