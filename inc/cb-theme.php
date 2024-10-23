@@ -411,8 +411,32 @@ function fetch_taxonomy_terms_for_modal()
 }
 add_action('wp_ajax_fetch_taxonomy_terms', 'fetch_taxonomy_terms_for_modal');
 
-function save_taxonomy_terms_for_attachments($post_id)
-{
+// function save_taxonomy_terms_for_attachments($post_id)
+// {
+//     // Check if this is an attachment
+//     if (get_post_type($post_id) !== 'attachment') {
+//         return;
+//     }
+
+//     // Define the taxonomies you want to save
+//     $taxonomies = ['doccat', 'doctype']; // Add your taxonomy slugs here
+
+//     foreach ($taxonomies as $taxonomy) {
+//         // Check if the taxonomy input is set and save the terms
+//         if (isset($_POST['attachments'][$post_id][$taxonomy])) {
+//             $terms = $_POST['attachments'][$post_id][$taxonomy];
+//             if (is_array($terms)) {
+//                 // Save the taxonomy terms
+//                 wp_set_object_terms($post_id, array_map('intval', $terms), $taxonomy, false);
+//             }
+//         } else {
+//             // If no terms are set, remove all terms for this taxonomy
+//             wp_set_object_terms($post_id, [], $taxonomy, false);
+//         }
+//     }
+// }
+// add_action('edit_attachment', 'save_taxonomy_terms_for_attachments');
+function save_taxonomy_terms_for_attachments($post_id) {
     // Check if this is an attachment
     if (get_post_type($post_id) !== 'attachment') {
         return;
@@ -423,19 +447,27 @@ function save_taxonomy_terms_for_attachments($post_id)
 
     foreach ($taxonomies as $taxonomy) {
         // Check if the taxonomy input is set and save the terms
-        if (isset($_POST['attachments'][$post_id][$taxonomy])) {
-            $terms = $_POST['attachments'][$post_id][$taxonomy];
+        if (isset($_POST['tax_input'][$taxonomy]) && !empty($_POST['tax_input'][$taxonomy])) {
+            $terms = $_POST['tax_input'][$taxonomy];
             if (is_array($terms)) {
-                // Save the taxonomy terms
                 wp_set_object_terms($post_id, array_map('intval', $terms), $taxonomy, false);
             }
-        } else {
-            // If no terms are set, remove all terms for this taxonomy
-            wp_set_object_terms($post_id, [], $taxonomy, false);
         }
     }
 }
-add_action('edit_attachment', 'save_taxonomy_terms_for_attachments');
+add_action('save_post_attachment', 'save_taxonomy_terms_for_attachments');
+
+// function update_attachment_taxonomies($post_id) {
+//     if (get_post_type($post_id) === 'attachment') {
+//         if (isset($_POST['tax_input']['doccat'])) {
+//             wp_set_object_terms($post_id, $_POST['tax_input']['doccat'], 'doccat');
+//         }
+//         if (isset($_POST['tax_input']['doctype'])) {
+//             wp_set_object_terms($post_id, $_POST['tax_input']['doctype'], 'doctype');
+//         }
+//     }
+// }
+// add_action('edit_attachment', 'update_attachment_taxonomies');
 
 // DOC LIBRARY SEARCH REGISTRATION
 // Add a rewrite rule to ensure the search query on a specific page works as expected.
