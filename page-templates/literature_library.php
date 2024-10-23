@@ -133,7 +133,7 @@ $end_post = min($paged * $args['posts_per_page'], $total_posts);
                             <tbody>
                                 <?php while ($query->have_posts()) {
                                     $query->the_post();
-                                    $attachment_url = wp_get_attachment_url(get_the_ID());
+                                    $attachment_url = wp_get_attachment_url( get_field('file', get_the_ID()) );
                                 ?>
                                     <tr onclick="window.location.href='<?php echo $attachment_url; ?>'" style="cursor: pointer;">
                                         <td><?php echo esc_html(get_the_terms(get_the_ID(), 'doccat')[0]->name ?? ''); ?></td>
