@@ -367,49 +367,179 @@ add_shortcode('pricing_data_status', 'display_pricing_data_status');
 
 
 // DOCUMENT LIBRARY TAXONOMY DOMINE
-function enqueue_custom_taxonomy_modal_script()
-{
-    // Enqueue the script only in the admin
-    if (is_admin()) {
-        wp_enqueue_script(
-            'custom-taxonomy-modal',
-            get_stylesheet_directory_uri() . '/js/custom-taxonomy-modal.js',
-            array('jquery'),
-            false,
-            true
+
+// Global flag to prevent recursive delete
+$delete_in_progress = false;
+
+// 1. Create Document CPT when a PDF is uploaded and attach the PDF to the CPT
+function create_document_cpt_on_pdf_upload($post_id) {
+    // Get the uploaded file's post object
+    $attachment = get_post($post_id);
+
+    // Check if the uploaded file is a PDF
+    if ($attachment->post_mime_type === 'application/pdf') {
+        // Get the file title to use as the CPT post title
+        $document_title = $attachment->post_title;
+
+        // Create a new post in your custom post type
+        $document_args = array(
+            'post_title'    => $document_title,
+            'post_content'  => '',  // Leave content empty, you can always add more details later
+            'post_status'   => 'publish',
+            'post_type'     => 'document',  // Replace 'document' with your CPT slug if different
         );
-    }
-}
-add_action('admin_enqueue_scripts', 'enqueue_custom_taxonomy_modal_script');
 
-function fetch_taxonomy_terms_for_modal()
-{
-    $attachment_id = intval($_POST['attachment_id']);
-    $taxonomy = sanitize_text_field($_POST['taxonomy']);
+        // Insert the new CPT post
+        $document_post_id = wp_insert_post($document_args);
 
-    if (!empty($taxonomy) && taxonomy_exists($taxonomy)) {
-        $terms = get_terms(array(
-            'taxonomy' => $taxonomy,
-            'hide_empty' => false,
-        ));
+        if ($document_post_id) {
+            // Attach the media to the newly created CPT entry
+            wp_update_post(array(
+                'ID' => $post_id,
+                'post_parent' => $document_post_id
+            ));
 
-        $selected_terms = wp_get_object_terms($attachment_id, $taxonomy, array('fields' => 'ids'));
+            // Use ACF to set the 'file' field with the attachment ID
+            if (function_exists('update_field')) {
+                update_field('file', $post_id, $document_post_id);
+            }
 
-        ob_start();
-        foreach ($terms as $term) {
-            echo '<label>';
-            echo '<input type="checkbox" name="attachments[' . esc_attr($attachment_id) . '][' . esc_attr($taxonomy) . '][]" value="' . esc_attr($term->term_id) . '" ' . checked(in_array($term->term_id, $selected_terms), true, false) . '>';
-            echo esc_html($term->name);
-            echo '</label><br>';
+            // Optionally set a default taxonomy term if applicable
+            wp_set_post_terms($document_post_id, 'default-category', 'doccat', true);
         }
-        $terms_html = ob_get_clean();
+    }
+}
 
-        wp_send_json_success(array('terms_html' => $terms_html));
+add_action('add_attachment', 'create_document_cpt_on_pdf_upload');
+
+// 2. Delete Document CPT When Attachment is Deleted
+function delete_document_cpt_when_attachment_is_deleted($post_id) {
+    global $delete_in_progress;
+
+    // Prevent recursive deletion
+    if ($delete_in_progress) {
+        return;
     }
 
-    wp_send_json_error();
+    // Get the attachment post object
+    $attachment = get_post($post_id);
+
+    // Check if the deleted post is an attachment and it's a PDF
+    if ($attachment && $attachment->post_type === 'attachment' && $attachment->post_mime_type === 'application/pdf') {
+        // Set the flag to indicate we're in the process of deleting
+        $delete_in_progress = true;
+
+        // Query for the CPT post that uses this attachment ID
+        $args = array(
+            'post_type'  => 'document',
+            'meta_query' => array(
+                array(
+                    'key'     => 'file',  // The ACF field that holds the attachment ID
+                    'value'   => $post_id,
+                    'compare' => '='
+                )
+            )
+        );
+
+        $document_posts = get_posts($args);
+
+        // Delete the associated CPT post if found
+        if (!empty($document_posts)) {
+            foreach ($document_posts as $document_post) {
+                wp_delete_post($document_post->ID, true);
+            }
+        }
+
+        // Reset the flag after deletion is complete
+        $delete_in_progress = false;
+    }
 }
-add_action('wp_ajax_fetch_taxonomy_terms', 'fetch_taxonomy_terms_for_modal');
+
+add_action('delete_attachment', 'delete_document_cpt_when_attachment_is_deleted');
+
+// 3. Delete the PDF Attachment When Document CPT is Deleted
+function delete_pdf_on_document_delete($post_id) {
+    global $delete_in_progress;
+
+    // Prevent recursive deletion
+    if ($delete_in_progress) {
+        return;
+    }
+
+    // Check if the deleted post is the document CPT
+    if (get_post_type($post_id) == 'document') {  // Replace 'document' with your CPT slug if different
+        // Get the attachment ID from the ACF field
+        $attachment_id = get_field('file', $post_id);
+
+        // Delete the attachment if it exists
+        if ($attachment_id) {
+            // Set the flag to indicate we're in the process of deleting
+            $delete_in_progress = true;
+
+            // Temporarily remove the delete_attachment hook to prevent recursion
+            remove_action('delete_attachment', 'delete_document_cpt_when_attachment_is_deleted');
+
+            wp_delete_attachment($attachment_id, true);
+
+            // Re-add the delete_attachment hook
+            add_action('delete_attachment', 'delete_document_cpt_when_attachment_is_deleted');
+
+            // Reset the flag after deletion is complete
+            $delete_in_progress = false;
+        }
+    }
+}
+
+add_action('before_delete_post', 'delete_pdf_on_document_delete');
+
+
+
+
+
+// pre move to CPT
+// function enqueue_custom_taxonomy_modal_script()
+// {
+//     // Enqueue the script only in the admin
+//     if (is_admin()) {
+//         wp_enqueue_script(
+//             'custom-taxonomy-modal',
+//             get_stylesheet_directory_uri() . '/js/custom-taxonomy-modal.js',
+//             array('jquery'),
+//             false,
+//             true
+//         );
+//     }
+// }
+// add_action('admin_enqueue_scripts', 'enqueue_custom_taxonomy_modal_script');
+
+// function fetch_taxonomy_terms_for_modal()
+// {
+//     $attachment_id = intval($_POST['attachment_id']);
+//     $taxonomy = sanitize_text_field($_POST['taxonomy']);
+
+//     if (!empty($taxonomy) && taxonomy_exists($taxonomy)) {
+//         $terms = get_terms(array(
+//             'taxonomy' => $taxonomy,
+//             'hide_empty' => false,
+//         ));
+
+//         $selected_terms = wp_get_object_terms($attachment_id, $taxonomy, array('fields' => 'ids'));
+
+//         ob_start();
+//         foreach ($terms as $term) {
+//             echo '<label>';
+//             echo '<input type="checkbox" name="attachments[' . esc_attr($attachment_id) . '][' . esc_attr($taxonomy) . '][]" value="' . esc_attr($term->term_id) . '" ' . checked(in_array($term->term_id, $selected_terms), true, false) . '>';
+//             echo esc_html($term->name);
+//             echo '</label><br>';
+//         }
+//         $terms_html = ob_get_clean();
+
+//         wp_send_json_success(array('terms_html' => $terms_html));
+//     }
+
+//     wp_send_json_error();
+// }
+// add_action('wp_ajax_fetch_taxonomy_terms', 'fetch_taxonomy_terms_for_modal');
 
 // function save_taxonomy_terms_for_attachments($post_id)
 // {
@@ -436,26 +566,6 @@ add_action('wp_ajax_fetch_taxonomy_terms', 'fetch_taxonomy_terms_for_modal');
 //     }
 // }
 // add_action('edit_attachment', 'save_taxonomy_terms_for_attachments');
-function save_taxonomy_terms_for_attachments($post_id) {
-    // Check if this is an attachment
-    if (get_post_type($post_id) !== 'attachment') {
-        return;
-    }
-
-    // Define the taxonomies you want to save
-    $taxonomies = ['doccat', 'doctype']; // Add your taxonomy slugs here
-
-    foreach ($taxonomies as $taxonomy) {
-        // Check if the taxonomy input is set and save the terms
-        if (isset($_POST['tax_input'][$taxonomy]) && !empty($_POST['tax_input'][$taxonomy])) {
-            $terms = $_POST['tax_input'][$taxonomy];
-            if (is_array($terms)) {
-                wp_set_object_terms($post_id, array_map('intval', $terms), $taxonomy, false);
-            }
-        }
-    }
-}
-add_action('save_post_attachment', 'save_taxonomy_terms_for_attachments');
 
 // function update_attachment_taxonomies($post_id) {
 //     if (get_post_type($post_id) === 'attachment') {

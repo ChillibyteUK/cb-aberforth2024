@@ -11,11 +11,9 @@ $paged = (get_query_var('paged')) ? get_query_var('paged') : (get_query_var('pag
 
 // Setup base arguments for WP_Query.
 $args = array(
-    'post_type'      => 'attachment',
-    'post_status'    => 'inherit',
+    'post_type'      => 'document',
     'posts_per_page' => 10,
     'paged'          => $paged,
-    'post_mime_type' => 'application/pdf', // Restrict to PDFs only
     'tax_query'      => array(
         'relation' => 'AND',
     ),
