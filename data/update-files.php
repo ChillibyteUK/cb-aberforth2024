@@ -1,3 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <pre>
 <?php
 
 // Load WordPress environment
@@ -5,7 +14,7 @@ define('WP_USE_THEMES', false);
 require_once(dirname(__FILE__) . '/../../../../wp-load.php');
 
 // Path to CSV file
-$csv_file = dirname(__FILE__) . '/factsheets.csv';
+$csv_file = dirname(__FILE__) . '/fileinfo.csv';
 
 if (!file_exists($csv_file)) {
     echo "CSV file not found!";
@@ -18,7 +27,7 @@ if (($handle = fopen($csv_file, 'r')) !== false) {
     fgetcsv($handle, 1000, ',');
 
     while (($data = fgetcsv($handle, 1000, ',')) !== false) {
-        if ($data[1] != 'ascot') {
+        if ($data[1] != 'agvit') {
             continue;
         }
         $attachment_filename = trim($data[3]); // Filename from CSV
@@ -100,3 +109,6 @@ if (($handle = fopen($csv_file, 'r')) !== false) {
     echo "Unable to open CSV file.";
 }
 ?>
+    </pre>
+</body>
+</html>
