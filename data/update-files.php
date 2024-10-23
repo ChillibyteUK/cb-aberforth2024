@@ -18,6 +18,9 @@ if (($handle = fopen($csv_file, 'r')) !== false) {
     fgetcsv($handle, 1000, ',');
 
     while (($data = fgetcsv($handle, 1000, ',')) !== false) {
+        if ($data[1] != 'ascot') {
+            continue;
+        }
         $attachment_filename = trim($data[3]); // Filename from CSV
         $new_post_title = trim($data[4]); // Post title from CSV
         $new_post_date = trim($data[0]); // Date from CSV
