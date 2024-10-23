@@ -27,7 +27,7 @@ if (($handle = fopen($csv_file, 'r')) !== false) {
     fgetcsv($handle, 1000, ',');
 
     while (($data = fgetcsv($handle, 1000, ',')) !== false) {
-        if ($data[1] != 'ascot') {
+        if ($data[1] != 'afund') {
             continue;
         }
         $attachment_filename = trim($data[3]); // Filename from CSV
