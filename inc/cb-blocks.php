@@ -119,6 +119,24 @@ function acf_blocks()
             'mode'    => 'edit',
             'supports' => array('mode' => false),
         ));
+        acf_register_block_type(array(
+            'name'                => 'cb_info_accordion',
+            'title'                => __('CB Info Accordion'),
+            'category'            => 'layout',
+            'icon'                => 'cover-image',
+            'render_template'    => 'page-templates/blocks/cb_info_accordion.php',
+            'mode'    => 'edit',
+            'supports' => array('mode' => false),
+        ));
+        acf_register_block_type(array(
+            'name'                => 'cb_table_from_csv',
+            'title'                => __('CB Data Table from CSV'),
+            'category'            => 'layout',
+            'icon'                => 'cover-image',
+            'render_template'    => 'page-templates/blocks/cb_table_from_csv.php',
+            'mode'    => 'edit',
+            'supports' => array('mode' => false),
+        ));
     }
 }
 add_action('acf/init', 'acf_blocks');

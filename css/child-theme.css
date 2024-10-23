@@ -22181,7 +22181,8 @@ header .dropdown.current-menu-item::after {
 .holdings {
   background-color: var(--col-blue-200);
 }
-.holdings #showFullTable {
+
+#showFullTable {
   display: grid;
   place-content: center;
   padding: 1rem;
