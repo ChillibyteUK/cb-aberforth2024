@@ -14,7 +14,13 @@ $fund_options = array(
     'ascot' => 'ascot_pricing_data',
     'agvit' => 'agvit_pricing_data'
 );
-$xmlContent = get_option($fund_options[$fund]) ?? null;
+
+// Check if the given fund exists in the options array
+if (array_key_exists($fund, $fund_options)) {
+    $xmlContent = get_option($fund_options[$fund]) ?? null;
+} else {
+    $xmlContent = null;
+}
 
 ?>
 <section class="fund_hero pb-5">
@@ -22,7 +28,18 @@ $xmlContent = get_option($fund_options[$fund]) ?? null;
         <div class="row g-4">
             <div class="col-md-8">
                 <div class="h1"><?= $funds[$fund] ?></div>
-                <a href="#" class="button">SHEET</a>
+                <?php
+                $sheet = get_field($fund . '_factsheet', 'option') ?? null;
+                if ($sheet) {
+                    $file = get_field('file',$sheet);
+                    $file_url = wp_get_attachment_url($file);
+                    if ($file_url ?? null) { 
+                        ?>
+                <a href="<?=$file_url?>" target="_blank" class="button"><?=get_the_title($sheet)?></a>
+                        <?php
+                    }
+                }
+                ?>
             </div>
             <div class="col-md-4 d-flex gap-4 justify-content-end">
                 <?php
