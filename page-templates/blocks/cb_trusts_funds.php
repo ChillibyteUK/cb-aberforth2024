@@ -101,7 +101,9 @@
                     <h3 class="trusts_funds__header">Aberforth Split Level Income Trust plc</h3>
                     <div class="trusts_funds__inner flex-grow-1 d-flex flex-column justify-content-between">
                         <p class="trusts_funds__content">A split capital investment trust with two classes of share – Ordinary Shares and Zero Dividend Preference (ZDP) Shares – both of which traded on the London Stock Exchange.</p>
-                        <div class="text-end mt-auto">
+                        <div class="lined-top py-2">Launched: 3 July 2017</div>
+                        <div class="lined-top py-2">Wound up: 1 July 2024</div>
+                        <div class="lined-top pt-3 text-end mt-auto">
                             <a href="/trusts-and-funds/aberforth-split-level-income-trust-plc/" class="button">Learn more</a>
                         </div>
                     </div>
