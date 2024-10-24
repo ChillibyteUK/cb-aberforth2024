@@ -95,9 +95,14 @@
         }
     }
 
-
-    td {
-        width: 50%;
+}
+.cb_accordion {
+    table {
+        table-layout: fixed;
+        width: 100%;
+    }
+    td:first-of-type {
+        width: 60%;
     }
 
 }

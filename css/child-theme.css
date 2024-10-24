@@ -22091,9 +22091,13 @@ header .dropdown.current-menu-item::after {
     height: 800px;
   }
 }
-.fund_accordion td,
-.cb_accordion td {
-  width: 50%;
+
+.cb_accordion table {
+  table-layout: fixed;
+  width: 100%;
+}
+.cb_accordion td:first-of-type {
+  width: 60%;
 }
 
 .fund_hero .button {
