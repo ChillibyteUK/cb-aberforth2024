@@ -21992,17 +21992,21 @@ header .dropdown.current-menu-item::after {
   background-color: var(--col-blue-400);
 }
 
-.fund_accordion .accordion-item {
+.fund_accordion .accordion-item,
+.cb_accordion .accordion-item {
   border: none;
   border-top: 1px solid var(--col-grey-200);
 }
-.fund_accordion .accordion-item:last-of-type {
+.fund_accordion .accordion-item:last-of-type,
+.cb_accordion .accordion-item:last-of-type {
   border-bottom: 1px solid var(--col-grey-200);
 }
-.fund_accordion .accordion-header {
+.fund_accordion .accordion-header,
+.cb_accordion .accordion-header {
   margin-bottom: 0.25rem;
 }
-.fund_accordion .accordion-button {
+.fund_accordion .accordion-button,
+.cb_accordion .accordion-button {
   font-size: var(--fs-800);
   padding: 1rem 1rem;
   color: var(--col-blue-700);
@@ -22014,32 +22018,40 @@ header .dropdown.current-menu-item::after {
   border-bottom-right-radius: 0 !important;
   box-shadow: none;
 }
-.fund_accordion .accordion-button:not(.collapsed) {
+.fund_accordion .accordion-button:not(.collapsed),
+.cb_accordion .accordion-button:not(.collapsed) {
   color: var(--col-blue-700);
   background-color: white;
 }
-.fund_accordion .accordion-button:not(.collapsed)::after {
+.fund_accordion .accordion-button:not(.collapsed)::after,
+.cb_accordion .accordion-button:not(.collapsed)::after {
   background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8'%3F%3E%3Csvg id='Layer_2' data-name='Layer 2' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cdefs%3E%3Cstyle%3E .cls-1 %7B fill: none; %7D .cls-1, .cls-2 %7B stroke-width: 0px; %7D .cls-2 %7B fill: %23244062; %7D %3C/style%3E%3C/defs%3E%3Cg id='Layer_1-2' data-name='Layer 1'%3E%3Cpath class='cls-2' d='m8.93,11.07H0v-2.14h11.07s8.93,0,8.93,0v2.14h-11.07Z'/%3E%3Crect class='cls-1' width='20' height='20'/%3E%3C/g%3E%3C/svg%3E");
 }
-.fund_accordion .accordion-button::after {
+.fund_accordion .accordion-button::after,
+.cb_accordion .accordion-button::after {
   background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8.92857 20V11.0714H0V8.92857H8.92857V0H11.0714V8.92857H20V11.0714H11.0714V20H8.92857Z' fill='%23244062'/%3E%3C/svg%3E%0A");
 }
-.fund_accordion .accordion-button:focus {
+.fund_accordion .accordion-button:focus,
+.cb_accordion .accordion-button:focus {
   z-index: 3;
   border-color: var(--bs-accordion-btn-focus-border-color);
   outline: 0;
   box-shadow: var(--bs-accordion-btn-focus-box-shadow);
 }
-.fund_accordion .accordion-body {
+.fund_accordion .accordion-body,
+.cb_accordion .accordion-body {
   padding: 0;
 }
-.fund_accordion .accordion-body .tab-pane {
+.fund_accordion .accordion-body .tab-pane,
+.cb_accordion .accordion-body .tab-pane {
   padding: 1rem;
 }
-.fund_accordion .accordion-body .nav-tabs {
+.fund_accordion .accordion-body .nav-tabs,
+.cb_accordion .accordion-body .nav-tabs {
   background-color: var(--col-blue-400);
 }
-.fund_accordion .accordion-body .nav-link {
+.fund_accordion .accordion-body .nav-link,
+.cb_accordion .accordion-body .nav-link {
   padding: 1rem;
   border-color: var(--col-blue-400);
   border-top-left-radius: 0 !important;
@@ -22049,29 +22061,39 @@ header .dropdown.current-menu-item::after {
   border-bottom: none;
   color: var(--col-dark);
 }
-.fund_accordion__card {
+.fund_accordion__card,
+.cb_accordion__card {
   text-align: center;
   padding: 1rem;
   border: 1px solid var(--col-blue-600);
   height: 100%;
 }
-.fund_accordion__card h3, .fund_accordion__card .h3 {
+.fund_accordion__card h3, .fund_accordion__card .h3,
+.cb_accordion__card h3,
+.cb_accordion__card .h3 {
   font-family: var(--ff-body);
   font-size: var(--fs-400);
   font-weight: var(--fw-500);
 }
-.fund_accordion__card .button {
+.fund_accordion__card .button,
+.cb_accordion__card .button {
   justify-self: center;
   min-width: unset;
   width: 100%;
 }
-.fund_accordion__iframe {
+.fund_accordion__iframe,
+.cb_accordion__iframe {
   height: 950px;
 }
 @media (min-width: 754px) {
-  .fund_accordion__iframe {
+  .fund_accordion__iframe,
+  .cb_accordion__iframe {
     height: 800px;
   }
+}
+.fund_accordion td,
+.cb_accordion td {
+  width: 50%;
 }
 
 .fund_hero .button {

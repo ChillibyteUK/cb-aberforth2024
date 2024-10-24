@@ -1,4 +1,5 @@
-.fund_accordion {
+.fund_accordion,
+.cb_accordion {
 
 
     .accordion-item {
@@ -92,6 +93,11 @@
         @media (min-width:754px) {
             height: 800px;
         }
+    }
+
+
+    td {
+        width: 50%;
     }
 
 }
