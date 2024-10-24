@@ -377,7 +377,7 @@
             "label": "Factsheet",
             "name": "agvit_factsheet",
             "aria-label": "",
-            "type": "file",
+            "type": "post_object",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -386,12 +386,18 @@
                 "class": "",
                 "id": ""
             },
-            "return_format": "array",
-            "library": "all",
-            "min_size": "",
-            "max_size": "",
-            "mime_types": "pdf",
-            "allow_in_bindings": 0
+            "post_type": [
+                "document"
+            ],
+            "post_status": "",
+            "taxonomy": "",
+            "return_format": "id",
+            "multiple": 0,
+            "allow_null": 0,
+            "allow_in_bindings": 1,
+            "bidirectional": 0,
+            "ui": 1,
+            "bidirectional_target": []
         },
         {
             "key": "field_671295e6a539d",
@@ -443,7 +449,7 @@
             "label": "Factsheet",
             "name": "afund_factsheet",
             "aria-label": "",
-            "type": "file",
+            "type": "post_object",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -452,12 +458,18 @@
                 "class": "",
                 "id": ""
             },
-            "return_format": "array",
-            "library": "all",
-            "min_size": "",
-            "max_size": "",
-            "mime_types": "pdf",
-            "allow_in_bindings": 0
+            "post_type": [
+                "document"
+            ],
+            "post_status": "",
+            "taxonomy": "",
+            "return_format": "id",
+            "multiple": 0,
+            "allow_null": 0,
+            "allow_in_bindings": 1,
+            "bidirectional": 0,
+            "ui": 1,
+            "bidirectional_target": []
         },
         {
             "key": "field_67129649a53a0",
@@ -509,7 +521,7 @@
             "label": "Factsheet",
             "name": "aslit_factsheet",
             "aria-label": "",
-            "type": "file",
+            "type": "post_object",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -518,12 +530,18 @@
                 "class": "",
                 "id": ""
             },
-            "return_format": "array",
-            "library": "all",
-            "min_size": "",
-            "max_size": "",
-            "mime_types": "pdf",
-            "allow_in_bindings": 0
+            "post_type": [
+                "document"
+            ],
+            "post_status": "",
+            "taxonomy": "",
+            "return_format": "id",
+            "multiple": 0,
+            "allow_null": 0,
+            "allow_in_bindings": 1,
+            "bidirectional": 0,
+            "ui": 1,
+            "bidirectional_target": []
         }
     ],
     "location": [
@@ -544,5 +562,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1729775738
+    "modified": 1729776978
 }
