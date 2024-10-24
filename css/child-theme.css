@@ -22464,6 +22464,11 @@ main a {
   color: white;
 }
 
+.video_disclaimer .modal-dialog {
+  max-width: unset;
+  width: min(1100px, 90vw);
+}
+
 /*
 var all = document.getElementsByTagName("*"), i = 0, rect, docWidth = document.documentElement.offsetWidth;
 for (; i < all.length; i++) {

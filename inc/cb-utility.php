@@ -114,7 +114,6 @@ function get_vimeo_data_from_id( $video_id, $data ) {
 	return $video_array[$data];
 }
 
-
 function cb_gutenberg_admin_styles() {
     echo '
         <style>
