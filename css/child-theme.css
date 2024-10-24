@@ -22371,12 +22371,13 @@ main a {
   }
 }
 
+th {
+  font-weight: var(--fw-500);
+}
+
 .literature_library .library {
   border-top: 1px solid var(--col-grey-200);
   border-bottom: 1px solid var(--col-grey-200);
-}
-.literature_library .library th {
-  font-weight: var(--fw-500);
 }
 .literature_library .library tbody tr {
   transition: background-color var(--transition);

@@ -105,13 +105,13 @@ main {
 }
 
 // DOCUMENT LIBRARY
+th {
+    font-weight: var(--fw-500);
+}
 .literature_library {
     .library {
         border-top: 1px solid var(--col-grey-200);
         border-bottom: 1px solid var(--col-grey-200);
-        th {
-            font-weight: var(--fw-500);
-        }
         tbody tr {
             transition: background-color var(--transition);
             &:hover {
