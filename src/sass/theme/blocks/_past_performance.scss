@@ -1,13 +1,11 @@
-.past_performance {
-    .nav-tabs {
-        background-color: var(--col-blue-400);
-        .nav-link.active {
-            background-color: white;
-        }
+.nav-tabs {
+    background-color: var(--col-blue-400);
+    .nav-link.active {
+        background-color: white;
     }
-    .nav-tabs .nav-link {
-        border-radius: 0;
-        border-color: var(--col-blue-400);
-        border-bottom: none;
-    }
+}
+.nav-tabs .nav-link {
+    border-radius: 0;
+    border-color: var(--col-blue-400);
+    border-bottom: none;
 }
