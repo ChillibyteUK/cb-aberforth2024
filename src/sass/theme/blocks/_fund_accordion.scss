@@ -98,11 +98,13 @@
 }
 .cb_accordion {
     table {
-        table-layout: fixed;
         width: 100%;
     }
     td:first-of-type {
-        width: 60%;
+        width: 80%;
+    }
+    td:last-of-type {
+        width: 20%;
     }
 
 }

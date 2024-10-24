@@ -22093,11 +22093,13 @@ header .dropdown.current-menu-item::after {
 }
 
 .cb_accordion table {
-  table-layout: fixed;
   width: 100%;
 }
 .cb_accordion td:first-of-type {
-  width: 60%;
+  width: 80%;
+}
+.cb_accordion td:last-of-type {
+  width: 20%;
 }
 
 .fund_hero .button {
