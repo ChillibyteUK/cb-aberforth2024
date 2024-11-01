@@ -256,6 +256,18 @@ function cb_theme_enqueue()
 add_action('wp_enqueue_scripts', 'cb_theme_enqueue');
 
 
+function add_custom_menu_item($items, $args)
+{
+    if ($args->theme_location == 'primary_nav') {
+        $new_item = '<li class="menu-item menu-item-type-post_tyep menu-item-object-page nav-item"><a href="' . esc_url(home_url('/search/')) . '" class="nav-link" title="Search"><span class="icon-search"></span></a></li>';
+        $items .= $new_item;
+    }
+
+    return $items;
+}
+add_filter('wp_nav_menu_items', 'add_custom_menu_item', 10, 2);
+
+
 // pricing data job
 // Add custom interval for cron jobs (2 minutes)
 function custom_cron_schedule($schedules)
@@ -372,7 +384,8 @@ add_shortcode('pricing_data_status', 'display_pricing_data_status');
 $delete_in_progress = false;
 
 // 1. Create Document CPT when a PDF is uploaded and attach the PDF to the CPT
-function create_document_cpt_on_pdf_upload($post_id) {
+function create_document_cpt_on_pdf_upload($post_id)
+{
     // Get the uploaded file's post object
     $attachment = get_post($post_id);
 
@@ -413,7 +426,8 @@ function create_document_cpt_on_pdf_upload($post_id) {
 add_action('add_attachment', 'create_document_cpt_on_pdf_upload');
 
 // 2. Delete Document CPT When Attachment is Deleted
-function delete_document_cpt_when_attachment_is_deleted($post_id) {
+function delete_document_cpt_when_attachment_is_deleted($post_id)
+{
     global $delete_in_progress;
 
     // Prevent recursive deletion
@@ -458,7 +472,8 @@ function delete_document_cpt_when_attachment_is_deleted($post_id) {
 add_action('delete_attachment', 'delete_document_cpt_when_attachment_is_deleted');
 
 // 3. Delete the PDF Attachment When Document CPT is Deleted
-function delete_pdf_on_document_delete($post_id) {
+function delete_pdf_on_document_delete($post_id)
+{
     global $delete_in_progress;
 
     // Prevent recursive deletion
