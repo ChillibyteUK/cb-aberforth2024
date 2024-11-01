@@ -254,12 +254,16 @@ th {
     margin-bottom: 1em;
 }
 
+.form-control {
+    border-radius: 0;
+}
+
 .wp-block-search__label {
     margin-bottom: 0.5rem;
 }
 
-.form-control {
-    border-radius: 0;
+.wp-block-search__button {
+    @extend .button;
 }
 
 // show stuff that overflows horizontally

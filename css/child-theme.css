@@ -21698,7 +21698,7 @@ strong, .fw-bold, .fw-500 {
   background-color: var(--col-blue-200);
 }
 
-.button {
+.button, .wp-block-search__button {
   border-radius: 100vw;
   min-width: 274px;
   display: inline-block;
@@ -21712,12 +21712,12 @@ strong, .fw-bold, .fw-500 {
   text-align: center;
   transition: all var(--transition);
 }
-.button:hover {
+.button:hover, .wp-block-search__button:hover {
   border-color: var(--col-dark);
   background-color: var(--col-dark);
   color: white;
 }
-.button:disabled {
+.button:disabled, .wp-block-search__button:disabled {
   border-color: var(--col-grey-200);
   background-color: var(--col-grey-200);
 }
@@ -22081,8 +22081,9 @@ header .dropdown.current-menu-item::after {
   font-size: var(--fs-400);
   font-weight: var(--fw-500);
 }
-.fund_accordion__card .button,
-.cb_accordion__card .button {
+.fund_accordion__card .button, .fund_accordion__card .wp-block-search__button,
+.cb_accordion__card .button,
+.cb_accordion__card .wp-block-search__button {
   justify-self: center;
   min-width: unset;
   width: 100%;
@@ -22108,10 +22109,10 @@ header .dropdown.current-menu-item::after {
   width: 20%;
 }
 
-.fund_hero .button {
+.fund_hero .button, .fund_hero .wp-block-search__button {
   position: relative;
 }
-.fund_hero .button::after {
+.fund_hero .button::after, .fund_hero .wp-block-search__button::after {
   position: relative;
   display: inline-block;
   content: "";
@@ -22400,8 +22401,9 @@ th {
 .literature_library .library tbody tr td:nth-of-type(3) {
   font-weight: var(--fw-500);
 }
-.literature_library .library-search .button,
-.literature_library .filter-buttons .button {
+.literature_library .library-search .button, .literature_library .library-search .wp-block-search__button,
+.literature_library .filter-buttons .button,
+.literature_library .filter-buttons .wp-block-search__button {
   min-width: 160px;
   height: 44px;
   display: grid;
@@ -22457,7 +22459,7 @@ th {
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
 }
-.literature_library .filter-buttons .button {
+.literature_library .filter-buttons .button, .literature_library .filter-buttons .wp-block-search__button {
   min-width: unset;
 }
 
@@ -22525,12 +22527,12 @@ th {
   margin-bottom: 1em;
 }
 
-.wp-block-search__label {
-  margin-bottom: 0.5rem;
-}
-
 .form-control {
   border-radius: 0;
+}
+
+.wp-block-search__label {
+  margin-bottom: 0.5rem;
 }
 
 /*
