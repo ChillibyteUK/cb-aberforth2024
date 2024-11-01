@@ -43,8 +43,7 @@ $theme = 'default';
 						<a href="<?php echo $attachment_url; ?>" download>
 							<div class="fs-300"><?= esc_html(get_the_terms(get_the_ID(), 'doccat')[0]->name ?? ''); ?></div>
 							<div class="fs-300"><?php echo esc_html(get_the_terms(get_the_ID(), 'doctype')[0]->name ?? ''); ?></div>
-							<?php the_title() ?>
-							<?= $attachment_url ?>
+							<div><?php the_title() ?></div>
 							<div class="icon-download"></div>
 						</a>
 					</div>
