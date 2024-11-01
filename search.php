@@ -16,20 +16,46 @@ $theme = 'default';
 ?>
 <main id="main">
 	<!-- page_title -->
-	<div class="page_title page_title--<?= $theme ?>">
-		<div class="overlay"></div>
-		<div class="container-xl">
-			<h1 class="has-<?= $theme ?>-color lined"><?= $title ?></h1>
-			<?php
-			if (get_field('breadcrumb')) {
-				if (function_exists('yoast_breadcrumb')) {
-					yoast_breadcrumb('<p id="breadcrumbs">', '</p>');
-				}
-			}
-			?>
-		</div>
+	<div class="container-xl pb-5">
+		<h1><?= $title ?></h1>
+		<?= do_blocks('<!-- wp:search {"label":"Enter your search term","showLabel":true,"buttonText":"Search","placeholder":"Search term goes here"} /-->') ?>
 	</div>
-	<div class="container-xl">
+	<div class="container-xl pb-4">
+		<?php
+		// Total number of search results
+		global $wp_query;
+		$total_results = $wp_query->found_posts;
+
+		// Get the current page number
+		$paged = get_query_var('paged') ? get_query_var('paged') : 1;
+
+		// Number of posts per page
+		$posts_per_page = get_query_var('posts_per_page');
+
+		// Calculate the first and last result number on the current page
+		$first_result = ($paged - 1) * $posts_per_page + 1;
+		$last_result = min($paged * $posts_per_page, $total_results);
+
+		// Display the results count
+		if ($total_results > 0) {
+			echo '<div class="search-results-count fw-500">';
+			echo sprintf(
+				'Showing %d—%d of %d results for “%s”',
+				$first_result,
+				$last_result,
+				$total_results,
+				get_search_query()
+			);
+			echo '</div>';
+		} else {
+			echo '<div class="search-results-count">';
+			echo 'No results found for "' . get_search_query() . '"';
+			echo '</div>';
+		}
+		?>
+
+	</div>
+	<div class="container-xl pb-5">
 		<?php
 
 		if (have_posts()) {
@@ -61,20 +87,13 @@ $theme = 'default';
 				}
 			}
 			?>
-			<?php understrap_pagination(); ?>
-	</div>
-	</div>
-<?php
-		} else {
-?>
-	<div class="container py-5">
-		<?php
-			get_template_part('loop-templates/content', 'none');
-		?>
+			<div class="mt-4">
+				<?php understrap_pagination(); ?>
+			</div>
 	</div>
 <?php
 		}
 
-		echo '</div></main>';
+		echo '</main>';
 
 		get_footer();

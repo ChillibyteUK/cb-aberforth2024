@@ -224,7 +224,7 @@ th {
 .pagination {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    // gap: 1rem;
     > * {
         width: 44px;
         height: 44px;
@@ -260,6 +260,7 @@ th {
 
 .wp-block-search__label {
     margin-bottom: 0.5rem;
+    font-weight: var(--fw-600);
 }
 
 .wp-block-search__button {

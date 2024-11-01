@@ -22499,7 +22499,6 @@ th {
 .pagination {
   display: flex;
   align-items: center;
-  gap: 1rem;
 }
 .pagination > * {
   width: 44px;
@@ -22533,6 +22532,7 @@ th {
 
 .wp-block-search__label {
   margin-bottom: 0.5rem;
+  font-weight: var(--fw-600);
 }
 
 /*
