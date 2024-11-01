@@ -254,6 +254,14 @@ th {
     margin-bottom: 1em;
 }
 
+.wp-block-search__label {
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    border-radius: 0;
+}
+
 // show stuff that overflows horizontally
 // * {
 //     outline: 1px solid #f00 !important;

@@ -22525,6 +22525,14 @@ th {
   margin-bottom: 1em;
 }
 
+.wp-block-search__label {
+  margin-bottom: 0.5rem;
+}
+
+.form-control {
+  border-radius: 0;
+}
+
 /*
 var all = document.getElementsByTagName("*"), i = 0, rect, docWidth = document.documentElement.offsetWidth;
 for (; i < all.length; i++) {
