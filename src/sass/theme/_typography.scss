@@ -61,9 +61,11 @@ h3, .h3 {
 small, .has-small-font-size,.fs-300 {
     font-size: var(--fs-300);
 }
-.has-medium-font-size,
 .fs-400 {
     font-size: var(--fs-400);
+}
+.has-medium-font-size {
+    font-size: var(--fs-500);
 }
 .has-large-font-size,
 .fs-700 {
