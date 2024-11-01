@@ -22507,6 +22507,10 @@ th {
   display: grid;
   place-content: center;
 }
+.pagination .page-link {
+  background-color: transparent;
+  border: none;
+}
 
 .page-numbers:not(.prev):not(.next),
 .page-item {
