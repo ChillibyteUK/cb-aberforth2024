@@ -36,8 +36,18 @@ $theme = 'default';
 			while (have_posts()) {
 				the_post();
 				if (get_post_type() == 'document') {
+					$link = get_field('file');
+					$attachment_url = wp_get_attachment_url(get_field('file', get_the_ID()));
 		?>
-					wakka wakka
+					<div class="border-bottom pb-3 mb-2">
+						<a href="<?php echo $attachment_url; ?>" download>
+							<div class="fs-300"><?= esc_html(get_the_terms(get_the_ID(), 'doccat')[0]->name ?? ''); ?></div>
+							<div class="fs-300"><?php echo esc_html(get_the_terms(get_the_ID(), 'doctype')[0]->name ?? ''); ?></div>
+							<?php the_title() ?>
+							<?= $attachment_url ?>
+							<div class="icon-download"></div>
+						</a>
+					</div>
 				<?php
 				} else {
 				?>
