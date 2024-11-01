@@ -232,11 +232,13 @@ th {
         place-content: center;
     }
 }
-.page-numbers:not(.prev):not(.next) {
+.page-numbers:not(.prev):not(.next),
+.page-item {
     position: relative;
     border: 2px solid var(--col-blue-700);
     border-radius: 100vw;
-    &.current {
+    &.current,
+    &.active {
         background-color: var(--col-blue-700);
         color: white;
     }
@@ -260,7 +262,7 @@ th {
 
 .wp-block-search__label {
     margin-bottom: 0.5rem;
-    font-weight: var(--fw-600);
+    font-weight: var(--fw-500);
 }
 
 .wp-block-search__button {
