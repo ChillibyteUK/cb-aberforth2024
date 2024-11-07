@@ -13,6 +13,11 @@
 .gform_button.button {
     @extend .button;
     border-radius: 100vw;
+    display: inline-block;
+    background-color: var(--col-blue-700);
+    color: #fff;
+    text-align: center;
+    transition: all var(--transition);
     flex-basis: 274px;
     font-weight: var(--fw-400);
     padding: 0.75rem 1rem;
