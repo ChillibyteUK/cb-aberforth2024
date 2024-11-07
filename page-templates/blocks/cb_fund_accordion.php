@@ -137,6 +137,7 @@
                         <div class="nav nav-tabs">
                             <button class="nav-link active" id="afund-investing-tab" data-bs-toggle="tab" data-bs-target="#afund-investing" type="button" role="tab" aria-controls="afund-investing" aria-selected="true">Buying, selling and transfers</button>
                             <button class="nav-link" id="afund-dealing-tab" data-bs-toggle="tab" data-bs-target="#afund-dealing" type="button" role="tab" aria-controls="afund-dealing" aria-selected="false">Dealing</button>
+                            <button class="nav-link" id="afund-docs-tab" data-bs-toggle="tab" data-bs-target="#afund-docs" type="button" role="tab" aria-controls="afund-docs" aria-selected="false">Documents</button>
                         </div>
                         <div class="tab-content" id="afund-content">
                             <div class="tab-pane fade show active" id="afund-investing" aria-labelledby="afund-investing-tab">
@@ -144,7 +145,32 @@
                             </div>
                             <div class="tab-pane fade px-0" id="afund-dealing" aria-labelledby="afund-dealing-tab">
                                 <div class="p-4"><?=get_field('afund_dealing_intro')?></div>
-
+                            </div>
+                            <div class="tab-pane fade px-0" id="afund-docs" aria-labelledby="afund-docs-tab">
+                                <table class="table fs-300">
+                                    <tbody>
+                                        <?php
+                                        $docs = get_field('afund_docs') ?? null;
+                                        if ($docs) {
+                                            foreach (get_field('afund_docs') as $f) {
+                                                $file = get_field('file',$f);
+                                                $attachment_url = wp_get_attachment_url($file);
+                                                $file_path = get_attached_file($file);
+                                                $file_size = filesize($file_path);
+                                                ?>
+                                        <tr onclick="window.location.href='<?=$attachment_url?>'" style="cursor: pointer;">
+                                            <td class="fw-500"><?=get_the_title($f)?></td>
+                                            <td><?=esc_html(get_the_terms($f, 'doccat')[0]->name ?? '')?></td>
+                                            <td><?=formatBytes($file_size,0)?></td>
+                                            <td><?=get_the_date('d M Y',$f); ?></td>
+                                            <td><a href="<?=$attachment_url?>" download class="icon-download" style="text-decoration: none; color: inherit;"></a></td>
+                                        </tr>
+                                            <?php
+                                            }
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
