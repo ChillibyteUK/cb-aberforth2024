@@ -507,6 +507,92 @@ function delete_pdf_on_document_delete($post_id)
 add_action('before_delete_post', 'delete_pdf_on_document_delete');
 
 
+// filterable document tax columns
+
+// Add taxonomy filters to the admin list view for the 'document' post type
+// Add taxonomy filters to the admin list view for the 'document' post type
+add_action('restrict_manage_posts', 'add_document_taxonomy_filters');
+function add_document_taxonomy_filters() {
+    global $typenow;
+
+    // Only add dropdowns for the 'document' post type
+    if ($typenow == 'document') {
+
+        // Add dropdown for 'doccat' taxonomy
+        $taxonomy = 'doccat';
+        $doccat_taxonomy = get_taxonomy($taxonomy);
+        if ($doccat_taxonomy) {
+            wp_dropdown_categories(array(
+                'show_option_all' => __("Show All {$doccat_taxonomy->label}", 'text_domain'),
+                'taxonomy'        => $taxonomy,
+                'name'            => $taxonomy,
+                'orderby'         => 'name',
+                'selected'        => (isset($_GET[$taxonomy]) ? $_GET[$taxonomy] : ''),
+                'hierarchical'    => true,
+                'depth'           => 3,
+                'show_count'      => true,
+                'hide_empty'      => false,
+                'value_field'     => 'slug', // Use slug as value to match the query structure
+            ));
+        }
+
+        // Add dropdown for 'doctype' taxonomy
+        $taxonomy = 'doctype';
+        $doctype_taxonomy = get_taxonomy($taxonomy);
+        if ($doctype_taxonomy) {
+            wp_dropdown_categories(array(
+                'show_option_all' => __("Show All {$doctype_taxonomy->label}", 'text_domain'),
+                'taxonomy'        => $taxonomy,
+                'name'            => $taxonomy,
+                'orderby'         => 'name',
+                'selected'        => (isset($_GET[$taxonomy]) ? $_GET[$taxonomy] : ''),
+                'hierarchical'    => true,
+                'depth'           => 3,
+                'show_count'      => true,
+                'hide_empty'      => false,
+                'value_field'     => 'slug', // Use slug as value to match the query structure
+            ));
+        }
+    }
+}
+
+
+// Filter the documents by taxonomy based on selected dropdowns
+add_action('pre_get_posts', 'filter_documents_by_taxonomy');
+function filter_documents_by_taxonomy($query) {
+    global $typenow;
+
+    if ($typenow == 'document' && is_admin() && $query->is_main_query()) {
+
+        // Check if the 'doccat' dropdown has a value selected
+        if (!empty($_GET['doccat']) && $_GET['doccat'] != '0') {
+            $query->set('tax_query', array(
+                array(
+                    'taxonomy' => 'doccat',
+                    'field'    => 'slug', // Match the dropdown value field
+                    'terms'    => $_GET['doccat'],
+                )
+            ));
+        }
+
+        // Check if the 'doctype' dropdown has a value selected
+        if (!empty($_GET['doctype']) && $_GET['doctype'] != '0') {
+            $tax_query = $query->get('tax_query');
+
+            if (!is_array($tax_query)) {
+                $tax_query = array();
+            }
+
+            $tax_query[] = array(
+                'taxonomy' => 'doctype',
+                'field'    => 'slug', // Match the dropdown value field
+                'terms'    => $_GET['doctype'],
+            );
+
+            $query->set('tax_query', $tax_query);
+        }
+    }
+}
 
 
 
