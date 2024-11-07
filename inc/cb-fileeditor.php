@@ -179,9 +179,11 @@ function fileed_handle_file_upload() {
     if (!empty($_FILES['uploaded_csv']['tmp_name'])) {
         $file = $_FILES['uploaded_csv']['tmp_name'];
         $handle = fopen($file, 'r');
-
+        
         // Skip the header row
         fgetcsv($handle);
+        
+        echo "<details><summary>Summary</summary>";
 
         // Loop through CSV rows
         while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
@@ -251,11 +253,14 @@ function fileed_handle_file_upload() {
             }
         }
         fclose($handle);
+        
+        echo '</details>';
 
         echo '<div class="updated"><p>CSV file processed successfully.</p></div>';
     } else {
         echo '<div class="error"><p>Please upload a valid CSV file.</p></div>';
     }
+
 }
 
 ?>
