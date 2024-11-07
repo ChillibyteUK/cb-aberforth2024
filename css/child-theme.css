@@ -21851,6 +21851,10 @@ header .dropdown.current-menu-item::after {
   display: none;
 }
 
+.ginput_container input {
+  border-radius: 0;
+}
+
 .home_hero {
   min-height: 450px;
   display: flex;
