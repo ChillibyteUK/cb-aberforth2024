@@ -183,8 +183,9 @@ function fileed_handle_file_upload() {
         // Skip the header row
         fgetcsv($handle);
         
-        // Start the details section
-        echo "<details><summary>Summary</summary>";
+        // Accumulate output messages
+        $output_messages = "";
+        $has_updates = false;
 
         // Loop through CSV rows
         while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
@@ -200,6 +201,7 @@ function fileed_handle_file_upload() {
                 $updated_fields = [];
                 $updated_post = array('ID' => $doc_id);
 
+                // Check if title needs updating
                 if (!empty($title) && $post->post_title !== $title) {
                     $updated_post['post_title'] = $title;
                     $updated_fields[] = 'Title';
@@ -212,57 +214,62 @@ function fileed_handle_file_upload() {
                     $updated_fields[] = 'Date Created';
                 }
 
+                // Only update post if there are changes
                 if (!empty($updated_fields)) {
                     $result = wp_update_post($updated_post, true);
                     if (is_wp_error($result)) {
-                        echo '<div class="error"><p>Error updating Doc ID ' . $doc_id . ': ' . $result->get_error_message() . '</p></div>';
+                        $output_messages .= '<div class="error"><p>Error updating Doc ID ' . $doc_id . ': ' . $result->get_error_message() . '</p></div>';
                     } else {
-                        echo '<div class="updated"><p>Updated Doc ID ' . $doc_id . ': ' . implode(', ', $updated_fields) . ' changed.</p></div>';
+                        $output_messages .= '<div class="updated"><p>Updated Doc ID ' . $doc_id . ': ' . implode(', ', $updated_fields) . ' changed.</p></div>';
+                        $has_updates = true;
                     }
                 }
 
                 // Update taxonomies if changed
-                if (!empty($doccat_slug)) {
+                $current_doccat_terms = wp_get_post_terms($doc_id, 'doccat', array('fields' => 'slugs'));
+                if (!empty($doccat_slug) && (!in_array($doccat_slug, $current_doccat_terms))) {
                     $doccat_term = get_term_by('slug', $doccat_slug, 'doccat');
                     if ($doccat_term) {
                         $result = wp_set_post_terms($doc_id, [$doccat_term->term_id], 'doccat', false);
                         if (is_wp_error($result)) {
-                            echo '<div class="error"><p>Error updating Doc ID ' . $doc_id . ': Category change to ' . $doccat_slug . ' failed.</p></div>';
+                            $output_messages .= '<div class="error"><p>Error updating Doc ID ' . $doc_id . ': Category change to ' . $doccat_slug . ' failed.</p></div>';
                         } else {
-                            echo '<div class="updated"><p>Updated Doc ID ' . $doc_id . ': Category changed to ' . $doccat_slug . '.</p></div>';
+                            $output_messages .= '<div class="updated"><p>Updated Doc ID ' . $doc_id . ': Category changed to ' . $doccat_slug . '.</p></div>';
+                            $has_updates = true;
                         }
                     } else {
-                        echo '<div class="error"><p>Category ' . $doccat_slug . ' not found for Doc ID ' . $doc_id . '.</p></div>';
+                        $output_messages .= '<div class="error"><p>Category ' . $doccat_slug . ' not found for Doc ID ' . $doc_id . '.</p></div>';
                     }
                 }
 
-                if (!empty($doctype_slug)) {
+                $current_doctype_terms = wp_get_post_terms($doc_id, 'doctype', array('fields' => 'slugs'));
+                if (!empty($doctype_slug) && (!in_array($doctype_slug, $current_doctype_terms))) {
                     $doctype_term = get_term_by('slug', $doctype_slug, 'doctype');
                     if ($doctype_term) {
                         $result = wp_set_post_terms($doc_id, [$doctype_term->term_id], 'doctype', false);
                         if (is_wp_error($result)) {
-                            echo '<div class="error"><p>Error updating Doc ID ' . $doc_id . ': Type change to ' . $doctype_slug . ' failed.</p></div>';
+                            $output_messages .= '<div class="error"><p>Error updating Doc ID ' . $doc_id . ': Type change to ' . $doctype_slug . ' failed.</p></div>';
                         } else {
-                            echo '<div class="updated"><p>Updated Doc ID ' . $doc_id . ': Type changed to ' . $doctype_slug . '.</p></div>';
+                            $output_messages .= '<div class="updated"><p>Updated Doc ID ' . $doc_id . ': Type changed to ' . $doctype_slug . '.</p></div>';
+                            $has_updates = true;
                         }
                     } else {
-                        echo '<div class="error"><p>Type ' . $doctype_slug . ' not found for Doc ID ' . $doc_id . '.</p></div>';
+                        $output_messages .= '<div class="error"><p>Type ' . $doctype_slug . ' not found for Doc ID ' . $doc_id . '.</p></div>';
                     }
                 }
             } else {
-                echo '<div class="error"><p>Document with ID ' . $doc_id . ' not found.</p></div>';
+                $output_messages .= '<div class="error"><p>Document with ID ' . $doc_id . ' not found.</p></div>';
             }
         }
         fclose($handle);
         
-        // Close the details section
-        echo '</details>';
+        echo $output_messages;
 
         echo '<div class="updated"><p>CSV file processed successfully.</p></div>';
     } else {
         echo '<div class="error"><p>Please upload a valid CSV file.</p></div>';
     }
-
 }
+
 
 ?>
