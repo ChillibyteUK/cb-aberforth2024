@@ -21848,11 +21848,11 @@ header .dropdown.current-menu-item::after {
 
 .gform_required_legend,
 .gfield_required {
-  display: none;
+  display: none !important;
 }
 
 .ginput_container input {
-  border-radius: 0;
+  border-radius: 0 !important;
 }
 
 .home_hero {
