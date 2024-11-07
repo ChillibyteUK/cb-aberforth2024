@@ -31,14 +31,19 @@ function fileed_admin_page_html() {
         return; // Make sure no further HTML is output
     }
 
-    echo '<div class="wrap">';
-    echo '<h1>File Editor Admin</h1>';
-    echo '<p>Tool for bulk update of file titles, date, categories, etc.</p>';
-    echo '<p><strong>DO NOT</strong> modify Doc ID, File ID, or Filename fields in the CSV.<br>';
-    echo 'Modify the Title, Category, or Type as needed.</p>';
-    
+    ?>
+    <div class="wrap">
+        <h1>Document Meta Data Editor</h1>
+        <p>This tool is for bulk updating file titles, date, categories, etc.</p>
+        <div style="background-color: white; border: 1px solid #2271b1; padding: 1rem; width:max-content;">
+            <p>Download the CSV, modify the Title, Category, or Type as needed, then upload to implement the changes.</p>
+            <p style="background-color:yellow;display:inline;"><strong>DO NOT</strong> modify Doc ID, File ID, or Filename fields in the CSV.</p>
+        </div>
+        <h3>Accepted doccat and doctype slugs</h3>
+        <p>The category and type <em>must</em> match the slugs within the taxonomies</p>
+
+    <?php
     // LIST doccat and doctype TAXONOMY SLUGS HERE
-    echo '<h3>Acceptable doccat and doctype slugs:</h3>';
     echo '<ul>';
 
     // Get all terms for 'doccat' taxonomy
