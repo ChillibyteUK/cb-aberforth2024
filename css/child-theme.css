@@ -21846,6 +21846,11 @@ header .dropdown.current-menu-item::after {
   padding-inline-start: 0;
 }
 
+.gform_required_legend,
+.gfield_required {
+  display: none;
+}
+
 .home_hero {
   min-height: 450px;
   display: flex;
