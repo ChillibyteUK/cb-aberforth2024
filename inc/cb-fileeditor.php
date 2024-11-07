@@ -176,7 +176,6 @@ function fileed_download_csv() {
 
 // Function to handle CSV file upload and update posts
 function fileed_handle_file_upload() {
-    ob_start();
     if (!empty($_FILES['uploaded_csv']['tmp_name'])) {
         $file = $_FILES['uploaded_csv']['tmp_name'];
         $handle = fopen($file, 'r');
@@ -184,7 +183,9 @@ function fileed_handle_file_upload() {
         // Skip the header row
         fgetcsv($handle);
         
-        echo "<details><summary>Summary</summary>";
+        $output_messages = "";
+
+        $output_messages .= "<details><summary>Summary</summary>";
 
         // Loop through CSV rows
         while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
@@ -215,9 +216,9 @@ function fileed_handle_file_upload() {
                 if (!empty($updated_fields)) {
                     $result = wp_update_post($updated_post, true);
                     if (is_wp_error($result)) {
-                        echo '<div class="error"><p>Error updating Doc ID ' . $doc_id . ': ' . $result->get_error_message() . '</p></div>';
+                        $output_messages .= '<div class="error"><p>Error updating Doc ID ' . $doc_id . ': ' . $result->get_error_message() . '</p></div>';
                     } else {
-                        echo '<div class="updated"><p>Updated Doc ID ' . $doc_id . ': ' . implode(', ', $updated_fields) . ' changed.</p></div>';
+                        $output_messages .= '<div class="updated"><p>Updated Doc ID ' . $doc_id . ': ' . implode(', ', $updated_fields) . ' changed.</p></div>';
                     }
                 }
 
@@ -227,12 +228,12 @@ function fileed_handle_file_upload() {
                     if ($doccat_term) {
                         $result = wp_set_post_terms($doc_id, [$doccat_term->term_id], 'doccat', false);
                         if (is_wp_error($result)) {
-                            echo '<div class="error"><p>Error updating Doc ID ' . $doc_id . ': Category change to ' . $doccat_slug . ' failed.</p></div>';
+                            $output_messages .= '<div class="error"><p>Error updating Doc ID ' . $doc_id . ': Category change to ' . $doccat_slug . ' failed.</p></div>';
                         } else {
-                            echo '<div class="updated"><p>Updated Doc ID ' . $doc_id . ': Category changed to ' . $doccat_slug . '.</p></div>';
+                            $output_messages .= '<div class="updated"><p>Updated Doc ID ' . $doc_id . ': Category changed to ' . $doccat_slug . '.</p></div>';
                         }
                     } else {
-                        echo '<div class="error"><p>Category ' . $doccat_slug . ' not found for Doc ID ' . $doc_id . '.</p></div>';
+                        $output_messages .= '<div class="error"><p>Category ' . $doccat_slug . ' not found for Doc ID ' . $doc_id . '.</p></div>';
                     }
                 }
 
@@ -241,28 +242,30 @@ function fileed_handle_file_upload() {
                     if ($doctype_term) {
                         $result = wp_set_post_terms($doc_id, [$doctype_term->term_id], 'doctype', false);
                         if (is_wp_error($result)) {
-                            echo '<div class="error"><p>Error updating Doc ID ' . $doc_id . ': Type change to ' . $doctype_slug . ' failed.</p></div>';
+                            $output_messages .= '<div class="error"><p>Error updating Doc ID ' . $doc_id . ': Type change to ' . $doctype_slug . ' failed.</p></div>';
                         } else {
-                            echo '<div class="updated"><p>Updated Doc ID ' . $doc_id . ': Type changed to ' . $doctype_slug . '.</p></div>';
+                            $output_messages .= '<div class="updated"><p>Updated Doc ID ' . $doc_id . ': Type changed to ' . $doctype_slug . '.</p></div>';
                         }
                     } else {
-                        echo '<div class="error"><p>Type ' . $doctype_slug . ' not found for Doc ID ' . $doc_id . '.</p></div>';
+                        $output_messages .= '<div class="error"><p>Type ' . $doctype_slug . ' not found for Doc ID ' . $doc_id . '.</p></div>';
                     }
                 }
             } else {
-                echo '<div class="error"><p>Document with ID ' . $doc_id . ' not found.</p></div>';
+                $output_messages .= '<div class="error"><p>Document with ID ' . $doc_id . ' not found.</p></div>';
             }
         }
         fclose($handle);
         
-        echo '</details>';
+        $output_messages .= '</details>';
 
-        echo '<div class="updated"><p>CSV file processed successfully.</p></div>';
+        $output_messages .= '<div class="updated"><p>CSV file processed successfully.</p></div>';
+
+        echo $output_messages;
+        
     } else {
         echo '<div class="error"><p>Please upload a valid CSV file.</p></div>';
     }
 
-    ob_get_clean();
 }
 
 ?>
