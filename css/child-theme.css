@@ -21698,7 +21698,7 @@ strong, .fw-bold, .fw-500 {
   background-color: var(--col-blue-200);
 }
 
-.button, .wp-block-search__button {
+.button, .wp-block-search__button, .gform_button.wp-block-search__button, .gform_button.button {
   border-radius: 100vw;
   min-width: 274px;
   display: inline-block;
@@ -21853,6 +21853,10 @@ header .dropdown.current-menu-item::after {
 
 .ginput_container input {
   border-radius: 0 !important;
+}
+
+.gfield_label {
+  font-weight: var(--fw-400) !important;
 }
 
 .home_hero {

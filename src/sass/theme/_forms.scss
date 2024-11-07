@@ -6,3 +6,10 @@
 .ginput_container input {
     border-radius: 0 !important;
 }
+.gfield_label {
+    font-weight: var(--fw-400) !important;
+}
+
+.gform_button.button {
+    @extend .button;
+}
