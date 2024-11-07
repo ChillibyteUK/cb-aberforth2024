@@ -21859,6 +21859,15 @@ header .dropdown.current-menu-item::after {
   font-weight: var(--fw-400) !important;
 }
 
+.gform_button.button, .gform_button.wp-block-search__button {
+  border-radius: 100vw;
+  flex-basis: 274px;
+  font-weight: var(--fw-400);
+  padding: 0.75rem 1rem;
+  line-height: 22.4px;
+  font-size: 1rem;
+}
+
 .home_hero {
   min-height: 450px;
   display: flex;
