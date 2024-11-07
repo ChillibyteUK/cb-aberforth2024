@@ -176,6 +176,7 @@ function fileed_download_csv() {
 
 // Function to handle CSV file upload and update posts
 function fileed_handle_file_upload() {
+    ob_start();
     if (!empty($_FILES['uploaded_csv']['tmp_name'])) {
         $file = $_FILES['uploaded_csv']['tmp_name'];
         $handle = fopen($file, 'r');
@@ -261,6 +262,7 @@ function fileed_handle_file_upload() {
         echo '<div class="error"><p>Please upload a valid CSV file.</p></div>';
     }
 
+    ob_get_clean();
 }
 
 ?>
