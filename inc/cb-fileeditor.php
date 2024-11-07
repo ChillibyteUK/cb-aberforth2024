@@ -11,7 +11,7 @@ function fileed_admin_menu() {
         'fileed-admin-page',        // Menu slug
         'fileed_admin_page_html',   // Function to display the page content
         'dashicons-admin-generic',     // Icon (optional, can be dashicons or custom URL)
-        6                              // Position in the menu order
+        99                              // Position in the menu order
     );
 }
 
