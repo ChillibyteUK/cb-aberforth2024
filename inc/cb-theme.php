@@ -267,21 +267,28 @@ function add_custom_menu_item($items, $args)
 add_filter('wp_nav_menu_items', 'add_custom_menu_item', 10, 2);
 
 
-// pricing data job
-// Add custom interval for cron jobs (2 minutes)
-function custom_cron_schedule($schedules)
-{
+// pricing and feed data jobs
+// Add custom interval for cron jobs
+function custom_cron_schedule($schedules) {
+    // Pricing Data
     if (!isset($schedules["2min"])) {
         $schedules["2min"] = array(
-            'interval' => 120, // 120 seconds = 2 minutes
+            'interval' => 120, // 2 minutes in seconds
             'display'  => __('Every 2 Minutes')
+        );
+    }
+    // Feed Data
+    if (!isset($schedules["6hours"])) {
+        $schedules["6hours"] = array(
+            'interval' => 6 * 3600, // 6 hours in seconds
+            'display'  => __('Every 6 Hours')
         );
     }
     return $schedules;
 }
 add_filter('cron_schedules', 'custom_cron_schedule');
 
-// Schedule the event if it's not already scheduled
+// Schedule the pricing event if it's not already scheduled
 function schedule_pricing_check()
 {
     if (!wp_next_scheduled('check_pricing_data')) {
@@ -290,7 +297,16 @@ function schedule_pricing_check()
 }
 add_action('wp', 'schedule_pricing_check');
 
-// Fetch data from both URLs and update respective options
+// Schedule the feed event if it's not already scheduled
+function schedule_feed_download() {
+    if (!wp_next_scheduled('download_feed_files')) {
+        wp_schedule_event(time(), '6hours', 'download_feed_files');
+    }
+}
+add_action('wp', 'schedule_feed_download');
+
+
+// Fetch data from both Pricing URLs and update respective options
 function fetch_and_update_pricing_data()
 {
     // Feed URLs
@@ -376,6 +392,78 @@ function display_pricing_data_status()
 }
 add_shortcode('pricing_data_status', 'display_pricing_data_status');
 
+// CSV Feed
+function fetch_and_save_feed_files() {
+    $urls = [
+        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Dividends/AFUND_Dividends.csv',
+        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Dividends/AGVIT_Dividends.csv',
+        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Dividends/ASCOT_Dividends.csv',
+        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Dividends/ASLIT_Dividends.csv',
+        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/IndustryWeights/AFUND_IndustryWeights.csv',
+        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/IndustryWeights/AGVIT_IndustryWeights.csv',
+        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/IndustryWeights/ASCOT_IndustryWeights.csv',
+        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/IndustryWeights/ASLIT_IndustryWeights.csv',
+        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Performance/AFUND_CompoundPerformance.csv',
+        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Performance/AFUND_CumulativePerformance.csv',
+        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Performance/AFUND_DiscretePerformance.csv',
+        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Performance/AGVIT_CompoundPerformance.csv',
+        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Performance/AGVIT_CumulativePerformance.csv',
+        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Performance/AGVIT_DiscretePerformance.csv',
+        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Performance/ASCOT_CompoundPerformance.csv',
+        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Performance/ASCOT_CumulativePerformance.csv',
+        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Performance/ASCOT_DiscretePerformance.csv',
+        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Performance/ASLIT_CompoundPerformance.csv',
+        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Performance/ASLIT_CumulativePerformance.csv',
+        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Performance/ASLIT_DiscretePerformance.csv',
+        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/PortfolioHoldings/AFUND_PortfolioHoldings.csv',
+        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/PortfolioHoldings/AGVIT_PortfolioHoldings.csv',
+        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/PortfolioHoldings/ASCOT_PortfolioHoldings.csv',
+        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/PortfolioHoldings/ASLIT_PortfolioHoldings.csv',
+    ];
+    
+    foreach ($urls as $url) {
+        $response = wp_remote_get($url);
+        
+        if (is_wp_error($response)) {
+            error_log("Failed to download $url: " . $response->get_error_message());
+            continue;
+        }
+        
+        $file_content = wp_remote_retrieve_body($response);
+        if (empty($file_content)) {
+            error_log("Empty file or error retrieving content from $url");
+            continue;
+        }
+        
+        $file_name = basename($url);
+        // $upload_dir = wp_upload_dir();
+        // $file_path = $upload_dir['basedir'] . '/feed/' . $file_name;
+
+        // if (!file_exists($upload_dir['basedir'] . '/feed')) {
+        //     wp_mkdir_p($upload_dir['basedir'] . '/feed');
+        // }
+        $file_path = $_SERVER['DOCUMENT_ROOT'] . '/feed/' . $file_name;
+
+        if (!file_exists($_SERVER['DOCUMENT_ROOT'] . '/feed')) {
+            mkdir($_SERVER['DOCUMENT_ROOT'] . '/feed', 0755, true);
+        }
+
+        file_put_contents($file_path, $file_content);
+    }
+}
+add_action('download_feed_files', 'fetch_and_save_feed_files');
+
+
+// manual trigger
+// http://aberforth.local/?trigger_feed_download=run
+function trigger_feed_download() {
+    if (isset($_GET['trigger_feed_download']) && $_GET['trigger_feed_download'] == 'run') {
+        fetch_and_save_feed_files();
+        echo 'Feed files have been fetched and saved.';
+        exit;
+    }
+}
+add_action('init', 'trigger_feed_download');
 
 // DOCUMENT LIBRARY TAXONOMY DOMINE
 
@@ -510,7 +598,6 @@ add_action('before_delete_post', 'delete_pdf_on_document_delete');
 // filterable document tax columns
 
 // Add taxonomy filters to the admin list view for the 'document' post type
-// Add taxonomy filters to the admin list view for the 'document' post type
 add_action('restrict_manage_posts', 'add_document_taxonomy_filters');
 function add_document_taxonomy_filters() {
     global $typenow;
@@ -595,231 +682,4 @@ function filter_documents_by_taxonomy($query) {
 }
 
 
-
-// pre move to CPT
-// function enqueue_custom_taxonomy_modal_script()
-// {
-//     // Enqueue the script only in the admin
-//     if (is_admin()) {
-//         wp_enqueue_script(
-//             'custom-taxonomy-modal',
-//             get_stylesheet_directory_uri() . '/js/custom-taxonomy-modal.js',
-//             array('jquery'),
-//             false,
-//             true
-//         );
-//     }
-// }
-// add_action('admin_enqueue_scripts', 'enqueue_custom_taxonomy_modal_script');
-
-// function fetch_taxonomy_terms_for_modal()
-// {
-//     $attachment_id = intval($_POST['attachment_id']);
-//     $taxonomy = sanitize_text_field($_POST['taxonomy']);
-
-//     if (!empty($taxonomy) && taxonomy_exists($taxonomy)) {
-//         $terms = get_terms(array(
-//             'taxonomy' => $taxonomy,
-//             'hide_empty' => false,
-//         ));
-
-//         $selected_terms = wp_get_object_terms($attachment_id, $taxonomy, array('fields' => 'ids'));
-
-//         ob_start();
-//         foreach ($terms as $term) {
-//             echo '<label>';
-//             echo '<input type="checkbox" name="attachments[' . esc_attr($attachment_id) . '][' . esc_attr($taxonomy) . '][]" value="' . esc_attr($term->term_id) . '" ' . checked(in_array($term->term_id, $selected_terms), true, false) . '>';
-//             echo esc_html($term->name);
-//             echo '</label><br>';
-//         }
-//         $terms_html = ob_get_clean();
-
-//         wp_send_json_success(array('terms_html' => $terms_html));
-//     }
-
-//     wp_send_json_error();
-// }
-// add_action('wp_ajax_fetch_taxonomy_terms', 'fetch_taxonomy_terms_for_modal');
-
-// function save_taxonomy_terms_for_attachments($post_id)
-// {
-//     // Check if this is an attachment
-//     if (get_post_type($post_id) !== 'attachment') {
-//         return;
-//     }
-
-//     // Define the taxonomies you want to save
-//     $taxonomies = ['doccat', 'doctype']; // Add your taxonomy slugs here
-
-//     foreach ($taxonomies as $taxonomy) {
-//         // Check if the taxonomy input is set and save the terms
-//         if (isset($_POST['attachments'][$post_id][$taxonomy])) {
-//             $terms = $_POST['attachments'][$post_id][$taxonomy];
-//             if (is_array($terms)) {
-//                 // Save the taxonomy terms
-//                 wp_set_object_terms($post_id, array_map('intval', $terms), $taxonomy, false);
-//             }
-//         } else {
-//             // If no terms are set, remove all terms for this taxonomy
-//             wp_set_object_terms($post_id, [], $taxonomy, false);
-//         }
-//     }
-// }
-// add_action('edit_attachment', 'save_taxonomy_terms_for_attachments');
-
-// function update_attachment_taxonomies($post_id) {
-//     if (get_post_type($post_id) === 'attachment') {
-//         if (isset($_POST['tax_input']['doccat'])) {
-//             wp_set_object_terms($post_id, $_POST['tax_input']['doccat'], 'doccat');
-//         }
-//         if (isset($_POST['tax_input']['doctype'])) {
-//             wp_set_object_terms($post_id, $_POST['tax_input']['doctype'], 'doctype');
-//         }
-//     }
-// }
-// add_action('edit_attachment', 'update_attachment_taxonomies');
-
-// DOC LIBRARY SEARCH REGISTRATION
-// Add a rewrite rule to ensure the search query on a specific page works as expected.
-// add_action('init', 'add_custom_search_rewrite_rule');
-// function add_custom_search_rewrite_rule()
-// {
-//     add_rewrite_rule(
-//         '^literature-library/([^/]*)/?',
-//         'index.php?pagename=literature-library&s=$matches[1]',
-//         'top'
-//     );
-//     flush_rewrite_rules();
-// }
-
-// // Allow the 's' query variable for our specific template.
-// add_filter('query_vars', 'add_custom_query_vars');
-// function add_custom_query_vars($vars)
-// {
-//     $vars[] = 's'; // Adding the search query var so it's properly recognized.
-//     return $vars;
-// }
-
-
-// add_action('template_redirect', 'debug_custom_template');
-// function debug_custom_template()
-// {
-//     if (is_404()) {
-//         error_log('DEBUG: 404 triggered with URL: ' . $_SERVER['REQUEST_URI']);
-//     }
-// }
-
-// add_filter('template_include', 'use_literature_library_template', 99);
-// function use_literature_library_template($template)
-// {
-//     if (is_page('literature-library') && isset($_GET['s'])) {
-//         $new_template = locate_template(array('page-templates/literature_library.php'));
-//         if ($new_template) {
-//             return $new_template;
-//         }
-//     }
-//     return $template;
-// }
-
-/*
-add_action('pre_get_posts', 'add_search_to_custom_template');
-function add_search_to_custom_template($query)
-{
-    // Ensure it's the main query and we're on the right page
-    if (!is_admin() && $query->is_main_query() && (is_page('literature-library') || isset($_GET['s']))) {
-        // Set the post type to attachments and status to inherit for search queries on this page
-        if (isset($_GET['s']) && !empty($_GET['s'])) {
-            $query->set('post_type', 'attachment');
-            $query->set('post_status', 'inherit');
-        }
-    }
-}
-
-add_action('init', 'custom_search_rewrite_rule');
-function custom_search_rewrite_rule()
-{
-    add_rewrite_rule(
-        '^literature-library/?$',
-        'index.php?pagename=literature-library',
-        'top'
-    );
-    flush_rewrite_rules();
-}
-
-add_action('template_redirect', 'custom_template_redirect');
-function custom_template_redirect()
-{
-    if (is_page('literature-library') && get_query_var('s')) {
-        // Force WordPress to use the template for search queries on this page
-        include(get_page_template());
-        exit;
-    }
-}
-
-function add_query_vars_filter($vars)
-{
-    $vars[] = "s";
-    return $vars;
-}
-add_filter('query_vars', 'add_query_vars_filter');
-
-add_filter('template_include', 'use_literature_template_for_search', 99);
-function use_literature_template_for_search($template)
-{
-    if (is_page('literature-library') && get_query_var('s')) {
-        $new_template = locate_template(array('page-templates/literature_library.php'));
-        if ($new_template) {
-            return $new_template;
-        }
-    }
-    return $template;
-}
-    
-*/
-
-
-// black thumbnails - fix alpha channel
-/**
- * Patch to prevent black PDF backgrounds.
- *
- * https://core.trac.wordpress.org/ticket/45982
- */
-// require_once ABSPATH . 'wp-includes/class-wp-image-editor.php';
-// require_once ABSPATH . 'wp-includes/class-wp-image-editor-imagick.php';
-
-// // phpcs:ignore PSR1.Classes.ClassDeclaration.MissingNamespace
-// final class ExtendedWpImageEditorImagick extends WP_Image_Editor_Imagick
-// {
-//     /**
-//      * Add properties to the image produced by Ghostscript to prevent black PDF backgrounds.
-//      *
-//      * @return true|WP_error
-//      */
-//     // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
-//     protected function pdf_load_source()
-//     {
-//         $loaded = parent::pdf_load_source();
-
-//         try {
-//             $this->image->setImageAlphaChannel(Imagick::ALPHACHANNEL_REMOVE);
-//             $this->image->setBackgroundColor('#ffffff');
-//         } catch (Exception $exception) {
-//             error_log($exception->getMessage());
-//         }
-
-//         return $loaded;
-//     }
-// }
-
-// /**
-//  * Filters the list of image editing library classes to prevent black PDF backgrounds.
-//  *
-//  * @param array $editors
-//  * @return array
-//  */
-// add_filter('wp_image_editors', function (array $editors): array {
-//     array_unshift($editors, ExtendedWpImageEditorImagick::class);
-
-//     return $editors;
-// });
 ?>
