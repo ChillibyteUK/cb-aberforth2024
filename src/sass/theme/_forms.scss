@@ -26,7 +26,10 @@
 }
 
 .ginput_container {
-    input, textarea {
+    input:not([type="checkbox"]), textarea {
         @extend .form-control;
+    }
+    input[type="checkbox"] {
+        @extend .form-check;
     }
 }
