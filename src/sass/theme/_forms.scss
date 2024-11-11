@@ -25,8 +25,8 @@
     font-size: 1rem;
 }
 
-.ginput_container.ginput_container_text {
-    input {
+.ginput_container {
+    input, textarea {
         @extend .form-control;
     }
 }
