@@ -13,18 +13,18 @@
                         <div class="stats">
                             <div class="stats--ascot">
                                 <div class="stats__title">TOTAL ASSETS</div>
-                                <div class="stats__value">&pound;<?=get_field('ascot_total_assets')?>M</div>
-                                <div class="stats__date"><?=get_field('ascot_total_assets_date')?></div>
+                                <div class="stats__value">&pound;<?=get_field('ascot_total_assets','option')?>M</div>
+                                <div class="stats__date"><?=get_field('ascot_total_assets_date','option')?></div>
                             </div>
                             <div class="stats--ascot">
                                 <div class="stats__title">EST. NAV</div>
-                                <div class="stats__value"><?=get_field('ascot_est_nav')?>%</div>
-                                <div class="stats__date"><?=get_field('ascot_est_nav_date')?></div>
+                                <div class="stats__value"><?=get_field('ascot_est_nav','option')?>%</div>
+                                <div class="stats__date"><?=get_field('ascot_est_nav_date','option')?></div>
                             </div>
                             <div class="stats--ascot">
                                 <div class="stats__title">YIELD</div>
-                                <div class="stats__value"><?=get_field('ascot_yield')?>%</div>
-                                <div class="stats__date"><?=get_field('ascot_yield_date')?></div>
+                                <div class="stats__value"><?=get_field('ascot_yield','option')?>%</div>
+                                <div class="stats__date"><?=get_field('ascot_yield_date','option')?></div>
                             </div>
                         </div>
                         <div class="text-end">

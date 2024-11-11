@@ -307,6 +307,132 @@
             "bidirectional_target": []
         },
         {
+            "key": "field_671a642b0c19f",
+            "label": "ASCOT Total Assets",
+            "name": "ascot_total_assets",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "min": "",
+            "max": "",
+            "allow_in_bindings": 0,
+            "placeholder": "",
+            "step": "",
+            "prepend": "£",
+            "append": "m"
+        },
+        {
+            "key": "field_671a64480c1a0",
+            "label": "ASCOT Est Nav",
+            "name": "ascot_est_nav",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "min": "",
+            "max": "",
+            "allow_in_bindings": 0,
+            "placeholder": "",
+            "step": "",
+            "prepend": "",
+            "append": "%"
+        },
+        {
+            "key": "field_671a64550c1a1",
+            "label": "ASCOT Yield",
+            "name": "ascot_yield",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "min": "",
+            "max": "",
+            "allow_in_bindings": 0,
+            "placeholder": "",
+            "step": "",
+            "prepend": "",
+            "append": "%"
+        },
+        {
+            "key": "field_671a647f00007",
+            "label": "ASCOT Total Assets Date",
+            "name": "ascot_total_assets_date",
+            "aria-label": "",
+            "type": "date_picker",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "display_format": "d\/m\/Y",
+            "return_format": "j M Y",
+            "first_day": 1,
+            "allow_in_bindings": 0
+        },
+        {
+            "key": "field_671a64c3d0c99",
+            "label": "ASCOT Est Nav Date",
+            "name": "ascot_est_nav_date",
+            "aria-label": "",
+            "type": "date_picker",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "display_format": "d\/m\/Y",
+            "return_format": "j M Y",
+            "first_day": 1,
+            "allow_in_bindings": 0
+        },
+        {
+            "key": "field_671a64e3d0c9a",
+            "label": "ASCOT Yield Date",
+            "name": "ascot_yield_date",
+            "aria-label": "",
+            "type": "date_picker",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "33",
+                "class": "",
+                "id": ""
+            },
+            "display_format": "d\/m\/Y",
+            "return_format": "j M Y",
+            "first_day": 1,
+            "allow_in_bindings": 0
+        },
+        {
             "key": "field_671295a6a539a",
             "label": "Aberforth Geared Value & Income Trust plc",
             "name": "",
@@ -559,5 +685,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1731326522
+    "modified": 1731335532
 }
