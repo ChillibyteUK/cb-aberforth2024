@@ -2038,7 +2038,7 @@ progress {
   color: #6c757d;
 }
 
-.form-control {
+.form-control, .ginput_container.ginput_container_text input {
   display: block;
   width: 100%;
   padding: 0.375rem 0.75rem;
@@ -2056,39 +2056,39 @@ progress {
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 @media (prefers-reduced-motion: reduce) {
-  .form-control {
+  .form-control, .ginput_container.ginput_container_text input {
     transition: none;
   }
 }
-.form-control[type=file] {
+.form-control[type=file], .ginput_container.ginput_container_text input[type=file] {
   overflow: hidden;
 }
-.form-control[type=file]:not(:disabled):not([readonly]) {
+.form-control[type=file]:not(:disabled):not([readonly]), .ginput_container.ginput_container_text input[type=file]:not(:disabled):not([readonly]) {
   cursor: pointer;
 }
-.form-control:focus {
+.form-control:focus, .ginput_container.ginput_container_text input:focus {
   color: #212529;
   background-color: #fff;
   border-color: #aebfce;
   outline: 0;
   box-shadow: 0 0 0 0.25rem rgba(93, 127, 156, 0.25);
 }
-.form-control::-webkit-date-and-time-value {
+.form-control::-webkit-date-and-time-value, .ginput_container.ginput_container_text input::-webkit-date-and-time-value {
   height: 1.5em;
 }
-.form-control::-moz-placeholder {
+.form-control::-moz-placeholder, .ginput_container.ginput_container_text input::-moz-placeholder {
   color: #6c757d;
   opacity: 1;
 }
-.form-control::placeholder {
+.form-control::placeholder, .ginput_container.ginput_container_text input::placeholder {
   color: #6c757d;
   opacity: 1;
 }
-.form-control:disabled {
+.form-control:disabled, .ginput_container.ginput_container_text input:disabled {
   background-color: #e9ecef;
   opacity: 1;
 }
-.form-control::file-selector-button {
+.form-control::file-selector-button, .ginput_container.ginput_container_text input::file-selector-button {
   padding: 0.375rem 0.75rem;
   margin: -0.375rem -0.75rem;
   -webkit-margin-end: 0.75rem;
@@ -2104,11 +2104,11 @@ progress {
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 @media (prefers-reduced-motion: reduce) {
-  .form-control::file-selector-button {
+  .form-control::file-selector-button, .ginput_container.ginput_container_text input::file-selector-button {
     transition: none;
   }
 }
-.form-control:hover:not(:disabled):not([readonly])::file-selector-button {
+.form-control:hover:not(:disabled):not([readonly])::file-selector-button, .ginput_container.ginput_container_text input:hover:not(:disabled):not([readonly])::file-selector-button {
   background-color: #dde0e3;
 }
 
@@ -2466,7 +2466,7 @@ textarea.form-control-lg {
 .form-floating {
   position: relative;
 }
-.form-floating > .form-control,
+.form-floating > .form-control, .ginput_container.ginput_container_text .form-floating > input,
 .form-floating > .form-control-plaintext,
 .form-floating > .form-select {
   height: calc(3.5rem + 2px);
@@ -2493,28 +2493,28 @@ textarea.form-control-lg {
     transition: none;
   }
 }
-.form-floating > .form-control,
+.form-floating > .form-control, .ginput_container.ginput_container_text .form-floating > input,
 .form-floating > .form-control-plaintext {
   padding: 1rem 0.75rem;
 }
-.form-floating > .form-control::-moz-placeholder, .form-floating > .form-control-plaintext::-moz-placeholder {
+.form-floating > .form-control::-moz-placeholder, .ginput_container.ginput_container_text .form-floating > input::-moz-placeholder, .form-floating > .form-control-plaintext::-moz-placeholder {
   color: transparent;
 }
-.form-floating > .form-control::placeholder,
+.form-floating > .form-control::placeholder, .ginput_container.ginput_container_text .form-floating > input::placeholder,
 .form-floating > .form-control-plaintext::placeholder {
   color: transparent;
 }
-.form-floating > .form-control:not(:-moz-placeholder-shown), .form-floating > .form-control-plaintext:not(:-moz-placeholder-shown) {
+.form-floating > .form-control:not(:-moz-placeholder-shown), .ginput_container.ginput_container_text .form-floating > input:not(:-moz-placeholder-shown), .form-floating > .form-control-plaintext:not(:-moz-placeholder-shown) {
   padding-top: 1.625rem;
   padding-bottom: 0.625rem;
 }
-.form-floating > .form-control:focus, .form-floating > .form-control:not(:placeholder-shown),
+.form-floating > .form-control:focus, .ginput_container.ginput_container_text .form-floating > input:focus, .form-floating > .form-control:not(:placeholder-shown), .ginput_container.ginput_container_text .form-floating > input:not(:placeholder-shown),
 .form-floating > .form-control-plaintext:focus,
 .form-floating > .form-control-plaintext:not(:placeholder-shown) {
   padding-top: 1.625rem;
   padding-bottom: 0.625rem;
 }
-.form-floating > .form-control:-webkit-autofill,
+.form-floating > .form-control:-webkit-autofill, .ginput_container.ginput_container_text .form-floating > input:-webkit-autofill,
 .form-floating > .form-control-plaintext:-webkit-autofill {
   padding-top: 1.625rem;
   padding-bottom: 0.625rem;
@@ -2523,18 +2523,19 @@ textarea.form-control-lg {
   padding-top: 1.625rem;
   padding-bottom: 0.625rem;
 }
-.form-floating > .form-control:not(:-moz-placeholder-shown) ~ label {
+.form-floating > .form-control:not(:-moz-placeholder-shown) ~ label, .ginput_container.ginput_container_text .form-floating > input:not(:-moz-placeholder-shown) ~ label {
   opacity: 0.65;
   transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
 }
-.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:focus ~ label, .ginput_container.ginput_container_text .form-floating > input:focus ~ label,
 .form-floating > .form-control:not(:placeholder-shown) ~ label,
+.ginput_container.ginput_container_text .form-floating > input:not(:placeholder-shown) ~ label,
 .form-floating > .form-control-plaintext ~ label,
 .form-floating > .form-select ~ label {
   opacity: 0.65;
   transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
 }
-.form-floating > .form-control:-webkit-autofill ~ label {
+.form-floating > .form-control:-webkit-autofill ~ label, .ginput_container.ginput_container_text .form-floating > input:-webkit-autofill ~ label {
   opacity: 0.65;
   transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
 }
@@ -2549,7 +2550,7 @@ textarea.form-control-lg {
   align-items: stretch;
   width: 100%;
 }
-.input-group > .form-control,
+.input-group > .form-control, .ginput_container.ginput_container_text .input-group > input,
 .input-group > .form-select,
 .input-group > .form-floating {
   position: relative;
@@ -2557,7 +2558,7 @@ textarea.form-control-lg {
   width: 1%;
   min-width: 0;
 }
-.input-group > .form-control:focus,
+.input-group > .form-control:focus, .ginput_container.ginput_container_text .input-group > input:focus,
 .input-group > .form-select:focus,
 .input-group > .form-floating:focus-within {
   z-index: 5;
@@ -2585,7 +2586,7 @@ textarea.form-control-lg {
   border-radius: 0.375rem;
 }
 
-.input-group-lg > .form-control,
+.input-group-lg > .form-control, .ginput_container.ginput_container_text .input-group-lg > input,
 .input-group-lg > .form-select,
 .input-group-lg > .input-group-text,
 .input-group-lg > .btn {
@@ -2594,7 +2595,7 @@ textarea.form-control-lg {
   border-radius: 0.5rem;
 }
 
-.input-group-sm > .form-control,
+.input-group-sm > .form-control, .ginput_container.ginput_container_text .input-group-sm > input,
 .input-group-sm > .form-select,
 .input-group-sm > .input-group-text,
 .input-group-sm > .btn {
@@ -2611,6 +2612,7 @@ textarea.form-control-lg {
 .input-group:not(.has-validation) > :not(:last-child):not(.dropdown-toggle):not(.dropdown-menu):not(.form-floating),
 .input-group:not(.has-validation) > .dropdown-toggle:nth-last-child(n+3),
 .input-group:not(.has-validation) > .form-floating:not(:last-child) > .form-control,
+.ginput_container.ginput_container_text .input-group:not(.has-validation) > .form-floating:not(:last-child) > input,
 .input-group:not(.has-validation) > .form-floating:not(:last-child) > .form-select {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
@@ -2618,6 +2620,7 @@ textarea.form-control-lg {
 .input-group.has-validation > :nth-last-child(n+3):not(.dropdown-toggle):not(.dropdown-menu):not(.form-floating),
 .input-group.has-validation > .dropdown-toggle:nth-last-child(n+4),
 .input-group.has-validation > .form-floating:nth-last-child(n+3) > .form-control,
+.ginput_container.ginput_container_text .input-group.has-validation > .form-floating:nth-last-child(n+3) > input,
 .input-group.has-validation > .form-floating:nth-last-child(n+3) > .form-select {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
@@ -2627,7 +2630,7 @@ textarea.form-control-lg {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
 }
-.input-group > .form-floating:not(:first-child) > .form-control,
+.input-group > .form-floating:not(:first-child) > .form-control, .ginput_container.ginput_container_text .input-group > .form-floating:not(:first-child) > input,
 .input-group > .form-floating:not(:first-child) > .form-select {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
@@ -2662,7 +2665,7 @@ textarea.form-control-lg {
   display: block;
 }
 
-.was-validated .form-control:valid, .form-control.is-valid {
+.was-validated .form-control:valid, .was-validated .ginput_container.ginput_container_text input:valid, .ginput_container.ginput_container_text .was-validated input:valid, .form-control.is-valid, .ginput_container.ginput_container_text input.is-valid {
   border-color: #198754;
   padding-right: calc(1.5em + 0.75rem);
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23198754' d='M2.3 6.73.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
@@ -2670,7 +2673,7 @@ textarea.form-control-lg {
   background-position: right calc(0.375em + 0.1875rem) center;
   background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
 }
-.was-validated .form-control:valid:focus, .form-control.is-valid:focus {
+.was-validated .form-control:valid:focus, .was-validated .ginput_container.ginput_container_text input:valid:focus, .ginput_container.ginput_container_text .was-validated input:valid:focus, .form-control.is-valid:focus, .ginput_container.ginput_container_text input.is-valid:focus {
   border-color: #198754;
   box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
 }
@@ -2715,7 +2718,7 @@ textarea.form-control-lg {
   margin-left: 0.5em;
 }
 
-.was-validated .input-group > .form-control:not(:focus):valid, .input-group > .form-control:not(:focus).is-valid,
+.was-validated .input-group > .form-control:not(:focus):valid, .was-validated .ginput_container.ginput_container_text .input-group > input:not(:focus):valid, .ginput_container.ginput_container_text .was-validated .input-group > input:not(:focus):valid, .input-group > .form-control:not(:focus).is-valid, .ginput_container.ginput_container_text .input-group > input:not(:focus).is-valid,
 .was-validated .input-group > .form-select:not(:focus):valid,
 .input-group > .form-select:not(:focus).is-valid,
 .was-validated .input-group > .form-floating:not(:focus-within):valid,
@@ -2752,7 +2755,7 @@ textarea.form-control-lg {
   display: block;
 }
 
-.was-validated .form-control:invalid, .form-control.is-invalid {
+.was-validated .form-control:invalid, .was-validated .ginput_container.ginput_container_text input:invalid, .ginput_container.ginput_container_text .was-validated input:invalid, .form-control.is-invalid, .ginput_container.ginput_container_text input.is-invalid {
   border-color: #dc3545;
   padding-right: calc(1.5em + 0.75rem);
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
@@ -2760,7 +2763,7 @@ textarea.form-control-lg {
   background-position: right calc(0.375em + 0.1875rem) center;
   background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
 }
-.was-validated .form-control:invalid:focus, .form-control.is-invalid:focus {
+.was-validated .form-control:invalid:focus, .was-validated .ginput_container.ginput_container_text input:invalid:focus, .ginput_container.ginput_container_text .was-validated input:invalid:focus, .form-control.is-invalid:focus, .ginput_container.ginput_container_text input.is-invalid:focus {
   border-color: #dc3545;
   box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
 }
@@ -2805,7 +2808,7 @@ textarea.form-control-lg {
   margin-left: 0.5em;
 }
 
-.was-validated .input-group > .form-control:not(:focus):invalid, .input-group > .form-control:not(:focus).is-invalid,
+.was-validated .input-group > .form-control:not(:focus):invalid, .was-validated .ginput_container.ginput_container_text .input-group > input:not(:focus):invalid, .ginput_container.ginput_container_text .was-validated .input-group > input:not(:focus):invalid, .input-group > .form-control:not(:focus).is-invalid, .ginput_container.ginput_container_text .input-group > input:not(:focus).is-invalid,
 .was-validated .input-group > .form-select:not(:focus):invalid,
 .input-group > .form-select:not(:focus).is-invalid,
 .was-validated .input-group > .form-floating:not(:focus-within):invalid,
@@ -22465,7 +22468,7 @@ th {
   font-size: var(--fs-300);
   border-bottom: 1px solid var(--col-grey-200);
 }
-.literature_library .library-search .form-control {
+.literature_library .library-search .form-control, .literature_library .library-search .ginput_container.ginput_container_text input, .ginput_container.ginput_container_text .literature_library .library-search input {
   height: 44px;
   border-radius: 0;
 }
@@ -22567,7 +22570,7 @@ th {
   margin-bottom: 1em;
 }
 
-.form-control {
+.form-control, .ginput_container.ginput_container_text input {
   border-radius: 0;
 }
 
