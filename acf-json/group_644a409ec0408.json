@@ -21,68 +21,6 @@
             "selected": 0
         },
         {
-            "key": "field_644a40b2fb5ae",
-            "label": "Office Address",
-            "name": "office_address",
-            "aria-label": "",
-            "type": "textarea",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "",
-            "maxlength": "",
-            "allow_in_bindings": 1,
-            "rows": 4,
-            "placeholder": "",
-            "new_lines": "br"
-        },
-        {
-            "key": "field_644a40dbfb5b0",
-            "label": "Contact Phone",
-            "name": "contact_phone",
-            "aria-label": "",
-            "type": "text",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "",
-            "maxlength": "",
-            "allow_in_bindings": 1,
-            "placeholder": "",
-            "prepend": "",
-            "append": ""
-        },
-        {
-            "key": "field_644a4112fb5b2",
-            "label": "Contact Email",
-            "name": "contact_email",
-            "aria-label": "",
-            "type": "email",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "",
-            "allow_in_bindings": 1,
-            "placeholder": "",
-            "prepend": "",
-            "append": ""
-        },
-        {
             "key": "field_66f68d5903162",
             "label": "Footer Disclaimer",
             "name": "footer_disclaimer",
@@ -621,5 +559,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1731326295
+    "modified": 1731326483
 }
