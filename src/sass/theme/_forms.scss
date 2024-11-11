@@ -10,7 +10,7 @@
     font-weight: var(--fw-400) !important;
 }
 
-.gform_button.button {
+.gform_button.button.button {
     @extend .button;
     border-radius: 100vw;
     display: inline-block;
