@@ -48,6 +48,15 @@ function acf_blocks()
             'supports' => array('mode' => false),
         ));
         acf_register_block_type(array(
+            'name'                => 'cb_configurable_cta',
+            'title'                => __('CB Configurable CTA'),
+            'category'            => 'layout',
+            'icon'                => 'cover-image',
+            'render_template'    => 'page-templates/blocks/cb_configurable_cta.php',
+            'mode'    => 'edit',
+            'supports' => array('mode' => false),
+        ));
+        acf_register_block_type(array(
             'name'                => 'cb_fund_accordion',
             'title'                => __('CB Fund Accordion'),
             'category'            => 'layout',
