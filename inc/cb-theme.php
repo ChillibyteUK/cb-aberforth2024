@@ -141,6 +141,7 @@ remove_action('wp_enqueue_scripts', 'wp_enqueue_global_styles');
 remove_action('wp_body_open', 'wp_global_styles_render_svg_filters');
 
 //Custom Dashboard Widget
+/*
 add_action('wp_dashboard_setup', 'register_cb_dashboard_widget');
 function register_cb_dashboard_widget()
 {
@@ -168,7 +169,7 @@ function cb_dashboard_widget_display()
     </div>
 <?php
 }
-
+*/
 
 // add_filter('wpseo_breadcrumb_links', function( $links ) {
 //     global $post;
