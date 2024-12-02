@@ -133,7 +133,12 @@ function cb_gutenberg_admin_styles()
             /* Width of "full-wide" blocks */
             .wp-block[data-align="full"] {
                 max-width: none;
-            }	
+            }
+
+            /* stop horizontal overflow flicker */
+            .block-editor-page #wpwrap {
+                overflow-y: auto !important;
+            }
         </style>
     ';
 }
