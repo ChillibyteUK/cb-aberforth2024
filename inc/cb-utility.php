@@ -515,3 +515,32 @@ function register_page_list_shortcode()
     return ob_get_clean();
 }
 add_shortcode('page_list', 'register_page_list_shortcode');
+
+// CUSTOM LOGIN URL
+/*
+add_action('init', 'custom_login_url');
+function custom_login_url() {
+    $custom_slug = 'my-custom-login'; // Change this to your desired slug
+
+    // Check if the current request is for the default wp-login.php
+    if (strpos($_SERVER['REQUEST_URI'], 'wp-login.php') !== false) {
+        wp_redirect(home_url('/' . $custom_slug));
+        exit;
+    }
+
+    // Load the default login functionality for the custom slug
+    if (strpos($_SERVER['REQUEST_URI'], $custom_slug) !== false) {
+        require_once ABSPATH . 'wp-login.php';
+        exit;
+    }
+}
+
+// Prevent direct access to wp-admin for non-logged-in users
+add_action('template_redirect', 'redirect_non_logged_users');
+function redirect_non_logged_users() {
+    if (is_admin() && !is_user_logged_in()) {
+        wp_redirect(home_url('/my-custom-login'));
+        exit;
+    }
+}
+    */

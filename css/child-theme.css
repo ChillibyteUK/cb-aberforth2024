@@ -21927,6 +21927,9 @@ header .dropdown.current-menu-item::after {
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
+.trusts_funds .tickers .ticker__price {
+  font-size: 34px;
+}
 .trusts_funds .stats {
   display: flex;
   justify-content: space-between;
@@ -21938,7 +21941,7 @@ header .dropdown.current-menu-item::after {
   font-weight: var(--fw-500);
 }
 .trusts_funds .stats__value {
-  font-size: 38px;
+  font-size: 34px;
   font-weight: var(--fw-500);
 }
 .trusts_funds .stats__date {
@@ -21970,9 +21973,12 @@ header .dropdown.current-menu-item::after {
   --_fg: white;
 }
 .theme--afund .trusts_funds__inner {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+}
+.theme--afund .span-2 {
+  grid-column: span 2;
 }
 
 .theme--aslit {

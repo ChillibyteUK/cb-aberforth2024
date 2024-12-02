@@ -42,6 +42,9 @@
     .tickers {
         display: grid;
         grid-template-columns: 1fr 1fr;
+        .ticker__price {
+            font-size: 34px;
+        }
     }
 
     .stats {
@@ -54,7 +57,7 @@
             font-weight: var(--fw-500);
         }
         &__value {
-            font-size: 38px;
+            font-size: 34px;
             font-weight: var(--fw-500);
         }
         &__date {
@@ -88,9 +91,12 @@
     --_bg: var(--col-blue-900);
     --_fg: white;
     .trusts_funds__inner {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: 1fr 1fr;
+    }
+    .span-2 {
+        grid-column: span 2;
     }
 }
 .theme--aslit {
