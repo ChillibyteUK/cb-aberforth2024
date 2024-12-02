@@ -21928,7 +21928,7 @@ header .dropdown.current-menu-item::after {
   grid-template-columns: 1fr 1fr;
 }
 .trusts_funds .tickers .ticker__price {
-  font-size: 34px;
+  font-size: 30px;
 }
 .trusts_funds .stats {
   display: flex;
@@ -21941,7 +21941,7 @@ header .dropdown.current-menu-item::after {
   font-weight: var(--fw-500);
 }
 .trusts_funds .stats__value {
-  font-size: 34px;
+  font-size: 30px;
   font-weight: var(--fw-500);
 }
 .trusts_funds .stats__date {

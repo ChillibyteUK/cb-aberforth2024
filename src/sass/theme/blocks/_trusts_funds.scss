@@ -43,7 +43,7 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
         .ticker__price {
-            font-size: 34px;
+            font-size: 30px;
         }
     }
 
@@ -57,7 +57,7 @@
             font-weight: var(--fw-500);
         }
         &__value {
-            font-size: 34px;
+            font-size: 30px;
             font-weight: var(--fw-500);
         }
         &__date {
