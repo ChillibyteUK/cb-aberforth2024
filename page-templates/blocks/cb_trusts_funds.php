@@ -121,7 +121,7 @@
                         }
                         ?>
                         <div class="stats">
-                            <div class="stats--ascot">
+                            <div class="stats--ascot span-2">
                                 <div class="stats__title">Market Value</div>
                                 <div class="stats__date"><?=$ascot_date?></div>
                                 <div class="stats__value"><?=$ascot_value?></div>
@@ -178,7 +178,7 @@
                                     // $date = $data['Date'];
                                     $date = date('j M Y', strtotime(str_replace('/', '-', $data['Date'])));
                             ?>
-                                    <div class="ticker">
+                                    <div class="ticker mb-4">
                                         <div class="ticker__date"><?= $date ?></div>
                                         <div class="ticker__symbol"><?= $symbol ?></div>
                                         <div class="ticker__price"><?= $currentPrice ?></div>
@@ -189,7 +189,78 @@
                                     echo 'Error: No data found.';
                                 }
                             }
+
+                            $page_slug = '/trusts-and-funds/aberforth-geared-value-income-trust-plc/performance/';
+                            $page = get_page_by_path($page_slug);
+                            $osnav = null;
+                            $zdpnav = null;
+                            $agvit_date = null;
+                            if ($page) {
+                                $page_id = $page->ID;
+                                $blocks = parse_blocks(get_post_field('post_content', $page_id));
+                                foreach ($blocks as $block) {
+                                    if ($block['blockName'] === 'acf/cb-data-table') {
+                                        // Retrieve the block data
+                                        $block_data = $block['attrs']['data'] ?? null;
+    
+                                        if ($block_data) {
+                                            // Extract the number of rows from the 'rows' key
+                                            $row_count = $block_data['rows'] ?? 0;
+                                            // Loop through rows using the flattened key format
+                                            for ($i = 0; $i < $row_count; $i++) {
+                                                $name_key = "rows_{$i}_name";
+                                                $value_key = "rows_{$i}_value";
+
+                                                if (isset($block_data[$name_key])) {
+                                                    $name = $block_data[$name_key];
+                                                    $value = $block_data[$value_key] ?? null;
+                            
+                                                    if ($name === 'Ordinary Share NAV (including current year revenue)') {
+                                                        $osnav = $value;
+                                                    }
+                                                    if ($name === 'Zero Dividend Preference Share NAV (accounts basis)') {
+                                                        $zdpnav = $value;
+                                                    }
+                                                                                                    // Check if the name starts with "All data as at"
+                                                    if (str_starts_with($name, 'All data as at')) {
+                                                        // Extract the date part using regex
+                                                        if (preg_match('/All data as at (.+)$/', $name, $matches)) {
+                                                            $date_string = $matches[1]; // Extract the date part
+                            
+                                                            // Convert to DD/MM/YYYY format
+                                                            $date = DateTime::createFromFormat('j F Y', $date_string);
+                                                            if ($date) {
+                                                                $agvit_date = $date->format('d M Y');
+                                                            }
+                                                        }
+                                                    }
+
+                                                    // Break the loop if values are found
+                                                    if ($osnav && $zdpnav) {
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
                             ?>
+                            <div class="stats">
+                                <div class="stats--agvit">
+                                    <div class="stats__title">Ordinary Share NAV</div>
+                                    <div class="stats__date"><?=$agvit_date?></div>
+                                    <div class="stats__value"><?=$osnav?></div>
+                                </div>
+                            </div>
+                            <div class="stats">
+                                <div class="stats--agvit">
+                                    <div class="stats__title">ZDP Share NAV</div>
+                                    <div class="stats__date"><?=$agvit_date?></div>
+                                    <div class="stats__value"><?=$zdpnav?></div>
+                                </div>
+                            </div>
                         </div>
                         <div class="text-end">
                             <a href="/trusts-and-funds/aberforth-geared-value-income-trust-plc/" class="button">Learn more</a>
@@ -260,13 +331,6 @@
                         }
 
                         ?>
-                        <div class="stats span-2">
-                            <div class="stats--afund">
-                                <div class="stats__title">Market Value</div>
-                                <div class="stats__date"><?=$afund_date?></div>
-                                <div class="stats__value"><?=$afund_value?></div>
-                            </div>
-                        </div>
                         <div class="stats">
                             <div class="stats--afund">
                                 <div class="stats__title">Buying Price (Acc)</div>
@@ -304,8 +368,8 @@
                     <div class="trusts_funds__inner flex-grow-1 d-flex flex-column justify-content-between">
                         <p class="trusts_funds__content">A split capital investment trust with two classes of share – Ordinary Shares and Zero Dividend Preference (ZDP) Shares – both of which traded on the London Stock Exchange.</p>
                         <div class="lined-top py-2">Launched: 3 July 2017</div>
-                        <div class="lined-top py-2">Wound up: 1 July 2024</div>
-                        <div class="lined-top pt-3 text-end mt-auto">
+                        <div class="lined-both py-2">Wound up: 1 July 2024</div>
+                        <div class="pt-3 text-end mt-auto">
                             <a href="/trusts-and-funds/aberforth-split-level-income-trust-plc/" class="button">Learn more</a>
                         </div>
                     </div>

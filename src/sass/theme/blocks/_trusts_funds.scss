@@ -38,6 +38,10 @@
     .lined-top {
         border-top: 1px solid var(--col-grey-200);
     }
+    .lined-both {
+        border-top: 1px solid var(--col-grey-200);
+        border-bottom: 1px solid var(--col-grey-200);
+    }
 
     .tickers {
         display: grid;
@@ -74,7 +78,14 @@
     .trusts_funds__inner {
         display: grid;
         gap: 1rem;
-        grid-template-rows: auto 3rem auto 3rem;
+        grid-template-rows: max-content 3rem auto 3rem;
+    }
+    .stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+    .span-2 {
+        grid-column: span 2;
     }
 }
 .theme--agvit {
@@ -83,9 +94,8 @@
     .trusts_funds__inner {
         display: grid;
         gap: 1rem;
-        grid-template-rows: auto 3rem auto 3rem;
+        grid-template-rows: max-content 3rem auto 3rem;
     }
-
 }
 .theme--afund {
     --_bg: var(--col-blue-900);

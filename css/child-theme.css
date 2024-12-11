@@ -21923,6 +21923,10 @@ header .dropdown.current-menu-item::after {
 .trusts_funds .lined-top {
   border-top: 1px solid var(--col-grey-200);
 }
+.trusts_funds .lined-both {
+  border-top: 1px solid var(--col-grey-200);
+  border-bottom: 1px solid var(--col-grey-200);
+}
 .trusts_funds .tickers {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -21955,7 +21959,14 @@ header .dropdown.current-menu-item::after {
 .theme--ascot .trusts_funds__inner {
   display: grid;
   gap: 1rem;
-  grid-template-rows: auto 3rem auto 3rem;
+  grid-template-rows: max-content 3rem auto 3rem;
+}
+.theme--ascot .stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.theme--ascot .span-2 {
+  grid-column: span 2;
 }
 
 .theme--agvit {
@@ -21965,7 +21976,7 @@ header .dropdown.current-menu-item::after {
 .theme--agvit .trusts_funds__inner {
   display: grid;
   gap: 1rem;
-  grid-template-rows: auto 3rem auto 3rem;
+  grid-template-rows: max-content 3rem auto 3rem;
 }
 
 .theme--afund {
