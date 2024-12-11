@@ -291,13 +291,28 @@
 
                             foreach ($blocks as $block) {
                                 if ($block['blockName'] === 'acf/cb-data-table') {
+                                    $title = $block['attrs']['data']['title'];
+                                    // Check if the name starts with "Valuation Date:"
+                                    if (str_starts_with($title, 'Valuation Date: ')) {
+                                        // Extract the date part using regex
+                                        if (preg_match('/Valuation Date: (.+)$/', $title, $matches)) {
+                                            $date_string = $matches[1]; // Extract the date part
+            
+                                            // Convert to DD/MM/YYYY format
+                                            $date = DateTime::createFromFormat('j F Y', $date_string);
+                                            if ($date) {
+                                                $afund_date = $date->format('d M Y');
+                                            }
+                                        }
+                                    }
                                     // Retrieve the block data
                                     $block_data = $block['attrs']['data'] ?? null;
 
                                     if ($block_data) {
                                         // Extract the number of rows from the 'rows' key
                                         $row_count = $block_data['rows'] ?? 0;
-                        
+                                        
+
                                         // Loop through rows using the flattened key format
                                         for ($i = 0; $i < $row_count; $i++) {
                                             $name_key = "rows_{$i}_name";
@@ -331,6 +346,7 @@
                         }
 
                         ?>
+                        <div class="stats__date span-2"><?=$afund_date?></div>
                         <div class="stats">
                             <div class="stats--afund">
                                 <div class="stats__title">Buying Price (Acc)</div>
