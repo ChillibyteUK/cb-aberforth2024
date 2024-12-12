@@ -21,10 +21,10 @@
                                     <div class="col-md-6 col-lg-3">
                                         <div class="fund_accordion__card d-grid">
                                             <div>
-                                                <h3 class="mb-4">Association of Investment Companies</h3>
-                                                <p>For further information on investment platforms where Investment Trust Shares can be purchased and sold.</p>
+                                                <h3 class="mb-4">Buying and selling shares in the trust</h3>
+                                                <p>Shares can be bought and sold via trading platforms, independent financial advisers or stockbrokers. The Association of Investment Companies (AIC) website lists platform information.</p>
                                             </div>
-                                            <a href="https://www.theaic.co.uk/availability-on-platforms" target="_blank" class="button button-secondary align-self-end">Go to their website</a>
+                                            <a href="https://www.theaic.co.uk/availability-on-platforms" target="_blank" class="button button-secondary align-self-end">Go to the AIC website</a>
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-lg-3">
