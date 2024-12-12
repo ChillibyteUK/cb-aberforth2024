@@ -210,11 +210,14 @@ $end_post = min($paged * $args['posts_per_page'], $total_posts);
             <?php wp_reset_postdata(); ?>
         </div>
     </div>
+    <?php
+    $l = get_field('cta_link','option');
+    ?>
     <section class="wide_cta py-5">
         <div class="container-xl py-4 text-center">
-            <h2>Subscribe to our mailing list</h2>
-            <div class="w-constrained mx-auto pb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</div>
-            <a href="/sign-up/" class="button">Sign up today</a>
+            <h2><?=get_field('cta_title','option')?></h2>
+            <div class="w-constrained mx-auto pb-4"><?=get_field('cta_content','option')?></div>
+            <a href="<?=$l['url']?>" target="<?=$l['target']?>" class="button"><?=$l['title']?></a>
         </div>
     </section>
 </main>
