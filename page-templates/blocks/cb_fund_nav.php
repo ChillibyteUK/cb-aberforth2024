@@ -7,7 +7,7 @@ $bg = get_field('background') == 'White' ? 'fund_nav--white' : '';
         <div class="text-center">
             <h2>Explore Aberforth Trusts &amp; Funds</h2>
             <div class="w-constrained mx-auto mb-4">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
+                Aberforth currently manages two investment trusts and one unit trust. All are managed in accordance with a value style and focus on UK smaller companies.
             </div>
         </div>
         <div class="row g-4">
