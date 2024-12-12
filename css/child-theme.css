@@ -22259,6 +22259,7 @@ header .dropdown.current-menu-item::after {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  border: 2px solid color-mix(in srgb, var(--_bg), black 10%);
 }
 .fund_nav__card h3, .fund_nav__card .h3 {
   font-family: var(--ff-body);
