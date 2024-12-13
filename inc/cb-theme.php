@@ -365,7 +365,7 @@ function display_pricing_data_status()
     $agvit_last_failure = get_option('agvit_pricing_data_last_failure');
 
     // Initialise the output variable
-    $output = '<div class="pricing-data-status mb-4">';
+    $output = '<div class="pricing-data-status mb-5">';
 
     // Check and display Ascot data
     if ($ascot_data) {
@@ -390,10 +390,12 @@ function display_pricing_data_status()
     }
 
     $output .= '</div>';
-
-    $output .= '<button id="triggerButton" class="button">Run Feed Download Now</button>';
-    $output .= '<div id="outputDiv" class="mt-4 mb-5"></div>';
     $output .= <<<EOT
+<div class="mb-5">
+<h2>CSV Data Files Feed</h2>
+    <button id="triggerButton" class="button">Run Data CSV Download Now</button>
+    <div id="outputDiv" class="mt-4"></div>
+</div>
 <script>
 document.getElementById('triggerButton').addEventListener('click', function () {
     const outputDiv = document.getElementById('outputDiv');
