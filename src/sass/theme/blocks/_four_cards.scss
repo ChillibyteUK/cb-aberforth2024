@@ -1,0 +1,26 @@
+.four_cards {
+    &__card {
+        border: 1px solid var(--col-blue-600);
+        background-color: var(--col-light);
+        padding: 1rem 1.5rem 1.5rem 1.5rem;
+        text-align: center;
+        height: 100%;
+        display: grid;
+        grid-template-rows: 92px 4rem auto auto;
+        align-content: stretch;
+        justify-content: center;
+    }
+    &__icon {
+        aspect-ratio: 9 / 10;
+        width: 85px;
+        margin-bottom: 0.5rem;
+        margin-inline: auto;
+    }
+
+    &--inverse {
+        background-color: var(--col-light);
+        .four_cards__card {
+            background-color: white;
+        }
+    }
+}

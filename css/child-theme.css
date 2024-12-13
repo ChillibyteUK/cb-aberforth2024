@@ -22002,6 +22002,30 @@ header .dropdown.current-menu-item::after {
   justify-content: space-between;
 }
 
+.four_cards__card {
+  border: 1px solid var(--col-blue-600);
+  background-color: var(--col-light);
+  padding: 1rem 1.5rem 1.5rem 1.5rem;
+  text-align: center;
+  height: 100%;
+  display: grid;
+  grid-template-rows: 92px 4rem auto auto;
+  align-content: stretch;
+  justify-content: center;
+}
+.four_cards__icon {
+  aspect-ratio: 9/10;
+  width: 85px;
+  margin-bottom: 0.5rem;
+  margin-inline: auto;
+}
+.four_cards--inverse {
+  background-color: var(--col-light);
+}
+.four_cards--inverse .four_cards__card {
+  background-color: white;
+}
+
 .three_cards__card {
   border: 1px solid var(--col-blue-600);
   background-color: var(--col-light);
