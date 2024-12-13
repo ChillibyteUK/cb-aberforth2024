@@ -270,7 +270,8 @@ add_filter('wp_nav_menu_items', 'add_custom_menu_item', 10, 2);
 
 // pricing and feed data jobs
 // Add custom interval for cron jobs
-function custom_cron_schedule($schedules) {
+function custom_cron_schedule($schedules)
+{
     // Pricing Data
     if (!isset($schedules["2min"])) {
         $schedules["2min"] = array(
@@ -299,7 +300,8 @@ function schedule_pricing_check()
 add_action('wp', 'schedule_pricing_check');
 
 // Schedule the feed event if it's not already scheduled
-function schedule_feed_download() {
+function schedule_feed_download()
+{
     if (!wp_next_scheduled('download_feed_files')) {
         wp_schedule_event(time(), '6hours', 'download_feed_files');
     }
@@ -363,7 +365,7 @@ function display_pricing_data_status()
     $agvit_last_failure = get_option('agvit_pricing_data_last_failure');
 
     // Initialise the output variable
-    $output = '<div class="pricing-data-status">';
+    $output = '<div class="pricing-data-status mb-4">';
 
     // Check and display Ascot data
     if ($ascot_data) {
@@ -389,12 +391,38 @@ function display_pricing_data_status()
 
     $output .= '</div>';
 
+    $output .= '<button id="triggerButton" class="button">Run Feed Download Now</button>';
+    $output .= '<div id="outputDiv" class="mt-4 mb-5"></div>';
+    $output .= <<<EOT
+<script>
+document.getElementById('triggerButton').addEventListener('click', function () {
+    const outputDiv = document.getElementById('outputDiv');
+    outputDiv.textContent = 'Loading...'; // Display a loading message while fetching
+
+    fetch('/?trigger_feed_download=run')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.text();
+        })
+        .then(data => {
+            outputDiv.textContent = data; // Display the returned string in the div
+        })
+        .catch(error => {
+            outputDiv.textContent = 'An error occurred: ' + error.message; // Display error message
+        });
+});
+</script>
+EOT;
+
     return $output;
 }
 add_shortcode('pricing_data_status', 'display_pricing_data_status');
 
 // CSV Feed
-function fetch_and_save_feed_files() {
+function fetch_and_save_feed_files()
+{
     $urls = [
         'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Dividends/AFUND_Dividends.csv',
         'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Dividends/AGVIT_Dividends.csv',
@@ -421,21 +449,21 @@ function fetch_and_save_feed_files() {
         'https://ap01.chillihosting.co.uk/sftp/uploads/csv/PortfolioHoldings/ASCOT_PortfolioHoldings.csv',
         'https://ap01.chillihosting.co.uk/sftp/uploads/csv/PortfolioHoldings/ASLIT_PortfolioHoldings.csv',
     ];
-    
+
     foreach ($urls as $url) {
         $response = wp_remote_get($url);
-        
+
         if (is_wp_error($response)) {
             error_log("Failed to download $url: " . $response->get_error_message());
             continue;
         }
-        
+
         $file_content = wp_remote_retrieve_body($response);
         if (empty($file_content)) {
             error_log("Empty file or error retrieving content from $url");
             continue;
         }
-        
+
         $file_name = basename($url);
         // $upload_dir = wp_upload_dir();
         // $file_path = $upload_dir['basedir'] . '/feed/' . $file_name;
@@ -457,7 +485,8 @@ add_action('download_feed_files', 'fetch_and_save_feed_files');
 
 // manual trigger
 // http://aberforth.local/?trigger_feed_download=run
-function trigger_feed_download() {
+function trigger_feed_download()
+{
     if (isset($_GET['trigger_feed_download']) && $_GET['trigger_feed_download'] == 'run') {
         fetch_and_save_feed_files();
         echo 'Feed files have been fetched and saved.';
@@ -600,7 +629,8 @@ add_action('before_delete_post', 'delete_pdf_on_document_delete');
 
 // Add taxonomy filters to the admin list view for the 'document' post type
 add_action('restrict_manage_posts', 'add_document_taxonomy_filters');
-function add_document_taxonomy_filters() {
+function add_document_taxonomy_filters()
+{
     global $typenow;
 
     // Only add dropdowns for the 'document' post type
@@ -647,7 +677,8 @@ function add_document_taxonomy_filters() {
 
 // Filter the documents by taxonomy based on selected dropdowns
 add_action('pre_get_posts', 'filter_documents_by_taxonomy');
-function filter_documents_by_taxonomy($query) {
+function filter_documents_by_taxonomy($query)
+{
     global $typenow;
 
     if ($typenow == 'document' && is_admin() && $query->is_main_query()) {
@@ -681,6 +712,3 @@ function filter_documents_by_taxonomy($query) {
         }
     }
 }
-
-
-?>
