@@ -55,14 +55,14 @@ $r = random_str(4);
                         <iframe src="<?=get_sub_field('source_url')?>" width="100%" height="700" frameborder="0"></iframe>
                                     <?php
                                 }
-                                elseif (get_row_layout() == 'three_cards') {
+                                elseif (get_row_layout() == 'cards') {
                                     if (get_sub_field('title')) {
                                         ?>
                             <h3><?=get_sub_field('title')?></h3>
                                     <?php
                                     }
-                                    $link1 = get_sub_field('cta_card1');
-                                    $link3 = get_sub_field('cta_card3');
+                                    $link1 = get_sub_field('cta_card1') ?? null;
+                                    $link3 = get_sub_field('cta_card3') ?? null;
                                     ?>
                                     <div class="row">
                                         <div class="col-md-4">
@@ -71,7 +71,13 @@ $r = random_str(4);
                                                     <h3 class="mb-4"><?=get_sub_field('title_card1')?></h3>
                                                     <p><?=get_sub_field('content_card1')?></p>
                                                 </div>
+                                                <?php
+                                                if ($link3) {
+                                                    ?>
                                                 <a href="<?=$link1['url']?>" target="<?=$link1['target']?>" class="button button-secondary align-self-end"><?=$link1['title']?></a>
+                                                    <?php
+                                                }
+                                                ?>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
@@ -86,8 +92,13 @@ $r = random_str(4);
                                                     <h3 class="mb-4"><?=get_sub_field('title_card3')?></h3>
                                                     <p><?=get_sub_field('content_card3')?></p>
                                                 </div>
-                                                <?=get_sub_field('content_card3')?>
+                                                <?php
+                                                if ($link3) {
+                                                    ?>
                                                 <a href="<?=$link3['url']?>" target="<?=$link3['target']?>" class="button button-secondary align-self-end"><?=$link3['title']?></a>
+                                                    <?php
+                                                }
+                                                ?>
                                             </div>
                                         </div>
                                     </div>

@@ -238,8 +238,8 @@
                         },
                         "layout_67656b5073ca7": {
                             "key": "layout_67656b5073ca7",
-                            "name": "three_cards",
-                            "label": "Three Cards",
+                            "name": "cards",
+                            "label": "Cards",
                             "display": "block",
                             "sub_fields": [
                                 {
@@ -487,5 +487,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1734700324
+    "modified": 1734702004
 }
