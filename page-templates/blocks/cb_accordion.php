@@ -55,6 +55,44 @@ $r = random_str(4);
                         <iframe src="<?=get_sub_field('source_url')?>" width="100%" height="700" frameborder="0"></iframe>
                                     <?php
                                 }
+                                elseif (get_row_layout() == 'three_cards') {
+                                    if (get_sub_field('title')) {
+                                        ?>
+                            <h3><?=get_sub_field('title')?></h3>
+                                    <?php
+                                    }
+                                    $link1 = get_sub_field('cta_card1');
+                                    $link3 = get_sub_field('cta_card3');
+                                    ?>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="fund_accordion__card d-grid">
+                                                <div>
+                                                    <h3 class="mb-4"><?=get_sub_field('title_card1')?></h3>
+                                                    <p><?=get_sub_field('content_card1')?></p>
+                                                </div>
+                                                <a href="<?=$link1['url']?>" target="<?=$link1['target']?>" class="button button-secondary align-self-end"><?=$link1['title']?></a>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="fund_accordion__card">
+                                                <h3 class="mb-4"><?=get_sub_field('title_card2')?></h3>
+                                                <p><?=get_sub_field('content_card2')?></p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="fund_accordion__card d-grid">
+                                                <div>
+                                                    <h3 class="mb-4"><?=get_sub_field('title_card3')?></h3>
+                                                    <p><?=get_sub_field('content_card3')?></p>
+                                                </div>
+                                                <?=get_sub_field('content_card3')?>
+                                                <a href="<?=$link3['url']?>" target="<?=$link3['target']?>" class="button button-secondary align-self-end"><?=$link3['title']?></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php
+                                }
                                 else { // words
                                     echo get_sub_field('content');
                                 }
