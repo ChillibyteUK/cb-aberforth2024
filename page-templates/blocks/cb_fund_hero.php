@@ -68,7 +68,7 @@ if (array_key_exists($fund, $fund_options)) {
 
                 ?>
                             <div class="ticker">
-                                <div class="ticker__date"><?= $date ?></div>
+                                <div class="ticker__date">Share Price: <?= $date ?></div>
                                 <div class="ticker__symbol"><?= $symbol ?></div>
                                 <div class="ticker__price"><?= $currentPrice ?></div>
                                 <div class="ticker__change <?=$change_status?>"><?= $change ?></div>
