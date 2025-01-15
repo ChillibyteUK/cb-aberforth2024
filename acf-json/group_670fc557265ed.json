@@ -16,7 +16,7 @@
                 "class": "",
                 "id": ""
             },
-            "message": "ASCOT data is set under Site-Wide Settings",
+            "message": "Configured under Site-Wide Settings",
             "new_lines": "wpautop",
             "esc_html": 0
         }
@@ -39,5 +39,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1731335314
+    "modified": 1736950421
 }

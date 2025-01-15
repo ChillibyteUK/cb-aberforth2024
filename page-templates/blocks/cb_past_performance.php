@@ -86,7 +86,7 @@ foreach ($csv_files as $file) {
                                     if ($header === 'PerformancePeriod') {
                                         $display_header = 'Period';
                                     } elseif ($header === 'NSCI') {
-                                        $display_header = 'NSCI (XIC)';
+                                        $display_header = 'DNSCI (XIC)';
                                     }
                                     echo '<th>' . htmlspecialchars($display_header) . '</th>';
                                     $column_indices[$col] = $index;

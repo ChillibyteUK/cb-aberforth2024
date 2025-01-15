@@ -6,9 +6,9 @@
                 <div class="trusts_funds__card theme--ascot">
                     <h3 class="trusts_funds__header">Aberforth Smaller Companies Trust plc</h3>
                     <div class="trusts_funds__inner">
-                        <div>An investment trust whose shares are traded on the London Stock Exchange. It is the largest trust within the UK Smaller Companies sector.</div>
+                        <div><?=get_field('ascot_intro','option')?></div>
                         <div class="lined">
-                            Launched: 10 December 1990
+                            <?=get_field('ascot_info','option')?>Launched: 10 December 1990
                         </div>
                         <?php
                         $page_slug = '/trusts-and-funds/aberforth-smaller-companies-trust-plc/performance/';
@@ -149,8 +149,9 @@
                 <div class="trusts_funds__card theme--agvit">
                     <h3 class="trusts_funds__header">Aberforth Geared Value &amp; Income Trust plc</h3>
                     <div class="trusts_funds__inner">
-                        <div>An investment trust with two classes of share - Ordinary Shares and Zero Dividend Preference (ZDP) Shares - both of which trade on the London Stock Exchange.</div>
+                        <div><?=get_field('agvit_intro','option')?></div>
                         <div class="lined">
+                            <?=get_field('agvit_info','option')?>
                             <span>Launched: 1 July 2014 <span class="mx-2 bar"></span> Planned wind up: 30 June 2031</span>
                         </div>
                         <div class="tickers">
@@ -272,7 +273,7 @@
                 <div class="trusts_funds__card theme--afund h-100">
                     <h3 class="trusts_funds__header">Aberforth UK Small Companies Fund</h3>
                     <div class="trusts_funds__inner  justify-content-between">
-                        <p class="trusts_funds__content span-2">An Authorised Unit Trust. The Fund is managed by Aberforth Unit Trust Managers Limited and the Trustee is NatWest Trustee and Depositary Services Limited and is a limited issue fund in accordance with the regulations governing authorised unit trusts.</p>
+                        <p class="trusts_funds__content span-2"><?=get_field('afund','option')?></p>
                         <?php
                         $page_slug = '/trusts-and-funds/aberforth-uk-small-companies-fund/performance/';
                         $page = get_page_by_path($page_slug);
