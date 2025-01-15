@@ -4,11 +4,15 @@
         background-color: var(--col-light);
         padding: 1rem 1.5rem 1.5rem 1.5rem;
         text-align: center;
+        display: grid;
+        justify-content: center;
+        align-items: stretch;
     }
     &__icon {
         aspect-ratio: 9 / 10;
         width: 85px;
         margin-bottom: 0.5rem;
+        margin-inline: center;
     }
 
     &--inverse {
