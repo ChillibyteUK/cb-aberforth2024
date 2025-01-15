@@ -161,7 +161,6 @@
                                                 $attachment_url = wp_get_attachment_url($file);
                                                 $file_path = get_attached_file($file);
                                                 $file_size = file_exists($file_path) ? filesize($file_path) : 0;
-                                            
 
                                                 $category = get_the_terms($f, 'doccat');
                                                 $category_name = !empty($category) && !is_wp_error($category) ? $category[0]->name : 'Uncategorised';
@@ -192,6 +191,7 @@
                                         </tr>
                                                 <?php
                                             }
+                                        }
                                             ?>
                                     </tbody>
                                 </table>
