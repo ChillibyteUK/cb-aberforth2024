@@ -152,7 +152,7 @@
                                         <?php
                                         $docs = get_field('afund_docs') ?? null;
                                         if ($docs) {
-                                            asort($docs);
+                                            asort($docs); // SORT BY DOC NAME
                                             foreach (get_field('afund_docs') as $f) {
                                                 $file = get_field('file',$f);
                                                 $attachment_url = wp_get_attachment_url($file);

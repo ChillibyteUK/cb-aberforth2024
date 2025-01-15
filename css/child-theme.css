@@ -22412,10 +22412,13 @@ main a:hover, main a:focus-visible, main a:active {
   color: inherit;
 }
 main a {
-  text-decoration: none;
+  text-decoration: underline;
   color: var(--col-green-400);
   transition: opacity var(--transition);
   font-weight: var(--fw-600);
+}
+main a:hover {
+  text-decoration: none;
 }
 
 @media (min-width: 992px) {
