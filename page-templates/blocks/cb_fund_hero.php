@@ -35,14 +35,14 @@ if (array_key_exists($fund, $fund_options)) {
                     $file_url = wp_get_attachment_url($file);
                     if ($file_url ?? null) { 
                         ?>
-                <a href="<?=$file_url?>" target="_blank" class="button"><?=get_the_title($sheet)?></a>
+                <a href="<?=$file_url?>" target="_blank" class="button button--download"><?=get_the_title($sheet)?></a>
                         <?php
                     }
                 }
                 $link = get_field($fund . '_kepler_link','option') ?? null;
                 if ($link ?? null) {
                     ?>
-                <a href="<?=$link['url']?>" target="_blank" class="button"><?=$link['title']?></a>
+                <a href="<?=$link['url']?>" target="<?=$link['target']?>" class="button button--external"><?=$link['title']?></a>
                     <?php
                 }
                 ?>
