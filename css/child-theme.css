@@ -21716,6 +21716,7 @@ strong, .fw-bold, .fw-500 {
   color: white;
   align-self: center;
   text-align: center;
+  text-decoration: none;
   transition: all var(--transition);
 }
 .button:hover, .wp-block-search__button:hover, .gform_button.wp-block-search__button:hover, .gform_button.button:hover {
@@ -22289,6 +22290,9 @@ header .dropdown.current-menu-item::after {
   font-family: var(--ff-body);
   font-size: var(--fs-500);
   margin-bottom: 1rem;
+}
+.fund_nav a {
+  text-decoration: none;
 }
 .fund_nav--ascot {
   --_bg: var(--col-ascot);

@@ -10,6 +10,7 @@
     color: white;
     align-self: center;
     text-align: center;
+    text-decoration: none;
     transition: all var(--transition);
     &:hover {
         border-color: var(--col-dark);
