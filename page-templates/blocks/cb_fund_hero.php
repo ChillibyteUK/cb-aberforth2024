@@ -39,6 +39,12 @@ if (array_key_exists($fund, $fund_options)) {
                         <?php
                     }
                 }
+                $link = get_field($fund . '_kepler_link','option') ?? null;
+                if ($link ?? null) {
+                    ?>
+                <a href="<?=$link['url']?>" target="_blank" class="button"><?=$link['title']?></a>
+                    <?php
+                }
                 ?>
             </div>
             <div class="col-md-4 d-flex gap-4 justify-content-end">

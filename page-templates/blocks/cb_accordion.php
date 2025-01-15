@@ -52,7 +52,7 @@ $r = random_str(4);
                                 }
                                 elseif (get_row_layout() == 'embed') {
                                     ?>
-                        <iframe src="<?=get_sub_field('source_url')?>" width="100%" height="700" frameborder="0"></iframe>
+                        <iframe src="<?=get_sub_field('source_url')?>" width="100%" height="900" frameborder="0"></iframe>
                                     <?php
                                 }
                                 elseif (get_row_layout() == 'cards') {

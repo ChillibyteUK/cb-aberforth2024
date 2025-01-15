@@ -32,22 +32,22 @@ $bg = get_field('background') == 'White' ? 'fund_nav--white' : '';
                 </div>
             <?php
             }
+            if ($theme != 'afund') {
+                ?>
+                    <div class="col-md-4">
+                        <div class="fund_nav__card fund_nav--afund">
+                            <h3>Aberforth UK Small Companies Fund</h3>
+                            <a href="/trusts-and-funds/aberforth-uk-small-companies-fund/" class="button button-secondary button--arrow">Learn more</a>
+                        </div>
+                    </div>
+                <?php
+            }
             if ($theme != 'aslit') {
             ?>
                 <div class="col-md-4">
                     <div class="fund_nav__card fund_nav--aslit">
                         <h3>Aberforth Split Level Income Trust plc</h3>
                         <a href="/trusts-and-funds/aberforth-split-level-income-trust-plc/" class="button button-secondary button--arrow">Learn more</a>
-                    </div>
-                </div>
-            <?php
-            }
-            if ($theme != 'afund') {
-            ?>
-                <div class="col-md-4">
-                    <div class="fund_nav__card fund_nav--afund">
-                        <h3>Aberforth UK Small Companies Fund</h3>
-                        <a href="/trusts-and-funds/aberforth-uk-small-companies-fund/" class="button button-secondary button--arrow">Learn more</a>
                     </div>
                 </div>
             <?php
