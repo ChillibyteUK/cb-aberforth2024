@@ -371,7 +371,7 @@
             "label": "Intro",
             "name": "",
             "aria-label": "",
-            "type": "message",
+            "type": "text",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -380,16 +380,19 @@
                 "class": "",
                 "id": ""
             },
-            "message": "",
-            "new_lines": "wpautop",
-            "esc_html": 0
+            "default_value": "",
+            "maxlength": "",
+            "allow_in_bindings": 1,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
         },
         {
             "key": "field_6787c38de2da9",
             "label": "Info",
-            "name": "",
+            "name": "info",
             "aria-label": "",
-            "type": "message",
+            "type": "text",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -398,9 +401,12 @@
                 "class": "",
                 "id": ""
             },
-            "message": "",
-            "new_lines": "wpautop",
-            "esc_html": 0
+            "default_value": "",
+            "maxlength": "",
+            "allow_in_bindings": 1,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
         },
         {
             "key": "field_67129eafdf2b0",
@@ -679,5 +685,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1736950722
+    "modified": 1736950859
 }

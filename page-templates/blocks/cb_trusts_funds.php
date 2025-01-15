@@ -8,7 +8,7 @@
                     <div class="trusts_funds__inner">
                         <div><?=get_field('ascot_intro','option')?></div>
                         <div class="lined">
-                            <?=get_field('ascot_info','option')?>Launched: 10 December 1990
+                            <?=get_field('ascot_info','option')?>
                         </div>
                         <?php
                         $page_slug = '/trusts-and-funds/aberforth-smaller-companies-trust-plc/performance/';
