@@ -151,8 +151,8 @@
                                     <tbody>
                                         <?php
                                         $docs = get_field('afund_docs') ?? null;
-                                        $docs = asort($docs);
                                         if ($docs) {
+                                            asort($docs);
                                             foreach (get_field('afund_docs') as $f) {
                                                 $file = get_field('file',$f);
                                                 $attachment_url = wp_get_attachment_url($file);
