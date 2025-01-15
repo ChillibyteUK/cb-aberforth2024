@@ -151,6 +151,7 @@
                                     <tbody>
                                         <?php
                                         $docs = get_field('afund_docs') ?? null;
+                                        $docs = asort($docs);
                                         if ($docs) {
                                             foreach (get_field('afund_docs') as $f) {
                                                 $file = get_field('file',$f);
