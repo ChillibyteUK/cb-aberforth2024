@@ -54,7 +54,7 @@ $end_post = min($paged * $args['posts_per_page'], $total_posts);
 <main id="main" class="literature_library">
     <div class="container-xl pb-4">
         <h1>Literature Library</h1>
-        <p class="mb-4">All of the documents pertaining to Aberforth Partners and each of the trusts we manage can be found in our library. Find a document by search, filter and or sorting. If you have any difficulties locating or downloading the document you require, please <a href="/contact-us/">contact us</a>.</p>
+        <p class="mb-4"><?=get_the_content()?></p>
         <!-- Search form -->
         <form class="library-search method=" get" action="<?php echo esc_url(get_permalink()); ?>">
             <input type="hidden" name="paged" value="1">
