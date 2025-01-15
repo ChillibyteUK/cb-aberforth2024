@@ -272,7 +272,7 @@
                 <div class="trusts_funds__card theme--afund h-100">
                     <h3 class="trusts_funds__header">Aberforth UK Small Companies Fund</h3>
                     <div class="trusts_funds__inner  justify-content-between">
-                        <p class="trusts_funds__content span-2"><?=get_field('afund','option')?></p>
+                        <p class="trusts_funds__content span-2"><?=get_field('afund_intro','option')?></p>
                         <?php
                         $page_slug = '/trusts-and-funds/aberforth-uk-small-companies-fund/performance/';
                         $page = get_page_by_path($page_slug);
