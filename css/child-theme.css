@@ -22043,6 +22043,9 @@ header .dropdown.current-menu-item::after {
   margin-bottom: 0.5rem;
   margin-inline: auto;
 }
+.three_cards a {
+  justify-self: center;
+}
 .three_cards--inverse {
   background-color: var(--col-light);
 }

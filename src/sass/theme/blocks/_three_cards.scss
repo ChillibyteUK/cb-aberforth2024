@@ -16,6 +16,10 @@
         margin-inline: auto;
     }
 
+    a {
+        justify-self: center;
+    }
+
     &--inverse {
         background-color: var(--col-light);
         .three_cards__card {
