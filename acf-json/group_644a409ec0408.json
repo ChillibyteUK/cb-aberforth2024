@@ -369,7 +369,7 @@
         {
             "key": "field_6787c376e2da8",
             "label": "Intro",
-            "name": "",
+            "name": "agvit_intro",
             "aria-label": "",
             "type": "text",
             "instructions": "",
@@ -390,7 +390,7 @@
         {
             "key": "field_6787c38de2da9",
             "label": "Info",
-            "name": "info",
+            "name": "agvit_info",
             "aria-label": "",
             "type": "text",
             "instructions": "",
@@ -685,5 +685,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1736950859
+    "modified": 1736951097
 }
