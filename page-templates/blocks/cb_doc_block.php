@@ -1,5 +1,12 @@
 <section class="doc_block pt-4">
     <div class="container-xl">
+        <?php
+        if (get_field('title') ?? null) {
+            ?>
+        <h2><?=get_field('title')?></h2>
+            <?php
+        }
+        ?>
         <table class="table fs-300">
             <tbody>
                 <?php
