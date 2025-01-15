@@ -130,7 +130,6 @@
                                 <div class="stats__title">Ordinary Share Price</div>
                                 <div class="stats__date"><?=$ascot_price_date?></div>
                                 <div class="stats__value"><?=$ascot_price?>p</div>
-                                <div class="ticker__change ticker__change--up"><?= $change ?></div>
                                 
                             </div>
                             <div class="stats--ascot">
@@ -182,9 +181,8 @@
                                         <div class="ticker__date"><?= $date ?></div>
                                         <div class="ticker__symbol"><?= $symbol ?></div>
                                         <div class="ticker__price"><?= $currentPrice ?></div>
-                                        <div class="ticker__change ticker__change--up"><?= $change ?></div>
                                     </div>
-                            <?php
+                                    <?php
                                 } else {
                                     echo 'Error: No data found.';
                                 }
