@@ -152,24 +152,46 @@
                                         <?php
                                         $docs = get_field('afund_docs') ?? null;
                                         if ($docs) {
-                                            asort($docs); // SORT BY DOC NAME
+                                            $documents = [];
+
                                             foreach (get_field('afund_docs') as $f) {
                                                 $file = get_field('file',$f);
+                                                if (!$file) continue;
+
                                                 $attachment_url = wp_get_attachment_url($file);
                                                 $file_path = get_attached_file($file);
-                                                $file_size = filesize($file_path);
-                                                ?>
-                                        <tr onclick="window.location.href='<?=$attachment_url?>'" style="cursor: pointer;">
-                                            <td class="fw-500"><?=get_the_title($f)?></td>
-                                            <td><?=esc_html(get_the_terms($f, 'doccat')[0]->name ?? '')?></td>
-                                            <td><?=formatBytes($file_size,0)?></td>
-                                            <td><?=get_the_date('d M Y',$f); ?></td>
-                                            <td><a href="<?=$attachment_url?>" download class="icon-download" style="text-decoration: none; color: inherit;"></a></td>
-                                        </tr>
-                                            <?php
+                                                $file_size = file_exists($file_path) ? filesize($file_path) : 0;
+
+                                                $category = get_the_terms($f, 'doccat');
+                                                $category_name = !empty($category) && !is_wp_error($category) ? $category[0]->name : 'Uncategorised';
+
+                                                $documents[] = [
+                                                    'id' => $f,
+                                                    'title' => get_the_title($f),
+                                                    'category' => $category_name,
+                                                    'size' => $file_size,
+                                                    'formatted_size' => $file_size > 0 ? formatBytes($file_size, 0) : 'Unknown',
+                                                    'date' => get_the_date('d M Y', $f),
+                                                    'url' => esc_url($attachment_url),
+                                                ];
                                             }
-                                        }
-                                        ?>
+
+                                            usort($documents, function ($a, $b) {
+                                                return strcasecmp($a['title'], $b['title']);
+                                            });
+                                            
+                                            foreach ($documents as $doc) {
+                                                ?>
+                                        <tr onclick="window.location.href='<?= $doc['url'] ?>'" style="cursor: pointer;">
+                                            <td class="fw-500"><?= esc_html($doc['title']) ?></td>
+                                            <td><?= esc_html($doc['category']) ?></td>
+                                            <td><?= esc_html($doc['formatted_size']) ?></td>
+                                            <td><?= esc_html($doc['date']) ?></td>
+                                            <td><a href="<?= $doc['url'] ?>" download class="icon-download" style="text-decoration: none; color: inherit;"></a></td>
+                                        </tr>
+                                                <?php
+                                            }
+                                            ?>
                                     </tbody>
                                 </table>
                             </div>
