@@ -99,6 +99,9 @@ main {
     @extend .container-xl;
     @extend .mb-4;
     font-size: var(--fs-300);
+    a {
+        text-decoration: none;
+    }
 }
 
 .investis_iframe {

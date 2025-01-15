@@ -22263,6 +22263,7 @@ header .dropdown.current-menu-item::after {
 .fund_subnav a {
   padding: 1rem 2rem;
   color: var(--_fg);
+  text-decoration: none;
 }
 .fund_subnav a.active {
   background-color: white;
@@ -22457,6 +22458,9 @@ main a:hover {
 
 .yoast-breadcrumbs {
   font-size: var(--fs-300);
+}
+.yoast-breadcrumbs a {
+  text-decoration: none;
 }
 
 .investis_iframe {
