@@ -7,12 +7,13 @@
         display: grid;
         justify-content: center;
         align-items: stretch;
+        height: 100%;
     }
     &__icon {
         aspect-ratio: 9 / 10;
         width: 85px;
         margin-bottom: 0.5rem;
-        margin-inline: center;
+        margin-inline: auto;
     }
 
     &--inverse {
