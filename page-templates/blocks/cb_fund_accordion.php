@@ -39,7 +39,7 @@
                                         <div class="fund_accordion__card d-grid">
                                             <div>
                                                 <h3 class="mb-4">Literature Library</h3>
-                                                <p>Further documentation on each trust and fund that Aberforth offers, such as factsheets and monthly NAV prices on each.</p>
+                                                <p>For further documentation on Aberforth Smaller Companies Trust plc, such as factsheets and report &amp; accounts.</p>
                                             </div>
                                             <a href="/literature-library/" class="button button-secondary align-self-end">Visit literature library</a>
                                         </div>
@@ -100,7 +100,7 @@
                                         <div class="fund_accordion__card d-grid">
                                             <div>
                                                 <h3 class="mb-4">Literature Library</h3>
-                                                <p>Further documentation on each trust and fund that Aberforth offers, such as factsheets and monthly NAV prices on each.</p>
+                                                <p>For further documentation on Aberforth Geared Value & Income Trust plc, such as factsheets and report &amp; accounts.</p>
                                             </div>
                                             <a href="/literature-library/" class="button button-secondary align-self-end">Visit literature library</a>
                                         </div>
@@ -135,7 +135,7 @@
                 <div id="afund" class="accordion-collapse collapse" data-bs-parent="#fundAccordion">
                     <div class="accordion-body">
                         <div class="nav nav-tabs">
-                            <button class="nav-link active" id="afund-investing-tab" data-bs-toggle="tab" data-bs-target="#afund-investing" type="button" role="tab" aria-controls="afund-investing" aria-selected="true">Buying, selling and transfers</button>
+                            <button class="nav-link active" id="afund-investing-tab" data-bs-toggle="tab" data-bs-target="#afund-investing" type="button" role="tab" aria-controls="afund-investing" aria-selected="true">Investing Information</button>
                             <button class="nav-link" id="afund-dealing-tab" data-bs-toggle="tab" data-bs-target="#afund-dealing" type="button" role="tab" aria-controls="afund-dealing" aria-selected="false">Dealing</button>
                             <button class="nav-link" id="afund-docs-tab" data-bs-toggle="tab" data-bs-target="#afund-docs" type="button" role="tab" aria-controls="afund-docs" aria-selected="false">Documents</button>
                         </div>
