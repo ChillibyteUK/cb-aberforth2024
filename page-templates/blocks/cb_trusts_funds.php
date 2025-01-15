@@ -151,8 +151,7 @@
                     <div class="trusts_funds__inner">
                         <div><?=get_field('agvit_intro','option')?></div>
                         <div class="lined">
-                            <?=get_field('agvit_info','option')?>
-                            <span>Launched: 1 July 2014 <span class="mx-2 bar"></span> Planned wind up: 30 June 2031</span>
+                            <span><?=get_field('agvit_info','option')?></span>
                         </div>
                         <div class="tickers">
                             <?php
