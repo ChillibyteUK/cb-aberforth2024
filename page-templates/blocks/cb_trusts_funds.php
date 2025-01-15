@@ -271,7 +271,7 @@
                     <h3 class="trusts_funds__header">Aberforth UK Small Companies Fund</h3>
                     <div class="trusts_funds__inner  justify-content-between">
                         <p class="trusts_funds__content span-2"><?=get_field('afund_intro','option')?></p>
-                        <div class="lined">
+                        <div class="lined span-2 py-2">
                             <span>Launched: 20 March 1991</span>
                         </div>
                         <?php
