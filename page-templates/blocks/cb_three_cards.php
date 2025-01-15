@@ -23,7 +23,7 @@ $class = $block['className'] ?? 'py-5';
         }
         ?>
         <div class="row g-4">
-            <div class="col-md-4">
+            <div class="col-lg-4">
                 <div class="three_cards__card">
                     <?php
                     if (get_field('card1_icon') ?? null) {
@@ -44,7 +44,7 @@ $class = $block['className'] ?? 'py-5';
                     ?>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-lg-4">
                 <div class="three_cards__card">
                     <?php
                     if (get_field('card2_icon') ?? null) {
@@ -65,7 +65,7 @@ $class = $block['className'] ?? 'py-5';
                     ?>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-lg-4">
                 <div class="three_cards__card">
                     <?php
                     if (get_field('card3_icon') ?? null) {
