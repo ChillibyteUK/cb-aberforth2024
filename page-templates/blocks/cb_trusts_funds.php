@@ -370,7 +370,7 @@
                             </div>
                         </div>
                         
-                        <div class="text-end mt-auto">
+                        <div class="text-end mt-auto" style="grid-column:2">
                             <a href="/trusts-and-funds/aberforth-uk-small-companies-fund/" class="button">Learn more</a>
                         </div>
                     </div>
