@@ -12,6 +12,11 @@
             background-color: var(--col-grey-200);
         }
     }
+
+    .modal-dialog {
+        max-width: unset;
+        width: min(1100px,90vw);
+    }
 }
 
 .docs_by_fund {

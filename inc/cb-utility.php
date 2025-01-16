@@ -300,6 +300,10 @@ function cb_list($field)
  */
 function formatBytes($size, $precision = 2)
 {
+    if ($size <= 0) {
+        return '0 B'; // Return 0 bytes as a default value
+    }
+    
     $base = log($size, 1024);
     $suffixes = array('', 'K', 'M', 'G', 'T');
 

@@ -133,6 +133,11 @@ th {
             }
         }
     }
+    
+    .modal-dialog {
+        max-width: unset;
+        width: min(1100px,90vw);
+    }
 
     .library-search,
     .filter-buttons {
@@ -193,9 +198,11 @@ th {
 
 
     .filter-buttons {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2rem;
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        column-gap: 2rem;
+        row-gap: 1rem;
         .button {
             min-width: unset;
         }
@@ -238,12 +245,19 @@ th {
 .pagination {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.5rem;
     > * {
-        width: 44px;
-        height: 44px;
+        width: 32px;
+        height: 32px;
         display: grid;
         place-content: center;
+    }
+    @media (min-width:768px) {
+        gap: 1rem;
+        > * {
+            width: 44px;
+            height: 44px;
+        }
     }
 
     .page-link {
@@ -254,12 +268,19 @@ th {
 .page-numbers:not(.prev):not(.next),
 .page-item {
     position: relative;
+    text-decoration: none;
     border: 2px solid var(--col-blue-700);
     border-radius: 100vw;
     &.current,
     &.active {
         background-color: var(--col-blue-700);
         color: white;
+    }
+}
+.page-numbers:not(.current):not(.dots) {
+    transition: background-color var(--transition);
+    &:hover {
+        background-color: var(--col-blue-200);
     }
 }
 

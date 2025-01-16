@@ -24,6 +24,24 @@ if (isset($_GET['search_term']) && !empty($_GET['search_term'])) {
     $args['s'] = sanitize_text_field($_GET['search_term']);
 }
 
+$sort_order = isset($_GET['sort_order']) ? sanitize_text_field($_GET['sort_order']) : 'recent';
+
+switch ($sort_order) {
+    case 'recent':
+        $args['orderby'] = 'date';
+        $args['order'] = 'DESC';
+        break;
+    case 'oldest':
+        $args['orderby'] = 'date';
+        $args['order'] = 'ASC';
+        break;
+    case 'name':
+        $args['orderby'] = 'title';
+        $args['order'] = 'ASC';
+        break;
+}
+
+
 // Apply filters for doccat and doctype if set.
 if (isset($_GET['doccat']) && is_array($_GET['doccat']) && !empty($_GET['doccat'])) {
     $args['tax_query'][] = array(
@@ -58,13 +76,13 @@ $end_post = min($paged * $args['posts_per_page'], $total_posts);
         <!-- Search form -->
         <form class="library-search method=" get" action="<?php echo esc_url(get_permalink()); ?>">
             <input type="hidden" name="paged" value="1">
-            <div class="row">
-                <div class="col-md-10">
+            <div class="row g-2">
+                <div class="col-md-9">
                     <div class="mb-1">Search</div>
                     <input type="text" class="form-control" name="search_term" placeholder="Enter keywords or trust names" value="<?php echo isset($_GET['search_term']) ? esc_attr($_GET['search_term']) : ''; ?>">
                 </div>
-                <div class="col-md-2 align-self-end">
-                    <button type="submit" class="button">Search</button>
+                <div class="col-md-3 align-self-end">
+                    <button type="submit" class="button w-100 w-md-auto">Search</button>
                 </div>
             </div>
         </form>
@@ -107,17 +125,46 @@ $end_post = min($paged * $args['posts_per_page'], $total_posts);
                                 <?php } ?>
                             </div>
                         </div>
+                        <input type="hidden" name="sort_order" value="<?php echo esc_attr($sort_order); ?>">
                         <input type="hidden" name="paged" value="1">
                         <div class="filter-buttons">
-                            <a class="button button-secondary" href="/literature-library">Clear filters</a>
+                            <a class="button button-secondary" href="<?=esc_url(get_permalink())?>">Clear filters</a>
                             <button type="submit" class="button">Apply filter</button>
                         </div>
                     </form>
                 </div>
-                <?php if ($query->have_posts()) { ?>
+                <?php
+                if ($query->have_posts()) {
+                    ?>
                     <div class="col-md-9 has-light-background-color px-0">
-                        <div class="results px-4 py-3">
-                            Showing <?= $start_post ?> - <?= $end_post ?> of <?= $total_posts ?> results
+                        <div class="results px-4 py-3 d-flex justify-content-between align-items-center flex-wrap g-2"> 
+                            <div>Showing <?= $start_post ?> - <?= $end_post ?> of <?= $total_posts ?> results</div>
+                            <div>
+                                <form method="get" action="<?php echo esc_url(get_permalink()); ?>">
+                                    <label for="sort_order" class="me-2">Sort By:</label>
+                                    <select name="sort_order" id="sort_order" class="form-select d-inline-block w-auto" onchange="this.form.submit();">
+                                        <option value="recent" <?php selected($sort_order, 'recent'); ?>>By date (recent first)</option>
+                                        <option value="oldest" <?php selected($sort_order, 'oldest'); ?>>By date (oldest first)</option>
+                                        <option value="name" <?php selected($sort_order, 'name'); ?>>By Name</option>
+                                    </select>
+                                    <?php
+                                    // Preserve filters and search terms in the form.
+                                    if (isset($_GET['search_term'])) {
+                                        echo '<input type="hidden" name="search_term" value="' . esc_attr($_GET['search_term']) . '">';
+                                    }
+                                    if (isset($_GET['doccat']) && is_array($_GET['doccat'])) {
+                                        foreach ($_GET['doccat'] as $doccat) {
+                                            echo '<input type="hidden" name="doccat[]" value="' . esc_attr($doccat) . '">';
+                                        }
+                                    }
+                                    if (isset($_GET['doctype']) && is_array($_GET['doctype'])) {
+                                        foreach ($_GET['doctype'] as $doctype) {
+                                            echo '<input type="hidden" name="doctype[]" value="' . esc_attr($doctype) . '">';
+                                        }
+                                    }
+                                    ?>
+                                </form>
+                            </div>
                         </div>
                         <!-- Document List -->
                         <table class="table">
@@ -133,20 +180,56 @@ $end_post = min($paged * $args['posts_per_page'], $total_posts);
                             <tbody>
                                 <?php while ($query->have_posts()) {
                                     $query->the_post();
+
                                     $attachment_url = wp_get_attachment_url( get_field('file', get_the_ID()) );
-                                ?>
-                                    <tr onclick="window.open('<?php echo $attachment_url; ?>', '_blank')" style="cursor: pointer;">
-                                        <td><?php echo esc_html(get_the_terms(get_the_ID(), 'doccat')[0]->name ?? ''); ?></td>
-                                        <td><?php echo esc_html(get_the_terms(get_the_ID(), 'doctype')[0]->name ?? ''); ?></td>
-                                        <td><?php the_title(); ?></td>
-                                        <td><?php echo get_the_date('d M Y'); ?></td>
-                                        <td><a href="<?php echo $attachment_url; ?>" download class="icon-download" style="text-decoration: none; color: inherit;"></a></td>
-                                    </tr>
-                                <?php } ?>
+
+                                    $disclaimer = get_field('disclaimer_active', get_the_ID());
+                                    if (!empty($disclaimer) && is_array($disclaimer) && isset($disclaimer[0]) && $disclaimer[0] === 'Yes') {
+                                        ?>
+                                        <tr data-bs-toggle="modal" data-bs-target="#modal_<?=get_the_ID()?>" style="cursor: pointer;">
+                                            <td><?php echo esc_html(get_the_terms(get_the_ID(), 'doccat')[0]->name ?? ''); ?></td>
+                                            <td><?php echo esc_html(get_the_terms(get_the_ID(), 'doctype')[0]->name ?? ''); ?></td>
+                                            <td><?php the_title(); ?></td>
+                                            <td><?php echo get_the_date('d M Y'); ?></td>
+                                            <td><span class="icon-download" style="text-decoration: none; color: inherit;"></span></td>
+                                        </tr>
+                                        <div class="modal fade" id="modal_<?=get_the_ID()?>" tabindex="-1">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h2 class="modal-title"><?=get_field('disclaimer_header',get_the_ID())?></h2>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <?=get_field('disclaimer',get_the_ID())?>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="button button-secondary" data-bs-dismiss="modal">Close</button>
+                                                        <button type="button" class="button accept-button" onclick="window.open('<?php echo $attachment_url; ?>', '_blank')">Accept</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php
+                                    }
+                                    else {
+                                        ?>
+                                            <tr onclick="window.open('<?php echo $attachment_url; ?>', '_blank')" style="cursor: pointer;">
+                                                <td><?php echo esc_html(get_the_terms(get_the_ID(), 'doccat')[0]->name ?? ''); ?></td>
+                                                <td><?php echo esc_html(get_the_terms(get_the_ID(), 'doctype')[0]->name ?? ''); ?></td>
+                                                <td><?php the_title(); ?></td>
+                                                <td><?php echo get_the_date('d M Y'); ?></td>
+                                                <td><a href="<?php echo $attachment_url; ?>" download class="icon-download" style="text-decoration: none; color: inherit;"></a></td>
+                                            </tr>
+                                        <?php
+                                    }
+                                }
+                                    ?>
                             </tbody>
                         </table>
                     </div>
-                <?php } else { ?>
+                <?php
+                } else { ?>
                     <div class="col-md-8 bg-white p-4">
                         No documents found. Please adjust your search or filter criteria.
                     </div>
@@ -191,6 +274,7 @@ $end_post = min($paged * $args['posts_per_page'], $total_posts);
                     $pagination_args['add_args'] = $query_args;
                 }
 
+                $pagination_args['mid_size'] = 1;
                 $pagination_links = paginate_links($pagination_args);
 
                 // Add first and last page links
