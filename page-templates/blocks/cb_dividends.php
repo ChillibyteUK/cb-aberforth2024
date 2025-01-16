@@ -40,16 +40,18 @@ $json_data = [
             'data' => $final,
             'backgroundColor' => '#cae2ff',
             'stack' => 'stack1'
-        ],
-        [
-            'label' => 'Special',
-            'data' => $special,
-            'backgroundColor' => '#e5d7b2',
-            'stack' => 'stack1'
         ]
     ]
 ];
 
+if (array_sum($special) > 0) {
+    $json_data['datasets'][] = [
+        'label' => 'Special',
+        'data' => $special,
+        'backgroundColor' => '#e5d7b2',
+        'stack' => 'stack1'
+    ];
+}
 
 ?>
 <section class="dividends py-5">
