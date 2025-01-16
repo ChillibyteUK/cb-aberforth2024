@@ -6,17 +6,20 @@ $r = random_str(4);
         <div class="accordion" id="accordion_<?=$r?>">
             <?php
             $c = 0;
+            $expanded = "true";
+            $collapsed = "";
+            $show = 'show';
             while(have_rows('section')) {
                 the_row();
                 $slug = acf_slugify(get_sub_field('section_title'));
                 ?>
             <div class="accordion-item" id="<?=$slug?>">
                 <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a<?=$r?>_<?=$c?>" aria-expanded="true" aria-controls="a<?=$r?>_<?=$c?>">
+                    <button class="accordion-button <?=$collapsed?>" type="button" data-bs-toggle="collapse" data-bs-target="#a<?=$r?>_<?=$c?>" aria-expanded="<?=$expanded?>" aria-controls="a<?=$r?>_<?=$c?>">
                         <?=get_sub_field('section_title')?>
                     </button>
                 </h2>
-                <div id="a<?=$r?>_<?=$c?>" class="accordion-collapse collapse" data-bs-parent="#accordion_<?=$r?>">
+                <div id="a<?=$r?>_<?=$c?>" class="accordion-collapse collapse <?=$show?>" data-bs-parent="#accordion_<?=$r?>">
                     <div class="accordion-body p-3">
                         <?php
                         if (have_rows('acc_content')) {
@@ -115,6 +118,9 @@ $r = random_str(4);
                 </div>
             </div>
                 <?php
+                $expanded = 'false';
+                $collapsed = 'collapsed';
+                $show = '';
                 $c++;
             }
             ?>
