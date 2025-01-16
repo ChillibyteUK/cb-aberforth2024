@@ -521,6 +521,60 @@ function register_page_list_shortcode()
 }
 add_shortcode('page_list', 'register_page_list_shortcode');
 
+
+function get_gutenberg_h2_headings_from_page() {
+    global $post;
+
+    // Get the raw post content
+    $content = $post->post_content;
+
+    // Parse the blocks in the content
+    $blocks = parse_blocks($content);
+
+    $h2_headings = [];
+    $stack = $blocks; // Use a stack to process blocks iteratively
+
+    while (!empty($stack)) {
+        $block = array_shift($stack); // Get the blocks in order
+
+        // Check if it's a heading block
+        if ($block['blockName'] === 'core/heading') {
+            // Check the level attribute (assume default is 2 if not set)
+            $level = $block['attrs']['level'] ?? 2;
+
+            if ($level === 2) {
+                // Extract the rendered HTML
+                $html = $block['innerHTML'] ?? '';
+
+                // Extract the ID using regex
+                if (preg_match('/<h2[^>]*id=["\']([^"\']+)["\']/', $html, $matches)) {
+                    $id = $matches[1];
+                } else {
+                    $id = null;
+                }
+
+                // Extract the content
+                $content = strip_tags($html);
+
+                // Add the H2 heading to the array
+                $h2_headings[] = [
+                    'content' => $content,
+                    'id'      => $id,
+                ];
+            }
+        }
+
+        // Add inner blocks to the stack
+        if (!empty($block['innerBlocks'])) {
+            $stack = array_merge($stack, $block['innerBlocks']);
+        }
+    }
+
+    return $h2_headings;
+}
+
+
+
 // CUSTOM LOGIN URL
 /*
 add_action('init', 'custom_login_url');

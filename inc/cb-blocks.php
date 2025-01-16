@@ -200,9 +200,19 @@ function acf_blocks()
             'mode'    => 'edit',
             'supports' => array('mode' => false),
         ));
+        acf_register_block_type(array(
+            'name'                => 'cb_inpage_hero',
+            'title'                => __('CB In Page Link Hero'),
+            'category'            => 'layout',
+            'icon'                => 'cover-image',
+            'render_template'    => 'page-templates/blocks/cb_inpage_hero.php',
+            'mode'    => 'edit',
+            'supports' => array('mode' => false),
+        ));
     }
 }
 add_action('acf/init', 'acf_blocks');
+
 
 // Gutenburg core modifications
 add_filter('register_block_type_args', 'core_image_block_type_args', 10, 3);

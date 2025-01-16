@@ -22391,6 +22391,12 @@ header .dropdown.current-menu-item::after {
   text-align: center;
 }
 
+.inpage_hero a {
+  padding: 1rem 2rem;
+  color: var(--col-dark);
+  text-decoration: none;
+}
+
 main {
   margin-top: var(--h-top);
 }

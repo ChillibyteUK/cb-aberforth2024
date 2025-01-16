@@ -1,5 +1,8 @@
 <?php
-$fund = strtolower(get_field('theme'));
+// $fund = strtolower(get_field('theme'));
+$field_value = get_field('theme');
+$theme = $field_value !== null ? strtolower((string)$field_value) : null;
+
 $theme = 'fund_subnav--' . $fund;
 $sheet = get_field($fund . '_factsheet', 'option');
 
@@ -53,7 +56,7 @@ if (array_key_exists($fund, $fund_options)) {
                     // Parse the XML data
                     $xml = simplexml_load_string($xmlContent);
                     if ($xml === false) {
-                        warn("Error: Failed to parse XML.");
+                        error_log("Error: Failed to parse XML.");
                     }
 
                     $shares = isset($xml->share) ? $xml->share : [$xml];
