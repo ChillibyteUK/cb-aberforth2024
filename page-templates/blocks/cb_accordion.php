@@ -8,8 +8,9 @@ $r = random_str(4);
             $c = 0;
             while(have_rows('section')) {
                 the_row();
+                $slug = acf_slugify(get_sub_field('section_title'));
                 ?>
-            <div class="accordion-item">
+            <div class="accordion-item" id="<?=$slug?>">
                 <h2 class="accordion-header">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a<?=$r?>_<?=$c?>" aria-expanded="true" aria-controls="a<?=$r?>_<?=$c?>">
                         <?=get_sub_field('section_title')?>
