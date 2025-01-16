@@ -1,8 +1,5 @@
 <?php
-// $fund = strtolower(get_field('theme'));
-$field_value = get_field('theme');
-$theme = $field_value !== null ? strtolower((string)$field_value) : null;
-
+$fund = strtolower(get_field('theme'));
 $theme = 'fund_subnav--' . $fund;
 $sheet = get_field($fund . '_factsheet', 'option');
 
