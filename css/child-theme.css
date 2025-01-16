@@ -22405,6 +22405,23 @@ main {
     margin-top: var(--h-top-desktop);
   }
 }
+main a {
+  display: inline-block;
+  font-weight: var(--fw-900);
+  transition: color var(--transition);
+}
+main a:hover, main a:focus-visible, main a:active {
+  color: inherit;
+}
+main a {
+  text-decoration: underline;
+  color: var(--col-green-400);
+  transition: opacity var(--transition);
+  font-weight: var(--fw-600);
+}
+main a:hover {
+  text-decoration: none;
+}
 main .noline,
 main .noline > * {
   text-decoration: none;
@@ -22439,23 +22456,6 @@ main a.arrow-link:hover::after {
 }
 main a.arrow-link:hover::before {
   opacity: 1;
-}
-main a {
-  display: inline-block;
-  font-weight: var(--fw-900);
-  transition: color var(--transition);
-}
-main a:hover, main a:focus-visible, main a:active {
-  color: inherit;
-}
-main a {
-  text-decoration: underline;
-  color: var(--col-green-400);
-  transition: opacity var(--transition);
-  font-weight: var(--fw-600);
-}
-main a:hover {
-  text-decoration: none;
 }
 
 @media (min-width: 992px) {
