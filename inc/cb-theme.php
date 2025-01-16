@@ -393,6 +393,42 @@ function display_pricing_data_status()
     $output .= <<<EOT
 <div class="mb-5">
 <h2>CSV Data Files Feed</h2>
+EOT;
+
+    $file_path = $_SERVER['DOCUMENT_ROOT'] . '/feed/';
+    $files = scandir($file_path);
+
+    // Filter out '.' and '..' to only include actual files/directories
+    $files = array_filter($files, function ($file) use ($file_path) {
+        return is_file($file_path . $file); // Include only files
+    });
+    if (!empty($files)) {
+        $output .= '<table class="table"><thead><tr><th>File Name</th><th>File Size</th><th>File Modification Date</th></tr></thead><tbody>';
+        foreach ($files as $file) {
+            $file_full_path = $file_path . $file;
+
+            $file_modification_time = filemtime($file_full_path);
+            $formatted_date = date('Y-m-d H:i:s', $file_modification_time);
+
+            $file_size = filesize($file_full_path);
+            $formatted_size = number_format($file_size / 1024, 2) . ' KB';
+
+            $is_old = (time() - $file_modification_time) > (6 * 60 * 60 + 10 * 60); // 6h10m (7 * 60 * 60);
+            $class = $is_old ? ' class="bg-warning"' : '';
+
+
+            $output .= '<tr ' . $class . '>';
+            $output .= "<td>{$file}</td>";
+            $output .= "<td>{$formatted_size}</td>";
+            $output .= "<td>{$formatted_date}</td>";
+            $output .= '</tr>';
+        }
+        $output .= "</tbody></table>";
+    } else {
+        $output .= "No files found in the directory.";
+    }
+
+    $output .= <<<EOT
     <button id="triggerButton" class="button">Run Data CSV Download Now</button>
     <div id="outputDiv" class="mt-4"></div>
 </div>
