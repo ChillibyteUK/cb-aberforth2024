@@ -22405,7 +22405,8 @@ main {
     margin-top: var(--h-top-desktop);
   }
 }
-main .noline {
+main .noline,
+main .noline > * {
   text-decoration: none;
 }
 main a.anchor {

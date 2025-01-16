@@ -11,7 +11,8 @@ main {
     @media (min-width:992px) {
         margin-top: var(--h-top-desktop);
     }
-    .noline {
+    .noline,
+    .noline > * {
         text-decoration: none;
     }
     a.anchor {
