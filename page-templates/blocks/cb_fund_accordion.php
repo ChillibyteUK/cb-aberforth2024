@@ -17,48 +17,46 @@
                         <div class="tab-content" id="ascot-content">
                             <div class="tab-pane fade show active" id="ascot-investing" aria-labelledby="ascot-investing-tab">
                                 <?php
-                                if (get_field('asc_intro') ?? null) {
+                                if (get_field('ascot_invest_intro') ?? null) {
                                     ?>
-                                <div class="p-4"><?=get_field('asc_intro')?></div>
+                                <div class="p-4"><?=get_field('ascot_invest_intro')?></div>
+                                <?php
+                                }
+                                else {
+                                    ?>
+                                    <div class="p-2"></div>
                                     <?php
                                 }
+                                $ascot_cards = [
+                                    get_field('ascot_invest_card_1'),
+                                    get_field('ascot_invest_card_2'),
+                                    get_field('ascot_invest_card_3'),
+                                    get_field('ascot_invest_card_4')
+                                ];
                                 ?>
                                 <div class="row g-4">
+                                    <?php
+                                    foreach ($ascot_cards as $ac) {
+                                        ?>
                                     <div class="col-md-6 col-lg-3">
                                         <div class="fund_accordion__card d-grid">
                                             <div>
-                                                <h3 class="mb-4">Buying and selling shares in the trust</h3>
-                                                <p>Shares can be bought and sold via trading platforms, independent financial advisers or stockbrokers. The Association of Investment Companies (AIC) website lists platform information.</p>
+                                                <h3 class="mb-4"><?=$ac['card_title']?></h3>
+                                                <p><?=$ac['card_content']?></p>
                                             </div>
-                                            <a href="https://www.theaic.co.uk/availability-on-platforms" target="_blank" class="button button-secondary align-self-end">Go to the AIC website</a>
+                                            <?php
+                                            if ($ac['card_button'] ?? null) {
+                                                $l = $ac['card_button'];
+                                                ?>
+                                            <a href="<?=$l['url']?>" target="<?=$l['target']?>" class="button button-secondary align-self-end"><?=$l['title']?></a>
+                                                <?php
+                                            }
+                                            ?>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 col-lg-3">
-                                        <div class="fund_accordion__card">
-                                            <h3 class="mb-4">Link Asset Services</h3>
-                                            <p>For queries relating to share registration, share certification, transfers, estates and similar.</p>
-                                            <p>Tel: <a href="tel:+443716640300">0371 664 0300</a><br>(Calls cost 12p per minute plus network extras)</p>
-                                            <p>Email: <a href="mailto:shareholderenquiries@linkgroup.co.uk" style="word-break:break-word;text-wrap:balance;">shareholderenquiries@linkgroup.co.uk</a></p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-lg-3">
-                                        <div class="fund_accordion__card d-grid">
-                                            <div>
-                                                <h3 class="mb-4">Literature Library</h3>
-                                                <p>For further documentation on Aberforth Smaller Companies Trust plc, such as factsheets and report &amp; accounts.</p>
-                                            </div>
-                                            <a href="/literature-library/" class="button button-secondary align-self-end">Visit literature library</a>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-lg-3">
-                                        <div class="fund_accordion__card d-grid">
-                                            <div>
-                                                <h3 class="mb-4">Trust and fund details</h3>
-                                                <p>Further details of the dividend dates, annual calendar, financial statements and similar key information on the Aberforth Smaller Companies Trust plc.</p>
-                                            </div>
-                                            <a href="/trusts-and-funds/aberforth-smaller-companies-trust-plc/" class="button button-secondary align-self-end">Explore trust details</a>
-                                        </div>
-                                    </div>
+                                        <?php
+                                    }
+                                    ?>
                                 </div>
                             </div>
                             <div class="tab-pane fade px-0" id="ascot-price" aria-labelledby="ascot-price-tab">
@@ -83,49 +81,47 @@
                         </div>
                         <div class="tab-content" id="agvit-content">
                             <div class="tab-pane fade show active" id="agvit-investing" aria-labelledby="agvit-investing-tab">
-                                <?php
-                                if (get_field('agvi_intro') ?? null) {
+                            <?php
+                                if (get_field('agvit_invest_intro') ?? null) {
                                     ?>
-                                <div class="p-4"><?=get_field('agvi_intro')?></div>
+                                <div class="p-4"><?=get_field('agvit_invest_intro')?></div>
+                                <?php
+                                }
+                                else {
+                                    ?>
+                                    <div class="p-2"></div>
                                     <?php
                                 }
+                                $agvit_cards = [
+                                    get_field('agvit_invest_card_1'),
+                                    get_field('agvit_invest_card_2'),
+                                    get_field('agvit_invest_card_3'),
+                                    get_field('agvit_invest_card_4')
+                                ];
                                 ?>
                                 <div class="row g-4">
+                                    <?php
+                                    foreach ($agvit_cards as $ac) {
+                                        ?>
                                     <div class="col-md-6 col-lg-3">
                                         <div class="fund_accordion__card d-grid">
                                             <div>
-                                                <h3 class="mb-4">Buying and selling shares in the trust</h3>
-                                                <p>Shares can be bought and sold via trading platforms, independent financial advisers or stockbrokers. The Association of Investment Companies (AIC) website lists platform information.</p>
+                                                <h3 class="mb-4"><?=$ac['card_title']?></h3>
+                                                <p><?=$ac['card_content']?></p>
                                             </div>
-                                            <a href="https://www.theaic.co.uk/availability-on-platforms" target="_blank" class="button button-secondary align-self-end">Go to the AIC website</a>
+                                            <?php
+                                            if ($ac['card_button'] ?? null) {
+                                                $l = $ac['card_button'];
+                                                ?>
+                                            <a href="<?=$l['url']?>" target="<?=$l['target']?>" class="button button-secondary align-self-end"><?=$l['title']?></a>
+                                                <?php
+                                            }
+                                            ?>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 col-lg-3">
-                                        <div class="fund_accordion__card">
-                                            <h3 class="mb-4">Link Asset Services</h3>
-                                            <p>For queries relating to share registration, share certification, transfers, estates and similar.</p>
-                                            <p>Tel: <a href="tel:+443716640300">0371 664 0300</a><br>(Calls cost 12p per minute plus network extras)</p>
-                                            <p>Email: <a href="mailto:shareholderenquiries@linkgroup.co.uk" style="word-break:break-word;text-wrap:balance;">shareholderenquiries@linkgroup.co.uk</a></p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-lg-3">
-                                        <div class="fund_accordion__card d-grid">
-                                            <div>
-                                                <h3 class="mb-4">Literature Library</h3>
-                                                <p>For further documentation on Aberforth Geared Value & Income Trust plc, such as factsheets and report &amp; accounts.</p>
-                                            </div>
-                                            <a href="/literature-library/" class="button button-secondary align-self-end">Visit literature library</a>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-lg-3">
-                                        <div class="fund_accordion__card d-grid">
-                                            <div>
-                                                <h3 class="mb-4">Trust and fund details</h3>
-                                                <p>Further details of the dividend dates, annual calendar, financial statements and similar key information on the Aberforth Geared Value &amp; Income Trust plc.</p>
-                                            </div>
-                                            <a href="/trusts-and-funds/aberforth-geared-value-income-trust-plc/" class="button button-secondary align-self-end">Explore trust details</a>
-                                        </div>
-                                    </div>
+                                        <?php
+                                    }
+                                    ?>
                                 </div>
                             </div>
                             <div class="tab-pane fade px-0" id="agvit-price" aria-labelledby="agvit-price-tab">
@@ -154,9 +150,9 @@
                         <div class="tab-content" id="afund-content">
                             <div class="tab-pane fade show active" id="afund-investing" aria-labelledby="afund-investing-tab">
                                 <?php
-                                if (get_field('afund_investing_intro') ?? null) {
+                                if (get_field('afund_invest_intro') ?? null) {
                                     ?>
-                                <div class="p-4"><?=get_field('afund_investing_intro')?></div>
+                                <div class="p-4"><?=get_field('afund_invest_intro')?></div>
                                     <?php
                                 }
                                 else {
@@ -164,42 +160,36 @@
                                     <div class="p-2"></div>
                                     <?php
                                 }
+                                $afund_cards = [
+                                    get_field('afund_invest_card_1'),
+                                    get_field('afund_invest_card_2'),
+                                    get_field('afund_invest_card_3'),
+                                    get_field('afund_invest_card_4')
+                                ];
                                 ?>
                                 <div class="row g-4">
+                                    <?php
+                                    foreach ($afund_cards as $ac) {
+                                        ?>
                                     <div class="col-md-6 col-lg-3">
                                         <div class="fund_accordion__card d-grid">
                                             <div>
-                                                <h3 class="mb-4">New Investors</h3>
-                                                <p>The Accumulation and Income Units in the Fund may be bought or sold directly through Aberforth Unit Trust Managers Limited and by submitting an application pack.</p>
+                                                <h3 class="mb-4"><?=$ac['card_title']?></h3>
+                                                <p><?=$ac['card_content']?></p>
                                             </div>
-                                            <a href="#" target="_blank" class="button button-secondary align-self-end">Download Application Pack</a>
+                                            <?php
+                                            if ($ac['card_button'] ?? null) {
+                                                $l = $ac['card_button'];
+                                                ?>
+                                            <a href="<?=$l['url']?>" target="<?=$l['target']?>" class="button button-secondary align-self-end"><?=$l['title']?></a>
+                                                <?php
+                                            }
+                                            ?>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 col-lg-3">
-                                        <div class="fund_accordion__card">
-                                            <h3 class="mb-4">Buying and selling uints, transfers and queries</h3>
-                                            <p>Orders may be placed by telephone by calling the Fund’s Dealing Line on <a href="tel:+443456080940">0345 608 0940</a>.</p>
-                                            <p>Transfers and queries can be actioned by contacting Waystone Transfer Agency Solutions (UK) Limited Email: <a href="mailto:wtas-investorservices@waystone.com">wtas-investorservices@waystone.com</a></p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-lg-3">
-                                        <div class="fund_accordion__card d-grid">
-                                            <div>
-                                                <h3 class="mb-4">Fund unit prices and details</h3>
-                                                <p>The unit prices and details of the fund performance and statistics.</p>
-                                            </div>
-                                            <a href="trusts-and-funds/aberforth-uk-small-companies-fund/performance/" class="button button-secondary align-self-end">Find fund prices</a>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-lg-3">
-                                        <div class="fund_accordion__card d-grid">
-                                            <div>
-                                                <h3 class="mb-4">Literature Library</h3>
-                                                <p>Further documentation on Aberforth UK Small Companies Fund such as factsheets and report and accounts.</p>
-                                            </div>
-                                            <a href="/literature-library/" class="button button-secondary align-self-end">Visit literature library</a>
-                                        </div>
-                                    </div>
+                                        <?php
+                                    }
+                                    ?>
                                 </div>
                             </div>
                             <div class="tab-pane fade px-0" id="afund-dealing" aria-labelledby="afund-dealing-tab">
