@@ -159,6 +159,11 @@
                                 <div class="p-4"><?=get_field('afund_investing_intro')?></div>
                                     <?php
                                 }
+                                else {
+                                    ?>
+                                    <div class="p-4"></div>
+                                    <?php
+                                }
                                 ?>
                                 <div class="row g-4">
                                     <div class="col-md-6 col-lg-3">
