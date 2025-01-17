@@ -16,7 +16,13 @@
                         </div>
                         <div class="tab-content" id="ascot-content">
                             <div class="tab-pane fade show active" id="ascot-investing" aria-labelledby="ascot-investing-tab">
+                                <?php
+                                if (get_field('asc_intro') ?? null) {
+                                    ?>
                                 <div class="p-4"><?=get_field('asc_intro')?></div>
+                                    <?php
+                                }
+                                ?>
                                 <div class="row g-4">
                                     <div class="col-md-6 col-lg-3">
                                         <div class="fund_accordion__card d-grid">
@@ -77,7 +83,13 @@
                         </div>
                         <div class="tab-content" id="agvit-content">
                             <div class="tab-pane fade show active" id="agvit-investing" aria-labelledby="agvit-investing-tab">
+                                <?php
+                                if (get_field('agvi_intro') ?? null) {
+                                    ?>
                                 <div class="p-4"><?=get_field('agvi_intro')?></div>
+                                    <?php
+                                }
+                                ?>
                                 <div class="row g-4">
                                     <div class="col-md-6 col-lg-3">
                                         <div class="fund_accordion__card d-grid">
