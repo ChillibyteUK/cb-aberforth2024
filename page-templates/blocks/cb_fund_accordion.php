@@ -161,7 +161,7 @@
                                 }
                                 else {
                                     ?>
-                                    <div class="p-4"></div>
+                                    <div class="p-2"></div>
                                     <?php
                                 }
                                 ?>
