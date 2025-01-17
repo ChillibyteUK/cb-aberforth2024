@@ -16,7 +16,7 @@
                         </div>
                         <div class="tab-content" id="ascot-content">
                             <div class="tab-pane fade show active" id="ascot-investing" aria-labelledby="ascot-investing-tab">
-                                <div class="p-4"><?=get_field('ascot_intro')?></div>
+                                <div class="p-4"><?=get_field('asc_intro')?></div>
                                 <div class="row g-4">
                                     <div class="col-md-6 col-lg-3">
                                         <div class="fund_accordion__card d-grid">
@@ -77,7 +77,7 @@
                         </div>
                         <div class="tab-content" id="agvit-content">
                             <div class="tab-pane fade show active" id="agvit-investing" aria-labelledby="agvit-investing-tab">
-                                <div class="p-4"><?=get_field('agvit_intro')?></div>
+                                <div class="p-4"><?=get_field('agvi_intro')?></div>
                                 <div class="row g-4">
                                     <div class="col-md-6 col-lg-3">
                                         <div class="fund_accordion__card d-grid">
