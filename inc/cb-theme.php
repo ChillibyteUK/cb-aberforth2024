@@ -398,7 +398,7 @@ function display_pricing_data_status()
     // Check and display Ascot data
     if ($ascot_data) {
         $output .= '<h3>ASCOT Pricing Data:</h3>';
-        $output .= '<pre>' . esc_html($ascot_data) . '</pre>';
+        $output .= '<div class="fs-300 mb-4 bg-light p-2"><code>' . esc_html($ascot_data) . '</code></div>';
         $output .= '<p>Last successful update: ' . ($ascot_last_success ? esc_html($ascot_last_success) : 'N/A') . '</p>';
     } else {
         $output .= '<h3>Ascot Pricing Data:</h3>';
@@ -408,8 +408,8 @@ function display_pricing_data_status()
 
     // Check and display AGVIT data
     if ($agvit_data) {
-        $output .= '<h3>AGVIT Pricing Data:</h3>';
-        $output .= '<pre>' . esc_html($agvit_data) . '</pre>';
+        $output .= '<h3 class="mt-5">AGVIT Pricing Data:</h3>';
+        $output .= '<div class="fs-300 mb-4 bg-light p-2"><code>' . esc_html($agvit_data) . '</code></div>';
         $output .= '<p>Last successful update: ' . ($agvit_last_success ? esc_html($agvit_last_success) : 'N/A') . '</p>';
     } else {
         $output .= '<h3>AGVIT Pricing Data:</h3>';
@@ -432,7 +432,7 @@ EOT;
     });
     if (!empty($files)) {
         $output .= <<<EOT
-<table class="table table-sm fs-300">
+<table class="table table-sm fs-300 mb-4">
     <thead>
         <tr>
             <th>File Name</th>
