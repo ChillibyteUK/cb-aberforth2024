@@ -13,6 +13,34 @@ require_once CB_THEME_DIR . '/inc/cb-fileeditor.php';
 remove_action('wp_enqueue_scripts', 'wp_enqueue_global_styles');
 remove_action('wp_body_open', 'wp_global_styles_render_svg_filters');
 
+define('CSV_HOST', 'https://ap01.chillihosting.co.uk');
+
+define('CSV_FILES', [
+    '/sftp/uploads/csv/Dividends/AFUND_Dividends.csv',
+    '/sftp/uploads/csv/Dividends/AGVIT_Dividends.csv',
+    '/sftp/uploads/csv/Dividends/ASCOT_Dividends.csv',
+    '/sftp/uploads/csv/Dividends/ASLIT_Dividends.csv',
+    '/sftp/uploads/csv/IndustryWeights/AFUND_IndustryWeights.csv',
+    '/sftp/uploads/csv/IndustryWeights/AGVIT_IndustryWeights.csv',
+    '/sftp/uploads/csv/IndustryWeights/ASCOT_IndustryWeights.csv',
+    '/sftp/uploads/csv/IndustryWeights/ASLIT_IndustryWeights.csv',
+    '/sftp/uploads/csv/Performance/AFUND_CompoundPerformance.csv',
+    '/sftp/uploads/csv/Performance/AFUND_CumulativePerformance.csv',
+    '/sftp/uploads/csv/Performance/AFUND_DiscretePerformance.csv',
+    '/sftp/uploads/csv/Performance/AGVIT_CompoundPerformance.csv',
+    '/sftp/uploads/csv/Performance/AGVIT_CumulativePerformance.csv',
+    '/sftp/uploads/csv/Performance/AGVIT_DiscretePerformance.csv',
+    '/sftp/uploads/csv/Performance/ASCOT_CompoundPerformance.csv',
+    '/sftp/uploads/csv/Performance/ASCOT_CumulativePerformance.csv',
+    '/sftp/uploads/csv/Performance/ASCOT_DiscretePerformance.csv',
+    '/sftp/uploads/csv/Performance/ASLIT_CompoundPerformance.csv',
+    '/sftp/uploads/csv/Performance/ASLIT_CumulativePerformance.csv',
+    '/sftp/uploads/csv/Performance/ASLIT_DiscretePerformance.csv',
+    '/sftp/uploads/csv/PortfolioHoldings/AFUND_PortfolioHoldings.csv',
+    '/sftp/uploads/csv/PortfolioHoldings/AGVIT_PortfolioHoldings.csv',
+    '/sftp/uploads/csv/PortfolioHoldings/ASCOT_PortfolioHoldings.csv',
+    '/sftp/uploads/csv/PortfolioHoldings/ASLIT_PortfolioHoldings.csv',
+]);
 
 // Remove comment-reply.min.js from footer
 function remove_comment_reply_header_hook()
@@ -369,7 +397,7 @@ function display_pricing_data_status()
 
     // Check and display Ascot data
     if ($ascot_data) {
-        $output .= '<h3>Ascot Pricing Data:</h3>';
+        $output .= '<h3>ASCOT Pricing Data:</h3>';
         $output .= '<pre>' . esc_html($ascot_data) . '</pre>';
         $output .= '<p>Last successful update: ' . ($ascot_last_success ? esc_html($ascot_last_success) : 'N/A') . '</p>';
     } else {
@@ -403,24 +431,77 @@ EOT;
         return is_file($file_path . $file); // Include only files
     });
     if (!empty($files)) {
-        $output .= '<table class="table"><thead><tr><th>File Name</th><th>File Size</th><th>File Modification Date</th></tr></thead><tbody>';
+        $output .= <<<EOT
+<table class="table table-sm fs-300">
+    <thead>
+        <tr>
+            <th>File Name</th>
+            <th>Local Size</th>
+            <th>Remote Size</th>
+            <th>Local Date</th>
+            <th>Remote Date</th>
+        </tr>
+    </thead>
+    <tbody>
+EOT;
         foreach ($files as $file) {
+
+            $remote_file = null;
+            foreach (CSV_FILES as $file_with_path) {
+                if (basename($file_with_path) === $file) {
+                    $remote_file = $file_with_path;
+                    break;
+                }
+            }
+
+            $response = wp_remote_get(CSV_HOST . $remote_file , array('method' => 'HEAD'));
+            if (is_wp_error($response)) {
+                echo 'Error fetching remote file metadata: ' . $response->get_error_message();
+                return;
+            }
+            $headers = wp_remote_retrieve_headers($response);
+            if (isset($headers['content-length'])) {
+                $remote_size = intval($headers['content-length']); // remote size in bytes
+                $remote_size = number_format($remote_size / 1024, 2) . ' KB'; // Convert to KB
+            } else {
+                $remote_size = 'Unknown';
+            }
+            
+            if (isset($headers['last-modified'])) {
+                $remote_modification_time = strtotime($headers['last-modified']); // Convert to Unix timestamp
+                $remote_date = date('Y-m-d H:i:s', $remote_modification_time); // Format the modification date
+            } else {
+                $remote_date = 'Unknown';
+            }
+            
+
             $file_full_path = $file_path . $file;
 
             $file_modification_time = filemtime($file_full_path);
-            $formatted_date = date('Y-m-d H:i:s', $file_modification_time);
+            $local_date = date('Y-m-d H:i:s', $file_modification_time);
 
-            $file_size = filesize($file_full_path);
-            $formatted_size = number_format($file_size / 1024, 2) . ' KB';
+            $local_size = filesize($file_full_path);
+            $local_size = number_format($local_size / 1024, 2) . ' KB';
 
-            $is_old = (time() - $file_modification_time) > (6 * 60 * 60 + 10 * 60); // 6h10m (7 * 60 * 60);
-            $class = $is_old ? ' class="bg-warning"' : '';
+            $size_mismatch = $remote_size == $local_size ? '' : ' class="table-warning"';
+            $size_msg = $remote_size == $local_size ? '' : 'title="Local size is different to remote size - Run CSV download"';
 
+            $local_old = (time() - $file_modification_time) > (6 * 60 * 60 + 10 * 60); // 6h10m (7 * 60 * 60);
+            $local_old = $local_old ? ' class="table-warning"' : '';
+            $local_icon = $local_old ? '<i class="far fa-clock"></i>&nbsp;' : '';
+            $local_msg = $local_old ? 'title="Local file is too old - Run CSV download"' : '';
 
-            $output .= '<tr ' . $class . '>';
-            $output .= "<td>{$file}</td>";
-            $output .= "<td>{$formatted_size}</td>";
-            $output .= "<td>{$formatted_date}</td>";
+            $remote_old = (time() - $remote_modification_time) > (6 * 60 * 60 + 10 * 60); // 6h10m (12 * 60 * 60);
+            $remote_old = $remote_old ? ' class="table-warning"' : '';
+            $remote_icon = $remote_old ? ' <i class="far fa-clock"></i>&nbsp;' : '';
+            $remote_msg = $remote_old ? 'title="Remote file is too old - Check sFTP job"' : '';
+
+            $output .= '<tr>';
+            $output .= "<td title='{$file_full_path}'>{$file}</td>";
+            $output .= "<td {$size_mismatch} {$size_msg}>{$local_size}</td>";
+            $output .= "<td {$size_mismatch} {$size_msg}>{$remote_size}</td>";
+            $output .= "<td {$local_old} {$local_msg}>{$local_icon}{$local_date}</td>";
+            $output .= "<td {$remote_old} {$remote_msg}>{$remote_icon}{$remote_date}</td>";
             $output .= '</tr>';
         }
         $output .= "</tbody></table>";
@@ -461,35 +542,11 @@ add_shortcode('pricing_data_status', 'display_pricing_data_status');
 // CSV Feed
 function fetch_and_save_feed_files()
 {
-    $urls = [
-        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Dividends/AFUND_Dividends.csv',
-        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Dividends/AGVIT_Dividends.csv',
-        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Dividends/ASCOT_Dividends.csv',
-        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Dividends/ASLIT_Dividends.csv',
-        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/IndustryWeights/AFUND_IndustryWeights.csv',
-        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/IndustryWeights/AGVIT_IndustryWeights.csv',
-        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/IndustryWeights/ASCOT_IndustryWeights.csv',
-        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/IndustryWeights/ASLIT_IndustryWeights.csv',
-        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Performance/AFUND_CompoundPerformance.csv',
-        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Performance/AFUND_CumulativePerformance.csv',
-        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Performance/AFUND_DiscretePerformance.csv',
-        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Performance/AGVIT_CompoundPerformance.csv',
-        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Performance/AGVIT_CumulativePerformance.csv',
-        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Performance/AGVIT_DiscretePerformance.csv',
-        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Performance/ASCOT_CompoundPerformance.csv',
-        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Performance/ASCOT_CumulativePerformance.csv',
-        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Performance/ASCOT_DiscretePerformance.csv',
-        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Performance/ASLIT_CompoundPerformance.csv',
-        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Performance/ASLIT_CumulativePerformance.csv',
-        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/Performance/ASLIT_DiscretePerformance.csv',
-        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/PortfolioHoldings/AFUND_PortfolioHoldings.csv',
-        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/PortfolioHoldings/AGVIT_PortfolioHoldings.csv',
-        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/PortfolioHoldings/ASCOT_PortfolioHoldings.csv',
-        'https://ap01.chillihosting.co.uk/sftp/uploads/csv/PortfolioHoldings/ASLIT_PortfolioHoldings.csv',
-    ];
+
+    $urls = CSV_FILES;
 
     foreach ($urls as $url) {
-        $response = wp_remote_get($url);
+        $response = wp_remote_get(CSV_HOST . $url);
 
         if (is_wp_error($response)) {
             error_log("Failed to download $url: " . $response->get_error_message());
