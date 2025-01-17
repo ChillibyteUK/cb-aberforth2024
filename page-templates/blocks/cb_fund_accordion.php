@@ -153,7 +153,49 @@
                         </div>
                         <div class="tab-content" id="afund-content">
                             <div class="tab-pane fade show active" id="afund-investing" aria-labelledby="afund-investing-tab">
+                                <?php
+                                if (get_field('afund_investing_intro') ?? null) {
+                                    ?>
                                 <div class="p-4"><?=get_field('afund_investing_intro')?></div>
+                                    <?php
+                                }
+                                ?>
+                                <div class="row g-4">
+                                    <div class="col-md-6 col-lg-3">
+                                        <div class="fund_accordion__card d-grid">
+                                            <div>
+                                                <h3 class="mb-4">New Investors</h3>
+                                                <p>The Accumulation and Income Units in the Fund may be bought or sold directly through Aberforth Unit Trust Managers Limited and by submitting an application pack.</p>
+                                            </div>
+                                            <a href="#" target="_blank" class="button button-secondary align-self-end">Download Application Pack</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-3">
+                                        <div class="fund_accordion__card">
+                                            <h3 class="mb-4">Buying and selling uints, transfers and queries</h3>
+                                            <p>Orders may be placed by telephone by calling the Fund’s Dealing Line on <a href="tel:+443456080940">0345 608 0940</a>.</p>
+                                            <p>Transfers and queries can be actioned by contacting Waystone Transfer Agency Solutions (UK) Limited Email: <a href="mailto:wtas-investorservices@waystone.com">wtas-investorservices@waystone.com</a></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-3">
+                                        <div class="fund_accordion__card d-grid">
+                                            <div>
+                                                <h3 class="mb-4">Fund unit prices and details</h3>
+                                                <p>The unit prices and details of the fund performance and statistics.</p>
+                                            </div>
+                                            <a href="trusts-and-funds/aberforth-uk-small-companies-fund/performance/" class="button button-secondary align-self-end">Find fund prices</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-3">
+                                        <div class="fund_accordion__card d-grid">
+                                            <div>
+                                                <h3 class="mb-4">Literature Library</h3>
+                                                <p>Further documentation on Aberforth UK Small Companies Fund such as factsheets and report and accounts.</p>
+                                            </div>
+                                            <a href="/literature-library/" class="button button-secondary align-self-end">Visit literature library</a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="tab-pane fade px-0" id="afund-dealing" aria-labelledby="afund-dealing-tab">
                                 <div class="p-4"><?=get_field('afund_dealing_intro')?></div>
