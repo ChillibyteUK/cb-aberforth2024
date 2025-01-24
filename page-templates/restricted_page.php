@@ -22,7 +22,8 @@ get_header(); ?>
             endif;
         } else {
             // Message for non-logged-in users
-            echo '<p>You must be logged in to view this page.</p>';
+            echo '<h1>Restricted Content</h1>';
+            echo '<p class="mb-4">You must be logged in to view this page.</p>';
         }
         ?>
     </div>
