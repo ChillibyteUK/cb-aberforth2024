@@ -120,6 +120,15 @@ function acf_blocks()
             'supports' => array('mode' => false),
         ));
         acf_register_block_type(array(
+            'name'                => 'cb_csv_to_table',
+            'title'                => __('CB CSV to Table'),
+            'category'            => 'layout',
+            'icon'                => 'cover-image',
+            'render_template'    => 'page-templates/blocks/cb_csv_to_table.php',
+            'mode'    => 'edit',
+            'supports' => array('mode' => false),
+        ));
+        acf_register_block_type(array(
             'name'                => 'cb_past_performance',
             'title'                => __('CB Past Performance'),
             'category'            => 'layout',
@@ -148,7 +157,7 @@ function acf_blocks()
         ));
         acf_register_block_type(array(
             'name'                => 'cb_table_from_csv',
-            'title'                => __('CB Data Table from CSV'),
+            'title'                => __('CB Data Table from CSV File'),
             'category'            => 'layout',
             'icon'                => 'cover-image',
             'render_template'    => 'page-templates/blocks/cb_table_from_csv.php',

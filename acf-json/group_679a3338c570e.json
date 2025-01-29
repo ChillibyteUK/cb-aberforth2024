@@ -1,10 +1,10 @@
 {
-    "key": "group_6718c9fa3252f",
-    "title": "CB Data Table from CSV File",
+    "key": "group_679a3338c570e",
+    "title": "CB CSV Text to Table",
     "fields": [
         {
-            "key": "field_6718c9fafb0b8",
-            "label": "CB Data Table from CSV File",
+            "key": "field_679a3339b3762",
+            "label": "CB CSV Text to Table",
             "name": "",
             "aria-label": "",
             "type": "message",
@@ -16,12 +16,12 @@
                 "class": "",
                 "id": ""
             },
-            "message": "",
+            "message": "Enter comma separated data. The first row will be used as the header. The first column will be left justified, the other columns right.",
             "new_lines": "wpautop",
             "esc_html": 0
         },
         {
-            "key": "field_6718d5acb981d",
+            "key": "field_679a33959ee26",
             "label": "Background",
             "name": "background",
             "aria-label": "",
@@ -48,8 +48,8 @@
             "save_other_choice": 0
         },
         {
-            "key": "field_6718ccd144d8e",
-            "label": "Title (h2)",
+            "key": "field_679a368be8583",
+            "label": "Title (H2)",
             "name": "title",
             "aria-label": "",
             "type": "text",
@@ -69,11 +69,11 @@
             "append": ""
         },
         {
-            "key": "field_6718d45bed056",
-            "label": "Sub Title (h3)",
-            "name": "sub_title",
+            "key": "field_679a33fe7dd0f",
+            "label": "Data",
+            "name": "data",
             "aria-label": "",
-            "type": "text",
+            "type": "textarea",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -85,30 +85,9 @@
             "default_value": "",
             "maxlength": "",
             "allow_in_bindings": 0,
+            "rows": "",
             "placeholder": "",
-            "prepend": "",
-            "append": ""
-        },
-        {
-            "key": "field_6718ca0cfb0b9",
-            "label": "CSV File",
-            "name": "csv_file",
-            "aria-label": "",
-            "type": "file",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "return_format": "id",
-            "library": "all",
-            "min_size": "",
-            "max_size": "",
-            "mime_types": "csv",
-            "allow_in_bindings": 0
+            "new_lines": ""
         }
     ],
     "location": [
@@ -116,7 +95,7 @@
             {
                 "param": "block",
                 "operator": "==",
-                "value": "acf\/cb-table-from-csv"
+                "value": "acf\/cb-csv-to-table"
             }
         ]
     ],
@@ -129,5 +108,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1738159063
+    "modified": 1738159967
 }
