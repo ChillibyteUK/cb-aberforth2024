@@ -16,33 +16,35 @@ if (!file_exists($filepath) || !is_readable($filepath)) {
     return;
 }
 
-$file_creation_date = date("d/m/Y", filemtime($filepath));
+// Open CSV and extract DataDate from first data row
+$handle = fopen($filepath, 'r');
+if ($handle === false) {
+    echo json_encode(["error" => "Unable to read the file."]);
+    return;
+}
+
+$data = [];
+while (($row = fgetcsv($handle, 1000, ",")) !== false) {
+    $data[] = $row;
+}
+fclose($handle);
+
+if (empty($data) || count($data) < 2) {
+    echo json_encode(["error" => "No data available in the file."]);
+    return;
+}
+
+// Extract DataDate from first data row (line 2, position 0)
+
+$file_creation_date = isset($data[1][0]) ? date("d/m/Y", strtotime($data[1][0])) : "Unknown Date";
+
 ?>
 <section class="weightings py-5">
     <div class="container-xl">
         <h2>Industry Weightings</h2>
-        <div class="h2">Weightings as at <?= htmlspecialchars($file_creation_date) ?></div>
+        
         <?php
-
-        $handle = fopen($filepath, 'r');
-        if ($handle === false) {
-            echo json_encode(["error" => "Unable to read the file."]);
-            return;
-        }
-
-        // Read the CSV file into an array
-        $data = [];
-        while (($row = fgetcsv($handle, 1000, ",")) !== false) {
-            $data[] = $row;
-        }
-        fclose($handle);
-
-        if (empty($data)) {
-            echo json_encode(["error" => "No data available in the file."]);
-            return;
-        }
-
-        // Extract the header row to determine dataset labels dynamically
+        // Read the CSV file into an array again to process data
         $header = $data[0];
         $labels = [];
         $datasets = [];
@@ -79,11 +81,10 @@ $file_creation_date = date("d/m/Y", filemtime($filepath));
         // Extract data for labels and datasets
         foreach ($data as $index => $row) {
             if ($index === 0) {
-                // Skip the header row
-                continue;
+                continue; // Skip the header row
             }
             if (isset($row[$industry_index])) {
-                $labels[] = trim($row[$industry_index]); // IndustryDescription
+                $labels[] = trim($row[$industry_index]);
             }
             foreach ($datasets as $i => $dataset) {
                 $original_label = $original_labels[$i];
@@ -100,10 +101,9 @@ $file_creation_date = date("d/m/Y", filemtime($filepath));
             "datasets" => $datasets,
             "type" => "bar"
         ];
-
-        // Output JSON as a JavaScript-friendly data-chart attribute
-        echo '<div id="chartContainer" data-chart="' . htmlspecialchars(json_encode($json_data), ENT_QUOTES, 'UTF-8') . '"></div>';
         ?>
+        <div class="h2">Weightings as at <?= htmlspecialchars($file_creation_date) ?></div>
+        <div id="chartContainer" data-chart="<?= htmlspecialchars(json_encode($json_data), ENT_QUOTES, 'UTF-8') ?>"></div>
         <div class="mt-4 small">
             <strong>Notes:</strong><br>
             Hover cursor over bars above to see underlying values.<br>
@@ -129,7 +129,7 @@ $file_creation_date = date("d/m/Y", filemtime($filepath));
                 datasets: chartData.datasets.map((dataset, index) => ({
                     label: dataset.label,
                     data: dataset.data,
-                    backgroundColor: ['#173150', '#cae2ff', '#e5d7b2'][index % 3], // Adjust colors for each dataset
+                    backgroundColor: ['#173150', '#cae2ff', '#e5d7b2'][index % 3],
                     borderWidth: 1
                 }))
             },

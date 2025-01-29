@@ -13,7 +13,7 @@
             return;
         }
 
-        $file_creation_date = date("d/m/Y", filemtime($filepath));
+        // $file_creation_date = date("d/m/Y", filemtime($filepath));
 
         $handle = fopen($filepath, 'r');
         if ($handle === false) {
@@ -41,8 +41,10 @@
         $header = array_slice($data[0], 0, 3);
         $rows_to_display = array_slice($data, 1);
 
+        $file_creation_date = isset($data[1]) ? date('d/m/Y', strtotime($data[1][array_search('HoldingDate', $data[0])])) : null;
+
         ?>
-        <h2>Holdings as at <?= htmlspecialchars($file_creation_date) ?></h2>
+        <h2>Holdings as at <?= $file_creation_date ?></h2>
         <table id='csvTable' class='table'>
             <thead>
                 <tr>
