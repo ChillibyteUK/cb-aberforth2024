@@ -182,7 +182,7 @@
                                             $symbol = 'Ordinary Share Price';
                                             break;
                                         case 'AGZI.L':
-                                            $symbol = 'Zero Dividend Share Price';
+                                            $symbol = 'ZDP Share Price';
                                             break;
 
                                     }
