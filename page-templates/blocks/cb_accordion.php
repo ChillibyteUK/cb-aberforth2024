@@ -6,9 +6,9 @@ $r = random_str(4);
         <div class="accordion" id="accordion_<?=$r?>">
             <?php
             $c = 0;
-            $expanded = "true";
-            $collapsed = "";
-            $show = 'show';
+            $expanded = "false";
+            $collapsed = "collapsed";
+            $show = '';
             while(have_rows('section')) {
                 the_row();
                 $slug = acf_slugify(get_sub_field('section_title'));
