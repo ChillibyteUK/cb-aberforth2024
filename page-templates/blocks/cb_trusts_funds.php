@@ -176,11 +176,21 @@
                                     $change = $data['Change'];
                                     // $date = $data['Date'];
                                     $date = date('j M Y', strtotime(str_replace('/', '-', $data['Date'])));
+
+                                    switch ($symbol) {
+                                        case 'AGVI.L':
+                                            $symbol = 'Ordinary Share Price';
+                                            break;
+                                        case 'AGZI.L':
+                                            $symbol = 'Zero Dividend Share Price';
+                                            break;
+
+                                    }
                             ?>
                                     <div class="ticker mb-4">
-                                        <div class="ticker__date"><?= $date ?></div>
                                         <div class="ticker__symbol"><?= $symbol ?></div>
-                                        <div class="ticker__price"><?= $currentPrice ?></div>
+                                        <div class="ticker__date"><?= $date ?></div>
+                                        <div class="ticker__price"><?= $currentPrice ?>p</div>
                                     </div>
                                     <?php
                                 } else {
