@@ -266,7 +266,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 d-flex"> <!--  flex-grow-1 d-flex flex-column -->
+            <div class="col-md-6"> <!--  flex-grow-1 d-flex flex-column -->
                 <div class="trusts_funds__card theme--afund h-100">
                     <h3 class="trusts_funds__header">Aberforth UK Small Companies Fund</h3>
                     <div class="trusts_funds__inner  justify-content-between">
@@ -379,7 +379,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 d-flex">
+            <div class="col-md-6">
                 <div class="trusts_funds__card theme--aslit flex-grow-1 d-flex flex-column h-100">
                     <h3 class="trusts_funds__header">Aberforth Split Level Income Trust plc</h3>
                     <div class="trusts_funds__inner flex-grow-1 d-flex flex-column justify-content-between">
