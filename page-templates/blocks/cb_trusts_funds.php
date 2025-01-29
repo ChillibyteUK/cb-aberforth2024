@@ -260,7 +260,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="text-end">
+                        <div class="text-end span-2">
                             <a href="/trusts-and-funds/aberforth-geared-value-income-trust-plc/" class="button">Learn more</a>
                         </div>
                     </div>
@@ -373,7 +373,7 @@
                             </div>
                         </div>
                         
-                        <div class="text-end mt-auto" style="grid-column:2">
+                        <div class="text-end mt-auto span-2">
                             <a href="/trusts-and-funds/aberforth-uk-small-companies-fund/" class="button">Learn more</a>
                         </div>
                     </div>
@@ -386,7 +386,7 @@
                         <p class="trusts_funds__content">A split capital investment trust with two classes of share – Ordinary Shares and Zero Dividend Preference (ZDP) Shares – both of which traded on the London Stock Exchange.</p>
                         <div class="lined-top py-2">Launched: 3 July 2017</div>
                         <div class="lined-both py-2">Wound up: 1 July 2024</div>
-                        <div class="pt-3 text-end mt-auto">
+                        <div class="pt-3 text-end mt-auto span-2">
                             <a href="/trusts-and-funds/aberforth-split-level-income-trust-plc/" class="button">Learn more</a>
                         </div>
                     </div>
