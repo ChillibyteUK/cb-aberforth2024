@@ -35,6 +35,66 @@ if (!function_exists('parse_csv_to_array')) {
     }
 }
 
+function render_csv_as_table($csv_data)
+{
+    if (empty($csv_data) || isset($csv_data['error'])) {
+        return '<p>Error loading CSV data.</p>';
+    }
+
+    // Identify column indices to exclude
+    $excluded_columns = [];
+    foreach ($csv_data[0] as $index => $header) {
+        if ($header === 'MonthendDate') {
+            $excluded_columns[] = $index;
+        }
+    }
+
+    $html = '<div class="table-responsive"><table class="table mt-3">';
+
+    // Output header row
+    $html .= '<thead><tr>';
+    foreach ($csv_data[0] as $index => $header) {
+        if (!in_array($index, $excluded_columns)) {
+
+            $tclass = ' class="text-end"';
+            if ($header === 'PerformancePeriod') {
+                $header = 'Period';
+                $tclass = '';
+            } elseif ($header === 'NSCI') {
+                $header = 'DNSCI (XIC)';
+            }
+
+            $html .= '<th' . $tclass . '>' . htmlspecialchars($header) . '</th>';
+        }
+    }
+    $html .= '</tr></thead>';
+
+    // Output data rows
+    $html .= '<tbody>';
+    for ($i = 1; $i < count($csv_data); $i++) {
+        $html .= '<tr>';
+        foreach ($csv_data[$i] as $index => $cell) {
+            if (!in_array($index, $excluded_columns)) {
+                if (is_numeric($cell)) {
+                    $formatted_value = number_format((float) $cell * 100, 1, '.', '');
+                    if ((float) $formatted_value < 0) {
+                        $formatted_value = '(' . number_format(abs($formatted_value), 1, '.', '') . ')';
+                    }
+                    $html .= '<td class="text-end">' . htmlspecialchars($formatted_value) . '</td>';
+                }
+                else {
+                    $html .= '<td>' . htmlspecialchars($cell) . '</td>';
+                }
+            }
+        }
+        $html .= '</tr>';
+    }
+    $html .= '</tbody></table></div>';
+
+    return $html;
+}
+
+
 // Parsing CSV files
 $parsed_data = [];
 foreach ($csv_files as $file) {
@@ -72,54 +132,7 @@ foreach ($csv_files as $file) {
                 if (isset($table_data['error'])) {
                     echo '<p>' . $table_data['error'] . '</p>';
                 } else {
-                    echo '<div class="table-responsive"><table class="table mt-3">';
-                    // Output headers
-                    if (!empty($table_data)) {
-                        echo '<thead><tr>';
-                        $ordered_columns = ['PerformancePeriod', 'Share Price', 'NAV', 'NSCI'];
-                        $column_indices = [];
-                        foreach ($ordered_columns as $col) {
-                            foreach ($table_data[0] as $index => $header) {
-                                if (strcasecmp(str_replace(' ', '', $header), str_replace(' ', '', $col)) === 0) {
-                                    // Update the header to match desired naming
-                                    $display_header = $header;
-                                    if ($header === 'PerformancePeriod') {
-                                        $display_header = 'Period';
-                                    } elseif ($header === 'NSCI') {
-                                        $display_header = 'DNSCI (XIC)';
-                                    }
-                                    echo '<th>' . htmlspecialchars($display_header) . '</th>';
-                                    $column_indices[$col] = $index;
-                                }
-                            }
-                        }
-                        echo '</tr></thead><tbody>';
-                        // Output rows
-                        for ($i = 1; $i < count($table_data); $i++) {
-                            echo '<tr>';
-                            foreach ($ordered_columns as $col) {
-                                if (isset($column_indices[$col])) {
-                                    $index = $column_indices[$col];
-                                    $cell = $table_data[$i][$index];
-                                    if ($col === 'PerformancePeriod') {
-                                        // First column is text, output as is
-                                        $formatted_value = $cell;
-                                    } else {
-                                        // Format numerical values
-                                        // $formatted_value = number_format((float) $cell, 1);
-                                        $formatted_value = number_format((float) $cell * 100, 1);
-                                        if ($formatted_value < 0) {
-                                            $formatted_value = '(' . abs($formatted_value) . ')';
-                                        }
-                                    }
-                                    echo '<td>' . htmlspecialchars($formatted_value) . '</td>';
-                                }
-                            }
-                            echo '</tr>';
-                        }
-                        echo '</tbody>';
-                    }
-                    echo '</table></div>';
+                    echo render_csv_as_table($table_data);
                 }
 
                 echo '</div>';
