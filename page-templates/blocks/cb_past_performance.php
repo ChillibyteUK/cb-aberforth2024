@@ -47,6 +47,9 @@ function render_csv_as_table($csv_data)
         if ($header === 'MonthendDate') {
             $excluded_columns[] = $index;
         }
+        if ($header === 'PerfDate') {
+            $excluded_columns[] = $index;
+        }
     }
 
     $html = '<div class="table-responsive"><table class="table mt-3">';
