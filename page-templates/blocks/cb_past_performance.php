@@ -60,7 +60,7 @@ function render_csv_as_table($csv_data)
         if (!in_array($index, $excluded_columns)) {
 
             $tclass = ' class="text-end"';
-            if ($header === 'PerformancePeriod') {
+            if ($header === 'PerformancePeriod' || $header === 'PerfPeriod') {
                 $header = 'Period';
                 $tclass = '';
             } elseif ($header === 'DNSCI') {
