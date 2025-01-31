@@ -35,7 +35,7 @@ if (!function_exists('parse_csv_to_array')) {
     }
 }
 
-function render_csv_as_table($csv_data)
+function render_csv_as_table($csv_data, $tab)
 {
     if (empty($csv_data) || isset($csv_data['error'])) {
         return '<p>Error loading CSV data.</p>';
@@ -60,11 +60,20 @@ function render_csv_as_table($csv_data)
         if (!in_array($index, $excluded_columns)) {
 
             $tclass = ' class="text-end"';
-            if ($header === 'PerformancePeriod' || $header === 'PerfPeriod') {
+            if ($header === 'PerfPeriod') {
                 $header = 'Period';
                 $tclass = '';
-            } elseif ($header === 'DNSCI') {
+            }
+            elseif ($header === 'DNSCI') {
                 $header = 'DNSCI (XIC)';
+            }
+
+            if ($tab != 'discrete' && $header == 'PerformancePeriod') {
+                $date = $csv_data[1][4];
+                $date = new DateTime($date);
+                $formattedDate = $date->format("d F Y");
+                $header = 'Period to ' . $formattedDate;
+                $tclass = '';
             }
 
             $html .= '<th' . $tclass . '>' . htmlspecialchars($header) . '</th>';
@@ -135,7 +144,7 @@ foreach ($csv_files as $file) {
                 if (isset($table_data['error'])) {
                     echo '<p>' . $table_data['error'] . '</p>';
                 } else {
-                    echo render_csv_as_table($table_data);
+                    echo render_csv_as_table($table_data, $tab_ids[$index]);
                 }
 
                 echo '</div>';
