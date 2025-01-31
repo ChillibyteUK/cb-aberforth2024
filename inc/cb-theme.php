@@ -818,15 +818,17 @@ add_action('gform_pre_submission_2', function($form) {
         5 => 17  // Checkbox field ID 5 -> Hidden field ID 17
     ];
 
+    $form_id = 2; // Ensure we use the correct form ID in the input name
+
     foreach ($field_mapping as $checkbox_id => $hidden_id) {
         // Get the submitted values for the checkbox field
-        $checkbox_values = rgpost("input_{$checkbox_id}");
+        $checkbox_values = rgpost("input_{$form_id}_{$checkbox_id}");
 
         if (is_array($checkbox_values)) {
             // Convert to a comma-separated string
             $comma_separated_values = implode(',', $checkbox_values);
             // Store the result in the corresponding hidden field
-            $_POST["input_{$hidden_id}"] = $comma_separated_values;
+            $_POST["input_{$form_id}_{$hidden_id}"] = $comma_separated_values;
         }
     }
 });
