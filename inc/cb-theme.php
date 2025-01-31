@@ -807,3 +807,26 @@ function filter_documents_by_taxonomy($query)
         }
     }
 }
+
+
+// Campaign Monitor Checkboxen
+add_action('gform_pre_submission_2', function($form) {
+    // Define mapping of checkbox fields to hidden fields
+    $field_mapping = [
+        3 => 15, // Checkbox field ID 3 -> Hidden field ID 15
+        4 => 16, // Checkbox field ID 4 -> Hidden field ID 16
+        5 => 17  // Checkbox field ID 5 -> Hidden field ID 17
+    ];
+
+    foreach ($field_mapping as $checkbox_id => $hidden_id) {
+        // Get the submitted values for the checkbox field
+        $checkbox_values = rgpost("input_{$checkbox_id}");
+
+        if (is_array($checkbox_values)) {
+            // Convert to a comma-separated string
+            $comma_separated_values = implode(',', $checkbox_values);
+            // Store the result in the corresponding hidden field
+            $_POST["input_{$hidden_id}"] = $comma_separated_values;
+        }
+    }
+});
