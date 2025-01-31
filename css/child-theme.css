@@ -22366,6 +22366,26 @@ header .dropdown.current-menu-item::after {
   border-bottom: none;
 }
 
+.past_performance .table, .past_performance .wp-block-table table, .wp-block-table .past_performance table {
+  width: 100%;
+}
+.past_performance .table th:first-child, .past_performance .wp-block-table table th:first-child, .wp-block-table .past_performance table th:first-child,
+.past_performance .table td:first-child,
+.past_performance .wp-block-table table td:first-child,
+.wp-block-table .past_performance table td:first-child {
+  width: auto; /* Allows the first column to expand */
+  min-width: 250px; /* Ensures it doesn't shrink too much */
+  white-space: nowrap; /* Prevents wrapping */
+}
+.past_performance .table th:not(:first-child), .past_performance .wp-block-table table th:not(:first-child), .wp-block-table .past_performance table th:not(:first-child),
+.past_performance .table td:not(:first-child),
+.past_performance .wp-block-table table td:not(:first-child),
+.wp-block-table .past_performance table td:not(:first-child) {
+  width: 1%; /* Ensures equal width for remaining columns */
+  min-width: 180px;
+  white-space: nowrap;
+}
+
 .doc_block table {
   border-top: 1px solid var(--bs-border-color);
 }

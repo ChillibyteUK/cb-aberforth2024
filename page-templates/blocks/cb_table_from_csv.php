@@ -60,9 +60,15 @@ $bg = get_field('background') ?? '';
         <table id='csvTable' class='table'>
             <thead>
                 <tr>
-                    <?php foreach ($header as $column_name): ?>
-                        <th><?= htmlspecialchars($column_name) ?></th>
-                    <?php endforeach; ?>
+                <?php
+                $tclass = '';
+                foreach ($header as $column_name) { 
+                    ?>
+                        <th <?=$tclass?>><?= htmlspecialchars($column_name) ?></th>
+                    <?php
+                    $tclass = 'class="text-end"';
+                } 
+                ?>
                 </tr>
             </thead>
             <tbody>
@@ -70,11 +76,13 @@ $bg = get_field('background') ?? '';
                 foreach ($rows_to_display as $index => $row) {
                     $hidden_class = ($index >= 10) ? ' class="hidden-row" style="display:none;"' : '';
                     echo "<tr$hidden_class>";
+                    $tclass = '';
                     foreach ($row as $i => $cell) {
                         if (is_numeric($cell)) {
                             $cell = number_format(floatval($cell), 0, '.', ',');
                         }
-                        echo "<td>" . htmlspecialchars($cell) . "</td>";
+                        echo "<td " . $tclass . ">" . htmlspecialchars($cell) . "</td>";
+                        $tclass = ' class="text-end"';
                     }
                     echo "</tr>";
                 }

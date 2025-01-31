@@ -380,6 +380,23 @@
                                     "new_lines": "wpautop"
                                 },
                                 {
+                                    "key": "field_679ce1ec32618",
+                                    "label": "CTA",
+                                    "name": "cta_card2",
+                                    "aria-label": "",
+                                    "type": "link",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "return_format": "array",
+                                    "allow_in_bindings": 0
+                                },
+                                {
                                     "key": "field_67656bb073cae",
                                     "label": "Card 3",
                                     "name": "",
@@ -487,5 +504,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1734702004
+    "modified": 1738334718
 }

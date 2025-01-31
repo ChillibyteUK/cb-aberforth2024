@@ -9,3 +9,25 @@
     border-color: var(--col-blue-400);
     border-bottom: none;
 }
+
+.past_performance {
+
+    .table {
+        width: 100%;
+    }
+    
+    .table th:first-child, 
+    .table td:first-child {
+        width: auto; /* Allows the first column to expand */
+        min-width: 250px; /* Ensures it doesn't shrink too much */
+        white-space: nowrap; /* Prevents wrapping */
+    }
+    
+    .table th:not(:first-child), 
+    .table td:not(:first-child) {
+        width: 1%; /* Ensures equal width for remaining columns */
+        min-width: 180px;
+        white-space: nowrap;
+    }
+
+}

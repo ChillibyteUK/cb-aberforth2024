@@ -66,6 +66,7 @@ $r = random_str(4);
                                     <?php
                                     }
                                     $link1 = get_sub_field('cta_card1') ?? null;
+                                    $link2 = get_sub_field('cta_card2') ?? null;
                                     $link3 = get_sub_field('cta_card3') ?? null;
                                     ?>
                                     <div class="row">
@@ -76,7 +77,7 @@ $r = random_str(4);
                                                     <p><?=get_sub_field('content_card1')?></p>
                                                 </div>
                                                 <?php
-                                                if ($link3) {
+                                                if ($link1) {
                                                     ?>
                                                 <a href="<?=$link1['url']?>" target="<?=$link1['target']?>" class="button button-secondary align-self-end"><?=$link1['title']?></a>
                                                     <?php
@@ -88,6 +89,13 @@ $r = random_str(4);
                                             <div class="fund_accordion__card">
                                                 <h3 class="mb-4"><?=get_sub_field('title_card2')?></h3>
                                                 <p><?=get_sub_field('content_card2')?></p>
+                                                <?php
+                                                if ($link2) {
+                                                    ?>
+                                                <a href="<?=$link2['url']?>" target="<?=$link2['target']?>" class="button button-secondary align-self-end"><?=$link2['title']?></a>
+                                                    <?php
+                                                }
+                                                ?>
                                             </div>
                                         </div>
                                         <div class="col-md-4">

@@ -47,6 +47,9 @@ function render_csv_as_table($csv_data, $tab)
         if ($header === 'MonthendDate') {
             $excluded_columns[] = $index;
         }
+        if ($header === 'Monthend') {
+            $excluded_columns[] = $index;
+        }
         if ($header === 'PerfDate') {
             $excluded_columns[] = $index;
         }
@@ -85,6 +88,7 @@ function render_csv_as_table($csv_data, $tab)
     $html .= '<tbody>';
     for ($i = 1; $i < count($csv_data); $i++) {
         $html .= '<tr>';
+        $tclass = '';
         foreach ($csv_data[$i] as $index => $cell) {
             if (!in_array($index, $excluded_columns)) {
                 if (is_numeric($cell)) {
@@ -92,12 +96,13 @@ function render_csv_as_table($csv_data, $tab)
                     if ((float) $formatted_value < 0) {
                         $formatted_value = '(' . number_format(abs($formatted_value), 1, '.', '') . ')';
                     }
-                    $html .= '<td class="text-end">' . htmlspecialchars($formatted_value) . '</td>';
+                    $html .= '<td' . $tclass . '>' . htmlspecialchars($formatted_value) . '</td>';
                 }
                 else {
-                    $html .= '<td>' . htmlspecialchars($cell) . '</td>';
+                    $html .= '<td' . $tclass . '>' . htmlspecialchars($cell) . '</td>';
                 }
             }
+            $tclass = ' class="text-end"';
         }
         $html .= '</tr>';
     }

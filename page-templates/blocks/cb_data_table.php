@@ -21,14 +21,14 @@ $bg = get_field('background') ?? '';
             the_row();
             $name_header = get_sub_field('name');
             $value_header = get_sub_field('value');
-            echo '<thead><tr><th>' . esc_html($name_header) . '</th><th>' . esc_html($value_header) . '</th></tr></thead>';
+            echo '<thead><tr><th>' . esc_html($name_header) . '</th><th class="text-end">' . esc_html($value_header) . '</th></tr></thead>';
             echo '<tbody>';
             // Iterate over the rest of the rows
             while (have_rows('rows')) {
                 the_row();
                 $name = get_sub_field('name');
                 $value = get_sub_field('value');
-                echo '<tr><td>' . esc_html($name) . '</td><td>' . esc_html($value) . '</td></tr>';
+                echo '<tr><td>' . esc_html($name) . '</td><td class="text-end">' . esc_html($value) . '</td></tr>';
             }
             echo '</tbody>';
             echo '</table>';

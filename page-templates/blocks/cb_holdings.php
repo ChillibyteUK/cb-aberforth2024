@@ -50,7 +50,7 @@
                 <tr>
                     <th>Rank</th>
                     <th>Security</th>
-                    <th>Portfolio Weight</th>
+                    <th class="text-end">Portfolio Weight</th>
                 </tr>
             </thead>
             <tbody>
@@ -59,10 +59,12 @@
                     $hidden_class = ($index >= 10) ? ' class="hidden-row" style="display:none;"' : '';
                     echo "<tr$hidden_class>";
                     foreach (array_slice($row, 0, 3) as $i => $cell) {
+                        $tclass = '';
                         if ($i == 2) { // Assuming the third column is PortfolioWeight
                             $cell = number_format(floatval($cell), 1, '.', '') . '%';
+                            $tclass = ' class="text-end"';
                         }
-                        echo "<td>" . htmlspecialchars($cell) . "</td>";
+                        echo "<td " . $tclass . ">" . htmlspecialchars($cell) . "</td>";
                     }
                     echo "</tr>";
                 }
