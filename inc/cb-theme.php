@@ -811,49 +811,50 @@ function filter_documents_by_taxonomy($query)
 
 // Campaign Monitor Checkboxen
 // add_action('gform_after_submission_2', function($entry, $form) {
-//     error_log("🚀 Gravity Forms After Submission Hook Running for Form 2");
+    error_log("🚀 Gravity Forms After Submission Hook Running for Form 2");
 
-//     $field_mappings = [
-//         3 => 15, // Checkbox Field ID 3 → Text Field ID 15
-//         4 => 16, // Checkbox Field ID 4 → Text Field ID 16
-//         5 => 17  // Checkbox Field ID 5 → Text Field ID 17
-//     ];
+    // Define checkbox → CM field mappings
+    $field_mappings = [
+        18 => 21, // ASCOT → Hidden Field 21
+        19 => 22, // AGVIT → Hidden Field 22
+        20 => 23  // AFUND → Hidden Field 23
+    ];
 
-//     foreach ($field_mappings as $checkbox_field_id => $text_field_id) {
-//         $selected_values = [];
+    foreach ($field_mappings as $checkbox_field_id => $hidden_field_id) {
+        $selected_values = [];
 
-//         foreach ($form['fields'] as $field) {
-//             if ($field->id == $checkbox_field_id) {
-//                 $inputs = $field->get_entry_inputs();
+        foreach ($form['fields'] as $field) {
+            if ($field->id == $checkbox_field_id) {
+                $inputs = $field->get_entry_inputs();
 
-//                 if (is_array($inputs)) {
-//                     foreach ($inputs as $input) {
-//                         $value = rgar($entry, (string) $input['id']);
-//                         if (!empty($value)) {
-//                             $selected_values[] = $value;
-//                         }
-//                     }
-//                 } else {
-//                     $value = rgar($entry, (string) $field->id);
-//                     if (!empty($value)) {
-//                         $selected_values[] = $value;
-//                     }
-//                 }
-//             }
-//         }
+                if (is_array($inputs)) {
+                    foreach ($inputs as $input) {
+                        $value = rgar($entry, (string) $input['id']);
+                        if (!empty($value)) {
+                            $selected_values[] = $value;
+                        }
+                    }
+                } else {
+                    $value = rgar($entry, (string) $field->id);
+                    if (!empty($value)) {
+                        $selected_values[] = $value;
+                    }
+                }
+            }
+        }
 
-//         error_log("🔍 Retrieved values for Field {$checkbox_field_id}: " . print_r($selected_values, true));
+        error_log("🔍 Retrieved values for Field {$checkbox_field_id}: " . print_r($selected_values, true));
 
-//         if (!empty($selected_values)) {
-//             // Store as an array (JSON format) for Campaign Monitor
-//             $json_encoded_values = json_encode($selected_values); 
+        if (!empty($selected_values)) {
+            // Format the values correctly as a JSON array
+            $json_encoded_values = json_encode($selected_values);
 
-//             // Update corresponding text field with the formatted values
-//             GFAPI::update_entry_field($entry['id'], $text_field_id, $json_encoded_values);
+            // Update the hidden field
+            GFAPI::update_entry_field($entry['id'], $hidden_field_id, $json_encoded_values);
 
-//             error_log("✅ Field {$text_field_id} updated with: " . $json_encoded_values);
-//         } else {
-//             error_log("⚠️ No checkboxes were selected for Field {$checkbox_field_id}.");
-//         }
-//     }
-// }, 10, 2);
+            error_log("✅ Field {$hidden_field_id} updated with: " . $json_encoded_values);
+        } else {
+            error_log("⚠️ No checkboxes were selected for Field {$checkbox_field_id}.");
+        }
+    }
+}, 10, 2);
