@@ -810,25 +810,96 @@ function filter_documents_by_taxonomy($query)
 
 
 // Campaign Monitor Checkboxen
-add_action('gform_pre_submission_2', function($form) {
-    // Define mapping of checkbox fields to hidden fields
-    $field_mapping = [
-        3 => 15, // Checkbox field ID 3 -> Hidden field ID 15
-        4 => 16, // Checkbox field ID 4 -> Hidden field ID 16
-        5 => 17  // Checkbox field ID 5 -> Hidden field ID 17
+add_action('gform_after_submission_2', function($entry, $form) {
+    error_log("🚀 Gravity Forms After Submission Hook Running for CM Form 2");
+
+    // Define checkbox → text field mappings
+    $field_mappings = [
+        3 => 15, // Checkbox Field ID 3 → Text Field ID 15
+        4 => 16, // Checkbox Field ID 4 → Text Field ID 16
+        5 => 17  // Checkbox Field ID 5 → Text Field ID 17
     ];
 
-    $form_id = 2; // Ensure we use the correct form ID in the input name
+    foreach ($field_mappings as $checkbox_field_id => $text_field_id) {
+        $selected_values = [];
 
-    foreach ($field_mapping as $checkbox_id => $hidden_id) {
-        // Get the submitted values for the checkbox field
-        $checkbox_values = rgpost("input_{$form_id}_{$checkbox_id}");
+        // Loop through form fields and find checkboxes
+        foreach ($form['fields'] as $field) {
+            if ($field->id == $checkbox_field_id) {
+                $inputs = $field->get_entry_inputs();
 
-        if (is_array($checkbox_values)) {
-            // Convert to a comma-separated string
-            $comma_separated_values = implode(',', $checkbox_values);
-            // Store the result in the corresponding hidden field
-            $_POST["input_{$form_id}_{$hidden_id}"] = $comma_separated_values;
+                if (is_array($inputs)) {
+                    foreach ($inputs as $input) {
+                        $value = rgar($entry, (string) $input['id']);
+                        if (!empty($value)) {
+                            $selected_values[] = $value;
+                        }
+                    }
+                } else {
+                    $value = rgar($entry, (string) $field->id);
+                    if (!empty($value)) {
+                        $selected_values[] = $value;
+                    }
+                }
+            }
+        }
+
+        error_log("🔍 Retrieved values for Field {$checkbox_field_id}: " . print_r($selected_values, true));
+
+        if (!empty($selected_values)) {
+            $comma_separated_values = implode(',', $selected_values);
+
+            // Update corresponding text field with the formatted values
+            GFAPI::update_entry_field($entry['id'], $text_field_id, $comma_separated_values);
+
+            error_log("✅ Field {$text_field_id} updated with: " . $comma_separated_values);
+        } else {
+            error_log("⚠️ No checkboxes were selected for Field {$checkbox_field_id}.");
         }
     }
-});
+}, 10, 2);
+
+
+
+add_action('gform_after_submission_3', function($entry, $form) {
+    error_log("🚀 Gravity Forms After Submission Hook Running for Form 3");
+
+    $checkbox_field_id = 3;
+    $text_field_id = 4;
+    $selected_values = [];
+
+    // Loop through all fields in the form
+    foreach ($form['fields'] as $field) {
+        if ($field->id == $checkbox_field_id) {
+            $inputs = $field->get_entry_inputs();
+
+            if (is_array($inputs)) {
+                foreach ($inputs as $input) {
+                    $value = rgar($entry, (string) $input['id']);
+                    if (!empty($value)) {
+                        $selected_values[] = $value;
+                    }
+                }
+            } else {
+                $value = rgar($entry, (string) $field->id);
+                if (!empty($value)) {
+                    $selected_values[] = $value;
+                }
+            }
+        }
+    }
+
+    error_log("🔍 Retrieved checkbox values: " . print_r($selected_values, true));
+
+    if (!empty($selected_values)) {
+        $comma_separated_values = implode(',', $selected_values);
+
+        // Update the text field with the selected checkbox values
+        GFAPI::update_entry_field($entry['id'], $text_field_id, $comma_separated_values);
+
+        error_log("✅ Field {$text_field_id} updated with: " . $comma_separated_values);
+    } else {
+        error_log("⚠️ No checkboxes were selected.");
+    }
+}, 10, 2);
+
