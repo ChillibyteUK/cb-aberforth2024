@@ -33,3 +33,25 @@
         @extend .form-check;
     }
 }
+
+
+// I THOUGHT GRAVITY FORMS WAS BAD
+// UNTIL I ENCOUNTERED CAMPAIGN MONITOR 
+.cmApp_signupContainer {
+    max-width: unset;
+    width: unset;
+}
+#cmApp_signupEmail {
+    @extend .form-control;
+}
+#cmApp_signupForm {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    #cmApp_errorAll {
+        grid-column: 1 / 3;
+    }
+    .cmApp_fieldWrap {
+        grid-column: 1 / 3;
+    }
+
+}
