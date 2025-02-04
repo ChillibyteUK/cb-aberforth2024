@@ -810,10 +810,10 @@ function filter_documents_by_taxonomy($query)
 
 
 // Campaign Monitor Checkboxen
-// add_action('gform_after_submission_2', function($entry, $form) {
+add_action('gform_after_submission_2', function($entry, $form) {
     error_log("🚀 Gravity Forms After Submission Hook Running for Form 2");
 
-    // Define checkbox → CM field mappings
+    // Map the correct checkbox fields to their hidden storage fields
     $field_mappings = [
         18 => 21, // ASCOT → Hidden Field 21
         19 => 22, // AGVIT → Hidden Field 22
@@ -846,13 +846,13 @@ function filter_documents_by_taxonomy($query)
         error_log("🔍 Retrieved values for Field {$checkbox_field_id}: " . print_r($selected_values, true));
 
         if (!empty($selected_values)) {
-            // Format the values correctly as a JSON array
-            $json_encoded_values = json_encode($selected_values);
+            // Convert array into Campaign Monitor-friendly format
+            $formatted_values = json_encode($selected_values); 
 
-            // Update the hidden field
-            GFAPI::update_entry_field($entry['id'], $hidden_field_id, $json_encoded_values);
+            // Store the formatted values in the corresponding hidden field
+            GFAPI::update_entry_field($entry['id'], $hidden_field_id, $formatted_values);
 
-            error_log("✅ Field {$hidden_field_id} updated with: " . $json_encoded_values);
+            error_log("✅ Field {$hidden_field_id} updated with: " . $formatted_values);
         } else {
             error_log("⚠️ No checkboxes were selected for Field {$checkbox_field_id}.");
         }
