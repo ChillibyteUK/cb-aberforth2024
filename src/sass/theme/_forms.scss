@@ -38,11 +38,12 @@
 // I THOUGHT GRAVITY FORMS WAS BAD
 // UNTIL I ENCOUNTERED CAMPAIGN MONITOR 
 .cmApp_signupContainer.cmApp_embedded {
-    max-width: unset;
-    width: unset;
+    max-width: unset !important;
+    width: unset !important;
 }
 #cmApp_signupEmail {
     @extend .form-control;
+    border-radius: .365rem !important;
 }
 #cmApp_signupForm {
     display: grid;

@@ -21918,8 +21918,12 @@ header .dropdown.current-menu-item::after {
 }
 
 .cmApp_signupContainer.cmApp_embedded {
-  max-width: unset;
-  width: unset;
+  max-width: unset !important;
+  width: unset !important;
+}
+
+#cmApp_signupEmail {
+  border-radius: 0.365rem !important;
 }
 
 #cmApp_signupForm {
