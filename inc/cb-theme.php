@@ -808,6 +808,26 @@ function filter_documents_by_taxonomy($query)
     }
 }
 
+// disclaimer stuff
+function populate_disclaimer_checkboxes($field) {
+    // Get all disclaimers from the options page
+    $disclaimers = get_field('disclaimers', 'option');
+
+    if (!empty($disclaimers) && is_array($disclaimers)) {
+        $choices = [];
+        foreach ($disclaimers as $disclaimer) {
+            $choices[$disclaimer['disclaimer_name']] = $disclaimer['disclaimer_name'];
+        }
+        $field['choices'] = $choices;
+    }
+
+    return $field;
+}
+
+// Apply to the correct ACF field (checkbox field inside the CPT field group)
+add_filter('acf/load_field/name=disclaimers_selection', 'populate_disclaimer_checkboxes');
+
+
 
 // Campaign Monitor Checkboxen
 // add_action('gform_after_submission_2', function($entry, $form) {
