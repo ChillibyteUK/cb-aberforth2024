@@ -70,6 +70,9 @@ function render_csv_as_table($csv_data, $tab)
             elseif ($header === 'DNSCI') {
                 $header = 'DNSCI (XIC)';
             }
+            elseif ($header === 'PerformancePeriod') {
+                $tclasss = '';
+            }
 
             if ($tab != 'discrete' && $header == 'PerformancePeriod') {
                 // $date = $csv_data[1][4];
