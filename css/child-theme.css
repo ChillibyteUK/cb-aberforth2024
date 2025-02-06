@@ -22421,8 +22421,8 @@ header .dropdown.current-menu-item::after {
 .docs_by_fund tr:hover {
   background-color: var(--col-grey-200);
 }
-.doc_block .modal-dialog,
-.docs_by_fund .modal-dialog {
+
+.modal-dialog {
   max-width: unset;
   width: min(1100px, 90vw);
 }

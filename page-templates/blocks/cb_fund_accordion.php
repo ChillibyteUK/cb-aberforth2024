@@ -202,18 +202,20 @@
                                         $docs = get_field('afund_docs') ?? null;
                                         if ($docs) {
                                             $documents = [];
+                                            $all_disclaimers = get_field('disclaimers', 'option');
+                                            
 
                                             foreach (get_field('afund_docs') as $f) {
                                                 $file = get_field('file', $f);
-                                                if (!$file) continue; // Skip if no file is found
+                                                if (!$file) { continue; }
                                             
                                                 $attachment_url = wp_get_attachment_url($file);
                                                 $file_path = get_attached_file($file);
                                                 $file_size = file_exists($file_path) ? filesize($file_path) : 0;
-
+                                            
                                                 $category = get_the_terms($f, 'doccat');
                                                 $category_name = !empty($category) && !is_wp_error($category) ? $category[0]->name : 'Uncategorised';
-
+                                            
                                                 $documents[] = [
                                                     'id' => $f,
                                                     'title' => get_the_title($f),
@@ -222,24 +224,66 @@
                                                     'formatted_size' => $file_size > 0 ? formatBytes($file_size, 0) : 'Unknown',
                                                     'date' => get_the_date('d M Y', $f),
                                                     'url' => esc_url($attachment_url),
+                                                    'disclaimers' => get_field('disclaimers_selection', $f) ?? null
                                                 ];
                                             }
-
+                                            
+                                            // Sort documents by title
                                             usort($documents, function ($a, $b) {
-                                                return strcasecmp($a['title'], $b['title']);
+                                                return strcasecmp($a['title'], $b['title']); // Case-insensitive sorting
                                             });
                                             
-                                            foreach ($documents as $doc) {
-                                                ?>
-                                        <tr onclick="window.location.href='<?= $doc['url'] ?>'" style="cursor: pointer;">
-                                            <td class="fw-500"><?= esc_html($doc['title']) ?></td>
-                                            <td><?= esc_html($doc['category']) ?></td>
-                                            <td><?= esc_html($doc['formatted_size']) ?></td>
-                                            <td><?= esc_html($doc['date']) ?></td>
-                                            <td><a href="<?= $doc['url'] ?>" download class="icon-download" style="text-decoration: none; color: inherit;"></a></td>
-                                        </tr>
+                                            ?>
+                                            
+                                            <?php foreach ($documents as $doc) { ?>
                                                 <?php
-                                            }
+                                                $id = esc_attr($doc['id']);
+                                                $disclaimers = $doc['disclaimers'];
+                                                ?>
+                                            
+                                                <tr <?php if (!empty($disclaimers)) { ?> data-bs-toggle="modal" data-bs-target="#modal_<?= $id ?>" <?php } else { ?> onclick="window.open('<?= $doc['url'] ?>', '_blank')" <?php } ?> style="cursor: pointer;">
+                                                    <td class="fw-500"><?= $doc['title'] ?></td>
+                                                    <td><?= esc_html($doc['category']) ?></td>
+                                                    <td><?= $doc['formatted_size'] ?></td>
+                                                    <td><?= $doc['date']; ?></td>
+                                                    <td><span class="icon-download" style="text-decoration: none; color: inherit;"></span></td>
+                                                </tr>
+                                            
+                                                <?php if (!empty($disclaimers) && is_array($disclaimers)) { ?>
+                                                <!-- Disclaimer Modal -->
+                                                <div class="modal fade" id="modal_<?= $id ?>" tabindex="-1">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content">
+                                                            <div class="modal-body">
+                                                                <div id="disclaimer-list-<?= $id ?>" class="disclaimer-list">
+                                                                    <?php foreach ($disclaimers as $index => $disclaimer_name) { ?>
+                                                                        <?php foreach ($all_disclaimers as $disclaimer) { ?>
+                                                                            <?php if ($disclaimer['disclaimer_name'] === $disclaimer_name) { ?>
+                                                                                <div class="disclaimer-container" id="disclaimer-<?= $id ?>">
+                                                                                    <label for="disclaimer-<?= $id ?>-<?= $index ?>" class="switch-label">
+                                                                                        <?= $disclaimer['disclaimer_content'] ?>
+                                                                                    </label>
+                                                                                    <div class="switch-container">
+                                                                                        <input type="checkbox" class="disclaimer-checkbox" id="disclaimer-<?= $id ?>-<?= $index ?>">
+                                                                                        <label for="disclaimer-<?= $id ?>-<?= $index ?>" class="switch"></label>
+                                                                                    </div>
+                                                                                </div>
+                                                                            <?php } ?>
+                                                                        <?php } ?>
+                                                                    <?php } ?>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="button button-secondary" data-bs-dismiss="modal">Close</button>
+                                                                <button type="button" class="button accept-button" id="accept-button-<?= $id ?>" onclick="window.open('<?= $doc['url'] ?>', '_blank')" disabled>Accept</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <?php } ?>
+                                            
+                                            <?php }
+
                                         }
                                             ?>
                                     </tbody>
