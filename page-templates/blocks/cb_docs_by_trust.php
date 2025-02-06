@@ -76,37 +76,59 @@
                         $row_count = 0;
                         foreach ($doctype_documents as $doc) {
                             // Get the attachment ID from the ACF field
-                            $attachment_id = get_field('file', $doc->ID);
+                            $f = $doc->ID;
+                            $attachment_id = get_field('file', $f);
                             $attachment_url = wp_get_attachment_url($attachment_id);
-                            $file_path = get_attached_file($attachment_id);
+                            $file_path = get_attached_file($attachment_id) ?? null;
                             $file_size = filesize($file_path);
                             $hidden_class = ($row_count >= 10) ? ' class="hidden-row" style="display:none;"' : '';
 
-                            $disclaimer = get_field('disclaimer_active', $doc->ID);
-                            if (!empty($disclaimer) && is_array($disclaimer) && isset($disclaimer[0]) && $disclaimer[0] === 'Yes') {
+                            $disclaimers = get_field('disclaimers_selection', $f) ?? null;
+
+
+                            if (!empty($disclaimers) && is_array($disclaimers) && isset($disclaimers[0])) {
+                                $id = esc_attr($f);
                                 ?>
-                    <tr <?=$hidden_class?> data-bs-toggle="modal" data-bs-target="#modal_<?=$doc->ID?>" style="cursor: pointer;">
+                    <tr <?=$hidden_class?> data-bs-toggle="modal" data-bs-target="#modal_<?=$f?>" style="cursor: pointer;">
                         <td class="fw-500 column1"><?= esc_html($doc->post_title) ?></td>
                         <td class="column2"><?= formatBytes($file_size, 0) ?></td>
                         <td class="column3"><span class="icon-download" style="text-decoration: none; color: inherit;"></span></td>
                     </tr>
-                    <div class="modal fade" id="modal_<?=$doc->ID?>" tabindex="-1">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h2 class="modal-title"><?=get_field('disclaimer_header',$doc->ID)?></h2>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="modal fade" id="modal_<?=$f?>" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div id="disclaimer-list-<?=$id?>" class="disclaimer-list">
+                                <?php
+                                    foreach ($disclaimers as $index => $disclaimer_name) {  
+
+                                        foreach ($all_disclaimers as $disclaimer) {
+                                            if ($disclaimer['disclaimer_name'] === $disclaimer_name) {
+                                                ?>
+                                    <div class="disclaimer-container" id="disclaimer-<?=$id?>">
+                                        <label for="disclaimer-<?=$id?>-<?=$index?>" class="switch-label">
+                                            <?=$disclaimer['disclaimer_content']?>
+                                        </label>
+                                        <div class="switch-container">
+                                            <input type="checkbox" class="disclaimer-checkbox" id="disclaimer-<?=$id?>-<?=$index?>">
+                                            <label class="switch" for="disclaimer-<?=$id?>-<?=$index?>"></label> 
+                                        </div>
+                                    </div>
+                                                <?php
+                                                break; 
+                                            }
+                                        }
+                                    }
+                                    ?>
                                 </div>
-                                <div class="modal-body">
-                                    <?=get_field('disclaimer',$doc->ID)?>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="button button-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="button accept-button" onclick="window.open('<?php echo $attachment_url; ?>', '_blank')">Accept</button>
-                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="button button-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="button accept-button" id="accept-button-<?=$id?>" onclick="window.open('<?=esc_url($attachment_url)?>', '_blank')" disabled>Accept</button>
                             </div>
                         </div>
                     </div>
+                </div>
                                 <?php
                             }
                             else {
