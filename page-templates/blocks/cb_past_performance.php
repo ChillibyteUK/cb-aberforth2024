@@ -73,7 +73,9 @@ function render_csv_as_table($csv_data, $tab)
             }
             
             if ($tab != 'discrete' && $header == 'PerformancePeriod') {
-                $date = end($csv_data[1]) ?? '1970-01-01';
+                // $date = end($csv_data[1]) ?? '1970-01-01';
+                $date = isset($csv_data[1][4]) ? trim($csv_data[1][4]) : '1970-01-01';
+
                 $date = new DateTime($date);
                 $formattedDate = $date->format("d F Y");
                 $header = 'Period to ' . $formattedDate;
