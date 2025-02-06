@@ -70,7 +70,7 @@ function render_csv_as_table($csv_data, $tab)
                 $header = 'DNSCI (XIC)';
             } elseif ($header == 'PerformancePeriod') {
                 $header = 'Performance Period';
-                $tclasss = '';
+                $tclass = '';
             }
 
             if ($tab != 'discrete' && $header == 'PerformancePeriod') {
