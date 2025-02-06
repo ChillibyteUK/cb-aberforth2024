@@ -163,5 +163,3 @@ foreach ($csv_files as $file) {
         </div>
     </div>
 </section>
-
-:  Uncaught DateMalformedStringException: Failed to parse time string (.175816388237962200) at position 12 (7): Double date specification in /home/sites/29a/d/daa1693d97/public_html/aberforth/wp-content/themes/cb-aberforth2024/page-templates/blocks/cb_past_performance.php:76
