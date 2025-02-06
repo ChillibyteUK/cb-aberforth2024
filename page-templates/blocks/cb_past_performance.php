@@ -69,7 +69,7 @@ function render_csv_as_table($csv_data, $tab)
             } elseif ($header === 'DNSCI') {
                 $header = 'DNSCI (XIC)';
             } elseif ($header == 'PerformancePeriod') {
-                $header = 'Performance Period';
+                $header = 'Performance x Period';
                 $tclass = 'x';
             }
 
