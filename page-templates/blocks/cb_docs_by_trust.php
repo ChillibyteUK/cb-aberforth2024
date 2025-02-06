@@ -79,7 +79,7 @@
                             $f = $doc->ID;
                             $attachment_id = get_field('file', $f);
                             $attachment_url = wp_get_attachment_url($attachment_id);
-                            $file_path = get_attached_file($attachment_id) ?? null;
+                            $file_path = get_attached_file($attachment_id);
                             $file_size = filesize($file_path);
                             $hidden_class = ($row_count >= 10) ? ' class="hidden-row" style="display:none;"' : '';
 
