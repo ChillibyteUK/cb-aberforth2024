@@ -1,21 +1,3 @@
-<style>
-    .disclaimer-row {
-        display: grid;
-        grid-template-columns: 1fr 3rem;
-        column-gap: 0.5rem;
-        border-bottom: 1px solid steelblue;
-        padding-bottom: 0.5rem;
-        margin-bottom: 0.5rem;
-    }
-    .disclaimer-row label {
-        cursor: pointer;
-    }
-    .disclaimer-checkbox {
-        width: 2rem;
-        height: 2rem;
-        align-self: flex-end;
-    }
-</style>
 <section class="doc_block pt-4">
     <div class="container-xl">
         <?php
