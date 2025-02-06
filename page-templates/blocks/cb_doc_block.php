@@ -69,10 +69,15 @@
                                         foreach ($all_disclaimers as $disclaimer) {
                                             if ($disclaimer['disclaimer_name'] === $disclaimer_name) {
                                                 ?>
-                                                <div class="disclaimer-row">
-                                                    <label for="disclaimer-<?=$id?>-<?=$index?>"><?=$disclaimer['disclaimer_content']?></label>
-                                                    <input type="checkbox" class="disclaimer-checkbox" id="disclaimer-<?=$id?>-<?=$index?>">
-                                                </div>
+                                    <div class="disclaimer-container" id="disclaimer-<?=$id?>">
+                                        <label for="disclaimer-<?=$id?>-<?=$index?>" class="switch-label">
+                                            <?=$disclaimer['disclaimer_content']?>
+                                        </label>
+                                        <div class="switch-container">
+                                            <input type="checkbox" class="disclaimer-checkbox" id="disclaimer-<?=$id?>-<?=$index?>">
+                                            <label class="switch" for="disclaimer-<?=$id?>-<?=$index?>"></label> 
+                                        </div>
+                                    </div>
                                                 <?php
                                                 break; 
                                             }
@@ -111,6 +116,19 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("click", function (event) {
+        // Check if a switch-label was clicked
+        if (event.target.classList.contains("switch-label")) {
+            const checkboxID = event.target.getAttribute("for");
+            const checkbox = document.getElementById(checkboxID);
+
+            if (checkbox) {
+                checkbox.checked = !checkbox.checked;
+                checkbox.dispatchEvent(new Event("change")); // Trigger change event to update button state
+            }
+        }
+    });
+
     document.querySelectorAll(".disclaimer-list").forEach(function (list) {
         const modalID = list.id.replace("disclaimer-list-", "");
         const checkboxes = list.querySelectorAll(".disclaimer-checkbox");
@@ -123,6 +141,26 @@ document.addEventListener("DOMContentLoaded", function () {
         checkboxes.forEach(checkbox => {
             checkbox.addEventListener("change", checkAllSelected);
         });
+
+        checkAllSelected(); // Ensure button is correctly disabled on load
     });
 });
+</script>
+
+<script>
+// document.addEventListener("DOMContentLoaded", function () {
+//     document.querySelectorAll(".disclaimer-list").forEach(function (list) {
+//         const modalID = list.id.replace("disclaimer-list-", "");
+//         const checkboxes = list.querySelectorAll(".disclaimer-checkbox");
+//         const acceptButton = document.getElementById("accept-button-" + modalID);
+
+//         function checkAllSelected() {
+//             acceptButton.disabled = ![...checkboxes].every(checkbox => checkbox.checked);
+//         }
+
+//         checkboxes.forEach(checkbox => {
+//             checkbox.addEventListener("change", checkAllSelected);
+//         });
+//     });
+// });
 </script>

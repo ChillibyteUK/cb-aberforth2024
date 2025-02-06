@@ -22439,6 +22439,68 @@ header .dropdown.current-menu-item::after {
   text-align: center;
 }
 
+.disclaimer-list {
+  --_width: 40px;
+  --_height: 20px;
+  --_gap: 6px;
+  --_off: white;
+  --_on: rgb(17, 17, 82);
+  display: grid;
+  row-gap: 1rem;
+}
+.disclaimer-list .disclaimer-container {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  -moz-column-gap: 0.5rem;
+  column-gap: 0.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid lightblue;
+}
+.disclaimer-list .disclaimer-container .switch-container {
+  align-content: end;
+}
+.disclaimer-list .disclaimer-container .switch-label {
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: var(--_width);
+  height: var(--_height);
+  background-color: var(--_off);
+  border-radius: 100vw;
+  cursor: pointer;
+  border: 2px solid var(--_on);
+  transition: all 0.3s;
+}
+.switch::after {
+  content: "";
+  position: absolute;
+  width: calc(var(--_height) - var(--_gap));
+  height: calc(var(--_height) - var(--_gap));
+  border-radius: 50%;
+  background-color: var(--_on);
+  top: 1px;
+  left: 1px;
+  transition: all 0.3s ease-in-out;
+}
+.disclaimer-checkbox:checked + .switch {
+  background-color: var(--_on);
+  border-color: var(--_on);
+}
+.disclaimer-checkbox:checked + .switch::after {
+  left: var(--_height);
+  background-color: var(--_off);
+}
+
+.disclaimer-checkbox {
+  display: none;
+}
+
 .inpage_hero a {
   padding: 1rem 2rem;
   color: var(--col-dark);
