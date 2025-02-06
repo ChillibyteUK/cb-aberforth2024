@@ -53,8 +53,10 @@ if (array_sum($special) > 0) {
     ];
 }
 
+$class = $block['className'] ?? null;
+
 ?>
-<section class="dividends py-5">
+<section class="dividends py-5 <?=$class?>">
     <div class="container-xl">
         <h2>Payment History</h2>
         <h3>Dividend history since inception</h3>
