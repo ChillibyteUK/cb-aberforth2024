@@ -73,8 +73,8 @@ function render_csv_as_table($csv_data, $tab)
             }
             
             if ($header == 'PerformancePeriod') {
-                $header = 'Performance x Period';
-                $tclass = 'x';
+                $header = 'Performance Period';
+                $tclass = '';
             }
 
             if ($tab != 'discrete' && $header == 'PerformancePeriod') {
