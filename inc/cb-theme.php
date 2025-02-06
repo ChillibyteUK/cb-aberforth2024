@@ -828,6 +828,89 @@ function populate_disclaimer_checkboxes($field) {
 add_filter('acf/load_field/name=disclaimers_selection', 'populate_disclaimer_checkboxes');
 
 
+// add filename to acf relationship field
+add_filter('acf/fields/relationship/result', function ($title, $post, $field, $post_id) {
+    if ($post->post_type === 'document') {
+        $file = get_field('file', $post->ID);
+        if ($file) {
+            $file_path = get_attached_file($file);
+            $file_name = basename($file_path);
+            $title .= ' [' . esc_html($file_name) . ']';
+        }
+    }
+    return $title;
+}, 10, 4);
+
+// add filename to acf relationship field search
+add_filter('acf/fields/relationship/query', function ($args, $field, $post_id) {
+    if (!empty($args['s'])) {
+        global $wpdb;
+        $search_term = '%' . $wpdb->esc_like($args['s']) . '%';
+
+        // Search in post_title (Document Title)
+        $post_query = $wpdb->prepare("
+            SELECT ID FROM {$wpdb->posts}
+            WHERE post_type = 'document'
+            AND post_title LIKE %s
+        ", $search_term);
+        $post_results = $wpdb->get_col($post_query);
+
+        // Search in _wp_attached_file (actual filename, removing folder structure)
+        $file_query = $wpdb->prepare("
+            SELECT post_id FROM {$wpdb->postmeta}
+            WHERE meta_key = '_wp_attached_file'
+            AND RIGHT(meta_value, LOCATE('/', REVERSE(meta_value)) - 1) LIKE %s
+        ", $search_term);
+        $file_results = $wpdb->get_col($file_query);
+
+        // Search in guid (full attachment URL)
+        $guid_query = $wpdb->prepare("
+            SELECT ID FROM {$wpdb->posts}
+            WHERE post_type = 'attachment'
+            AND guid LIKE %s
+        ", $search_term);
+        $guid_results = $wpdb->get_col($guid_query);
+
+        // Merge found attachment IDs
+        $attachment_ids = array_unique(array_merge($file_results, $guid_results));
+
+        // Find "document" CPTs where this attachment is selected as the ACF file field
+        $document_results = [];
+        if (!empty($attachment_ids)) {
+            $document_query = sprintf(
+                "SELECT post_id FROM {$wpdb->postmeta} 
+                 WHERE meta_key = 'file' 
+                 AND meta_value IN (%s)",
+                implode(',', array_map('intval', $attachment_ids))
+            );
+            $document_results = $wpdb->get_col($document_query);
+        }
+
+        // **Ensure ACF relationship field only shows documents**
+        $final_results = array_unique(array_merge($post_results, $document_results));
+
+        if (!empty($final_results)) {
+            $args['post__in'] = $final_results;
+        }
+
+        // **Ensure ACF respects our query**
+        $args['post_type'] = ['document'];  // Force only document CPTs
+        $args['post_status'] = ['publish', 'private']; // Ensure hidden posts aren't excluded
+        $args['suppress_filters'] = false; // Prevent ACF from overriding our query
+
+        error_log('Final post__in: ' . print_r($args['post__in'], true)); // Debugging
+    }
+
+    error_log('Post results: ' . print_r($post_results, true));
+    error_log('File results: ' . print_r($file_results, true));
+    error_log('GUID results: ' . print_r($guid_results, true));
+    error_log('Document results: ' . print_r($document_results, true));   
+
+    return $args;
+}, 10, 3);
+
+
+
 
 // Campaign Monitor Checkboxen
 // add_action('gform_after_submission_2', function($entry, $form) {
