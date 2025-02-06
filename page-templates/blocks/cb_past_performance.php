@@ -66,11 +66,10 @@ function render_csv_as_table($csv_data, $tab)
             if ($header === 'PerfPeriod') {
                 $header = 'Period';
                 $tclass = '';
-            }
-            elseif ($header === 'DNSCI') {
+            } elseif ($header === 'DNSCI') {
                 $header = 'DNSCI (XIC)';
-            }
-            elseif ($header === 'PerformancePeriod') {
+            } elseif ($header == 'PerformancePeriod') {
+                $header = 'Performance Period';
                 $tclasss = '';
             }
 
