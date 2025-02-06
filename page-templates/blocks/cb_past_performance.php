@@ -155,11 +155,16 @@ foreach ($csv_files as $file) {
 
                 echo '</div>';
             }
+
+            if (get_field('notes') ?? null) {
             ?>
             <div class="small mt-4">
                 <strong>Notes</strong><br>
                 <?= get_field('notes') ?? null ?>
             </div>
+            <?php
+            }
+            ?>
         </div>
     </div>
 </section>
