@@ -73,7 +73,7 @@ function render_csv_as_table($csv_data, $tab)
             }
             
             if ($tab != 'discrete' && $header == 'PerformancePeriod') {
-                $date = end($csv_data[1]);
+                $date = end($csv_data[1]) ?? '1970-01-01';
                 $date = new DateTime($date);
                 $formattedDate = $date->format("d F Y");
                 $header = 'Period to ' . $formattedDate;
@@ -91,6 +91,9 @@ function render_csv_as_table($csv_data, $tab)
     $html .= '</tr></thead>';
 
     // Output data rows
+
+    // TODO 20250206 - if discreet, swap NAV and Share Price columns so they're in the same order as the compound and cumulative tabs.
+
     $html .= '<tbody>';
     for ($i = 1; $i < count($csv_data); $i++) {
         $html .= '<tr>';
