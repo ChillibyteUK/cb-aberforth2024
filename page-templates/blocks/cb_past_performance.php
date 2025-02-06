@@ -72,7 +72,8 @@ function render_csv_as_table($csv_data, $tab)
             }
 
             if ($tab != 'discrete' && $header == 'PerformancePeriod') {
-                $date = $csv_data[1][4];
+                // $date = $csv_data[1][4];
+                $date = end($csv_data[1]);
                 $date = new DateTime($date);
                 $formattedDate = $date->format("d F Y");
                 $header = 'Period to ' . $formattedDate;
@@ -162,3 +163,5 @@ foreach ($csv_files as $file) {
         </div>
     </div>
 </section>
+
+:  Uncaught DateMalformedStringException: Failed to parse time string (.175816388237962200) at position 12 (7): Double date specification in /home/sites/29a/d/daa1693d97/public_html/aberforth/wp-content/themes/cb-aberforth2024/page-templates/blocks/cb_past_performance.php:76
