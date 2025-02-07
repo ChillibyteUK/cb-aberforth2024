@@ -60,6 +60,23 @@ function render_csv_as_table($csv_data, $tab)
         }
     }
 
+    // ** Swap NAV and Share Price columns if tab is 'discrete' **
+    if ($tab === 'discrete') {
+        $headers = $csv_data[0]; // Capture header row
+        $nav_index = array_search('NAV', $headers);
+        $share_price_index = array_search('Share Price', $headers);
+
+        if ($nav_index !== false && $share_price_index !== false) {
+            // Swap columns in headers
+            [$csv_data[0][$nav_index], $csv_data[0][$share_price_index]] = [$csv_data[0][$share_price_index], $csv_data[0][$nav_index]];
+
+            // Swap columns in data rows
+            for ($i = 1; $i < count($csv_data); $i++) {
+                [$csv_data[$i][$nav_index], $csv_data[$i][$share_price_index]] = [$csv_data[$i][$share_price_index], $csv_data[$i][$nav_index]];
+            }
+        }
+    }
+
     $html = '<div class="table-responsive"><table class="table mt-3">';
 
     // Output header row
@@ -103,9 +120,6 @@ function render_csv_as_table($csv_data, $tab)
     $html .= '</tr></thead>';
 
     // Output data rows
-
-    // TODO 20250206 - if discreet, swap NAV and Share Price columns so they're in the same order as the compound and cumulative tabs.
-
     $html .= '<tbody>';
     for ($i = 1; $i < count($csv_data); $i++) {
         $html .= '<tr>';
@@ -131,6 +145,7 @@ function render_csv_as_table($csv_data, $tab)
 
     return $html;
 }
+
 
 
 // Parsing CSV files

@@ -19,7 +19,7 @@
     .table th:first-child, 
     .table td:first-child {
         width: auto; /* Allows the first column to expand */
-        min-width: 250px; /* Ensures it doesn't shrink too much */
+        min-width: max-content; /* Ensures it doesn't shrink too much */
         white-space: nowrap; /* Prevents wrapping */
     }
     
