@@ -22328,6 +22328,11 @@ header .dropdown.current-menu-item::after {
 }
 @media (min-width: 768px) {
   .fund_subnav a {
+    padding: 1rem 1.25rem;
+  }
+}
+@media (min-width: 992px) {
+  .fund_subnav a {
     padding: 1rem 2rem;
   }
 }
