@@ -22326,12 +22326,12 @@ header .dropdown.current-menu-item::after {
   color: var(--col-dark);
   border-color: var(--_bg);
 }
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   .fund_subnav a {
     padding: 1rem 1.25rem;
   }
 }
-@media (min-width: 992px) {
+@media (min-width: 1200px) {
   .fund_subnav a {
     padding: 1rem 2rem;
   }
