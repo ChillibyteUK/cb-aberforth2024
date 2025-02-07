@@ -57,12 +57,23 @@
     color: var(--_fg);
     margin-bottom: 3rem;
     a {
-        padding: 1rem 2rem;
         color: var(--_fg);
         text-decoration: none;
+        border: 1px solid white;
+        display: block;
+        @media (min-width:768px) {
+            border: none;
+            display: inline-block;
+        }
         &.active {
             background-color: white;
             color: var(--col-dark);
+            border-color: var(--_bg);
+        }
+
+        padding: 0.5rem 1rem;
+        @media (min-width:768px) {
+            padding: 1rem 2rem;
         }
     }
 }

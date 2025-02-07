@@ -22309,13 +22309,27 @@ header .dropdown.current-menu-item::after {
   --_fg: var(--col-dark);
 }
 .fund_subnav a {
-  padding: 1rem 2rem;
   color: var(--_fg);
   text-decoration: none;
+  border: 1px solid white;
+  display: block;
+  padding: 0.5rem 1rem;
+}
+@media (min-width: 768px) {
+  .fund_subnav a {
+    border: none;
+    display: inline-block;
+  }
 }
 .fund_subnav a.active {
   background-color: white;
   color: var(--col-dark);
+  border-color: var(--_bg);
+}
+@media (min-width: 768px) {
+  .fund_subnav a {
+    padding: 1rem 2rem;
+  }
 }
 
 .fund_nav {
@@ -22397,7 +22411,8 @@ header .dropdown.current-menu-item::after {
 .past_performance .wp-block-table table td:first-child,
 .wp-block-table .past_performance table td:first-child {
   width: auto; /* Allows the first column to expand */
-  min-width: 250px; /* Ensures it doesn't shrink too much */
+  min-width: -moz-max-content;
+  min-width: max-content; /* Ensures it doesn't shrink too much */
   white-space: nowrap; /* Prevents wrapping */
 }
 .past_performance .table th:not(:first-child), .past_performance .wp-block-table table th:not(:first-child), .wp-block-table .past_performance table th:not(:first-child),

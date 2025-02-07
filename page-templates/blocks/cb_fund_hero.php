@@ -47,7 +47,7 @@ if (array_key_exists($fund, $fund_options)) {
                 }
                 ?>
             </div>
-            <div class="col-md-4 d-flex gap-4 justify-content-end">
+            <div class="col-md-4 d-flex gap-4 justify-content-md-end">
                 <?php
                 if ($xmlContent) {
                     // Parse the XML data
@@ -91,7 +91,7 @@ if (array_key_exists($fund, $fund_options)) {
     </div>
 </section>
 <section class=" fund_subnav <?= $theme ?>">
-    <div class="container-xl">
+    <div class="container-xl px-md-0">
 
         <?php
         // Define the parent page ID (root of the current section)
