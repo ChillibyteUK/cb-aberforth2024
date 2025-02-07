@@ -35,6 +35,11 @@ if (!function_exists('parse_csv_to_array')) {
     }
 }
 
+function is_valid_date($value) {
+    $date = DateTime::createFromFormat('Y-m-d', $value);
+    return $date && $date->format('Y-m-d') === $value; // Ensure exact match
+}
+
 function render_csv_as_table($csv_data, $tab)
 {
     if (empty($csv_data) || isset($csv_data['error'])) {
@@ -73,8 +78,13 @@ function render_csv_as_table($csv_data, $tab)
             }
             
             if ($tab != 'discrete' && $header == 'PerformancePeriod') {
-                // $date = end($csv_data[1]) ?? '1970-01-01';
-                $date = isset($csv_data[1][4]) ? trim($csv_data[1][4]) : '1970-01-01';
+
+                foreach ($csv_data[1] as $index => $value) {
+                    if (is_valid_date(trim($value))) {
+                        $date = $value;
+                        break;
+                    }
+                }
 
                 $date = new DateTime($date);
                 $formattedDate = $date->format("d F Y");
