@@ -36,9 +36,26 @@ if (!function_exists('parse_csv_to_array')) {
 }
 
 function is_valid_date($value) {
-    $date = DateTime::createFromFormat('Y-m-d', $value);
-    return $date && $date->format('Y-m-d') === $value; // Ensure exact match
+    // Regular expression to match dates in 'd/m/Y' format
+    $pattern = '/^\d{2}\/\d{2}\/\d{4}$/';
+
+    // Check if the input matches the pattern
+    if (preg_match($pattern, $value)) {
+        try {
+            $date = DateTime::createFromFormat('d/m/Y', $value);
+            if ($date && $date->format('d/m/Y') === $value) {
+                // Check for warnings or errors
+                $errors = DateTime::getLastErrors();
+                return $errors['warning_count'] === 0 && $errors['error_count'] === 0;
+            }
+        } catch (Exception $e) {
+            // Log or handle the exception as needed
+            error_log('Date parsing error: ' . $e->getMessage());
+        }
+    }
+    return false;
 }
+
 
 function render_csv_as_table($csv_data, $tab)
 {
@@ -98,13 +115,24 @@ function render_csv_as_table($csv_data, $tab)
 
                 foreach ($csv_data[1] as $index => $value) {
                     if (is_valid_date(trim($value))) {
-                        $date = $value;
+                        $dateString = $value;
                         break;
                     }
                 }
 
-                $date = new DateTime($date);
-                $formattedDate = $date->format("d F Y");
+                if (empty($dateString)) {
+                    error_log("EMPTY DATESTRING");
+                } else {
+                    $date = DateTime::createFromFormat('d/m/Y', $dateString);
+                    if ($date) {
+                        $formattedDate = $date->format("d F Y");
+                    } else {
+                        error_log("Invalid date format");
+                    }
+                }
+
+                // $date = new DateTime($date);
+                // $formattedDate = $date->format("d F Y");
                 $header = 'Period to ' . $formattedDate;
                 $tclass = '';
             }
