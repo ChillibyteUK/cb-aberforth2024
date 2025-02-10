@@ -3,7 +3,7 @@
 /**
  * The template for displaying search results pages
  *
- * @package cb-carousel
+ * @package cb-aberforth2025
  */
 
 // Exit if accessed directly.
