@@ -127,7 +127,7 @@ function render_csv_as_table($csv_data, $tab)
                     if ($date) {
                         $formattedDate = $date->format("d F Y");
                     } else {
-                        error_log("Invalid date format");
+                        $formattedDate = "Invalid date format";
                     }
                 }
 
