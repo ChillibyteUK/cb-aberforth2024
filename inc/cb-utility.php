@@ -404,6 +404,21 @@ function remove_posts_admin_menu() {
 add_action('admin_menu', 'remove_posts_admin_menu');
 
 
+// HIDE STUFF FROM DASHBOARD
+function lc_remove_dashboard_widgets() {
+    // Core WordPress widgets
+    remove_meta_box('dashboard_right_now', 'dashboard', 'normal'); // "At a Glance"
+    remove_meta_box('dashboard_activity', 'dashboard', 'normal'); // "Activity"
+    remove_meta_box('dashboard_quick_press', 'dashboard', 'side'); // "Quick Draft"
+    remove_meta_box('dashboard_primary', 'dashboard', 'side'); // "WordPress Events and News"
+
+    // Yoast SEO Widgets
+    remove_meta_box('wpseo-dashboard-overview', 'dashboard', 'normal'); // "Yoast SEO Posts Overview"
+    remove_meta_box('wpseo-wincher-dashboard-overview', 'dashboard', 'normal'); // "Yoast SEO / Wincher: Top Keyphrases"
+}
+add_action('wp_dashboard_setup', 'lc_remove_dashboard_widgets');
+
+
 
 function estimate_reading_time_in_minutes($content = '', $words_per_minute = 300, $with_gutenberg = false, $formatted = false)
 {
