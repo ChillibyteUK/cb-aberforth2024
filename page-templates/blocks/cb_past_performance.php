@@ -36,25 +36,20 @@ if (!function_exists('parse_csv_to_array')) {
 }
 
 function is_valid_date($value) {
-    // Regular expression to match dates in 'd/m/Y' format
-    $pattern = '/^\d{2}\/\d{2}\/\d{4}$/';
+    // Define the supported date formats
+    $formats = ['d/m/Y', 'Y-m-d'];
 
-    // Check if the input matches the pattern
-    if (preg_match($pattern, $value)) {
-        try {
-            $date = DateTime::createFromFormat('d/m/Y', $value);
-            if ($date && $date->format('d/m/Y') === $value) {
-                // Check for warnings or errors
-                $errors = DateTime::getLastErrors();
-                return $errors['warning_count'] === 0 && $errors['error_count'] === 0;
-            }
-        } catch (Exception $e) {
-            // Log or handle the exception as needed
-            error_log('Date parsing error: ' . $e->getMessage());
+    foreach ($formats as $format) {
+        $date = DateTime::createFromFormat($format, $value);
+        if ($date && $date->format($format) === $value) {
+            // Return the formatted date as "d F Y"
+            return $date->format('d F Y');
         }
     }
+
     return false;
 }
+
 
 
 function render_csv_as_table($csv_data, $tab)
@@ -114,26 +109,16 @@ function render_csv_as_table($csv_data, $tab)
             if ($tab != 'discrete' && $header == 'PerformancePeriod') {
 
                 foreach ($csv_data[1] as $index => $value) {
-                    if (is_valid_date(trim($value))) {
-                        $dateString = $value;
+                    $formattedDate = is_valid_date(trim($value)); // Now returns a formatted date or false
+                    if ($formattedDate) {
                         break;
                     }
                 }
-
-                if (empty($dateString)) {
-                    $formattedDate = print_r($csv_data[1]);
-                    // $formattedDate = "EMPTY DATESTRING " . $dateString;
-                } else {
-                    $date = DateTime::createFromFormat('d/m/Y', $dateString);
-                    if ($date) {
-                        $formattedDate = $date->format("d F Y");
-                    } else {
-                        $formattedDate = "Invalid date format";
-                    }
-                }
-
-                // $date = new DateTime($date);
-                // $formattedDate = $date->format("d F Y");
+                
+                if (empty($formattedDate)) {
+                    $formattedDate = print_r($csv_data[1], true); // Convert array to string for debugging
+                } 
+                
                 $header = 'Period to ' . $formattedDate;
                 $tclass = '';
             }
