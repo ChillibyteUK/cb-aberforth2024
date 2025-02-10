@@ -37,7 +37,7 @@ function fileed_admin_page_html() {
         <p>This tool is for bulk updating file titles, date, categories, etc.</p>
         <div style="background-color: white; border: 1px solid #2271b1; padding: 1rem; width:max-content;">
             <p>Download the CSV, modify the Title, Category, or Type as needed, then upload to implement the changes.</p>
-            <p style="background-color:yellow;display:inline;"><strong>DO NOT</strong> modify Doc ID, File ID, or Filename fields in the CSV.</p>
+            <p style="background-color:yellow;display:inline;"><strong>DO NOT</strong> modify Doc ID, File ID, Filename, or Disclaimer fields in the CSV.</p>
         </div>
         <h3>Accepted doccat and doctype slugs</h3>
         <p>The category and type <em>must</em> match the slugs within the taxonomies</p>
@@ -109,43 +109,80 @@ function fileed_download_csv() {
 
     // Custom WP_Query to get data (example: getting posts)
     $args = array(
-        'post_type' => 'document',
+        'post_type'      => 'document',
         'posts_per_page' => -1,
     );
     $query = new WP_Query($args);
-
+    
     // Prepare CSV headers
-    $csv_data = array();
-    $csv_data[] = array('Doc ID', 'File ID', 'Date Created', 'Title', 'Filename', 'Category', 'Type');
-
+    $csv_data = [];
+    $headings = ['Doc ID', 'File ID', 'Date Created', 'Title', 'Filename', 'Category', 'Type'];
+    
+    // Retrieve all possible disclaimers from the options page
+    $disclaimer_headings = [];
+    
+    if (have_rows('disclaimers', 'option')) {
+        while (have_rows('disclaimers', 'option')) {
+            the_row();
+            $disclaimer_headings[] = get_sub_field('disclaimer_name');
+        }
+    }
+    
+    // Merge disclaimers into the headers
+    $headings = array_merge($headings, $disclaimer_headings);
+    $csv_data[] = $headings;
+    
     // Loop through posts and add to CSV data
     if ($query->have_posts()) {
         while ($query->have_posts()) {
             $query->the_post();
-
+    
             $doccat = '';
             $doctype = '';
             $doccat_terms = get_the_terms(get_the_ID(), 'doccat');
-
+    
             if (!is_wp_error($doccat_terms) && !empty($doccat_terms)) {
                 // Return the slug of the first term in the list
                 $doccat = $doccat_terms[0]->slug;
             }
             $doctype_terms = get_the_terms(get_the_ID(), 'doctype');
-
+    
             if (!is_wp_error($doctype_terms) && !empty($doctype_terms)) {
                 // Return the slug of the first term in the list
                 $doctype = $doctype_terms[0]->slug;
             }
-
+    
             $attachment_id = get_field('file', get_the_ID());
             $attachment_filename = ($attachment_id) ? basename(get_attached_file($attachment_id)) : '';
-
-            $csv_data[] = array(get_the_ID(), $attachment_id, get_the_date('d-M-y'), get_the_title(),  $attachment_filename, $doccat, $doctype);
+    
+            // Fetch selected disclaimers for this document
+            $selected_disclaimers = get_field('disclaimers_selection', get_the_ID()) ?? [];
+    
+            // Ensure $selected_disclaimers is an array
+            if (!is_array($selected_disclaimers)) {
+                $selected_disclaimers = [];
+            }
+    
+            // Create a row with default empty disclaimer columns
+            $row = [
+                get_the_ID(),
+                $attachment_id,
+                get_the_date('d-M-y'),
+                get_the_title(),
+                $attachment_filename,
+                $doccat,
+                $doctype
+            ];
+    
+            // Add 'X' if the disclaimer is selected
+            foreach ($disclaimer_headings as $disclaimer) {
+                $row[] = in_array($disclaimer, $selected_disclaimers) ? 'X' : '';
+            }
+    
+            $csv_data[] = $row;
         }
         wp_reset_postdata();
     }
-
     // Set headers to download file
     if (empty($csv_data)) {
         echo '<div class="error"><p>No data available for download.</p></div>';
