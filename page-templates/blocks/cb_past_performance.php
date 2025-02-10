@@ -121,7 +121,7 @@ function render_csv_as_table($csv_data, $tab)
                 }
 
                 if (empty($dateString)) {
-                    $fomrattedDate = "EMPTY DATESTRING";
+                    $formattedDate = "EMPTY DATESTRING";
                 } else {
                     $date = DateTime::createFromFormat('d/m/Y', $dateString);
                     if ($date) {
