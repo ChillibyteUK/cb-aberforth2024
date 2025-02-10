@@ -397,6 +397,14 @@ function remove_comments()
 add_action('wp_before_admin_bar_render', 'remove_comments');
 
 
+// HIDE POSTS
+function remove_posts_admin_menu() {
+    remove_menu_page('edit.php'); // Removes the "Posts" menu
+}
+add_action('admin_menu', 'remove_posts_admin_menu');
+
+
+
 function estimate_reading_time_in_minutes($content = '', $words_per_minute = 300, $with_gutenberg = false, $formatted = false)
 {
     // In case if content is build with gutenberg parse blocks
