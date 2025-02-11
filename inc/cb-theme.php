@@ -340,6 +340,9 @@ add_action('wp', 'schedule_feed_download');
 // Fetch data from both Pricing URLs and update respective options
 function fetch_and_update_pricing_data()
 {
+
+    $admin_email = get_option('admin_email');
+
     // Feed URLs
     $ascot_feed = get_field('ascot_feed_url', 'option') ?? 'https://irs.tools.investis.com/clients/uk/aberforth/xml/xml.aspx';
     $agvit_feed = get_field('agvit_feed_url', 'option') ?? 'https://irs.tools.investis.com/Clients/uk/aberforth_geared_value/XML/xml.aspx';
@@ -347,6 +350,8 @@ function fetch_and_update_pricing_data()
         'ascot_pricing_data' => $ascot_feed,
         'agvit_pricing_data' => $agvit_feed
     ];
+
+    $failed_feeds = [];
 
     // Loop through each feed and fetch the data
     foreach ($feeds as $option_name => $url) {
@@ -359,6 +364,9 @@ function fetch_and_update_pricing_data()
             // Log or handle the error (optional)
             error_log('Failed to fetch ' . $option_name . ': ' . $response->get_error_message());
             update_option($option_name . '_last_failure', $current_time);
+
+            $failed_feeds[] = "{$option_name}: {$error_message}";
+
             continue; // Skip this feed if the request fails
         }
 
@@ -368,6 +376,9 @@ function fetch_and_update_pricing_data()
             // Log or handle the error
             error_log('Failed to fetch ' . $option_name . ': HTTP ' . $response_code);
             update_option($option_name . '_last_failure', $current_time);
+
+            $failed_feeds[] = "{$option_name}: {$error_message}";
+
             continue; // Skip this feed if the response is not OK
         }
 
@@ -377,6 +388,14 @@ function fetch_and_update_pricing_data()
         // Store the data in WordPress options
         update_option($option_name, $data); // Store XML in the respective option
         update_option($option_name . '_last_success', $current_time);
+    }
+
+    if (!empty($failed_feeds)) {
+        $subject = "⚠️ Pricing Feed Fetch Failed";
+        $message = "The following pricing feeds failed to update:\n\n" . implode("\n", $failed_feeds) . "\n\nChecked at: {$current_time}";
+
+        // Send email to the admin
+        wp_mail($admin_email, $subject, $message);
     }
 }
 add_action('check_pricing_data', 'fetch_and_update_pricing_data');
@@ -454,7 +473,7 @@ EOT;
                 }
             }
 
-            $response = wp_remote_get(CSV_HOST . $remote_file , array('method' => 'HEAD'));
+            $response = wp_remote_get(CSV_HOST . $remote_file, array('method' => 'HEAD'));
             if (is_wp_error($response)) {
                 echo 'Error fetching remote file metadata: ' . $response->get_error_message();
                 return;
@@ -466,14 +485,14 @@ EOT;
             } else {
                 $remote_size = 'Unknown';
             }
-            
+
             if (isset($headers['last-modified'])) {
                 $remote_modification_time = strtotime($headers['last-modified']); // Convert to Unix timestamp
                 $remote_date = date('Y-m-d H:i:s', $remote_modification_time); // Format the modification date
             } else {
                 $remote_date = 'Unknown';
             }
-            
+
 
             $file_full_path = $file_path . $file;
 
@@ -806,7 +825,8 @@ function filter_documents_by_taxonomy($query)
 }
 
 // disclaimer stuff
-function populate_disclaimer_checkboxes($field) {
+function populate_disclaimer_checkboxes($field)
+{
     // Get all disclaimers from the options page
     $disclaimers = get_field('disclaimers', 'option');
 
@@ -901,60 +921,7 @@ add_filter('acf/fields/relationship/query', function ($args, $field, $post_id) {
     error_log('Post results: ' . print_r($post_results, true));
     error_log('File results: ' . print_r($file_results, true));
     error_log('GUID results: ' . print_r($guid_results, true));
-    error_log('Document results: ' . print_r($document_results, true));   
+    error_log('Document results: ' . print_r($document_results, true));
 
     return $args;
 }, 10, 3);
-
-
-
-
-// Campaign Monitor Checkboxen
-// add_action('gform_after_submission_2', function($entry, $form) {
-//     error_log("🚀 Gravity Forms After Submission Hook Running for Form 2");
-
-//     // Map the correct checkbox fields to their hidden storage fields
-//     $field_mappings = [
-//         18 => 21, // ASCOT → Hidden Field 21
-//         19 => 22, // AGVIT → Hidden Field 22
-//         20 => 23  // AFUND → Hidden Field 23
-//     ];
-
-//     foreach ($field_mappings as $checkbox_field_id => $hidden_field_id) {
-//         $selected_values = [];
-
-//         foreach ($form['fields'] as $field) {
-//             if ($field->id == $checkbox_field_id) {
-//                 $inputs = $field->get_entry_inputs();
-
-//                 if (is_array($inputs)) {
-//                     foreach ($inputs as $input) {
-//                         $value = rgar($entry, (string) $input['id']);
-//                         if (!empty($value)) {
-//                             $selected_values[] = $value;
-//                         }
-//                     }
-//                 } else {
-//                     $value = rgar($entry, (string) $field->id);
-//                     if (!empty($value)) {
-//                         $selected_values[] = $value;
-//                     }
-//                 }
-//             }
-//         }
-
-//         error_log("🔍 Retrieved values for Field {$checkbox_field_id}: " . print_r($selected_values, true));
-
-//         if (!empty($selected_values)) {
-//             // Convert array into Campaign Monitor-friendly format
-//             $formatted_values = json_encode($selected_values); 
-
-//             // Store the formatted values in the corresponding hidden field
-//             GFAPI::update_entry_field($entry['id'], $hidden_field_id, $formatted_values);
-
-//             error_log("✅ Field {$hidden_field_id} updated with: " . $formatted_values);
-//         } else {
-//             error_log("⚠️ No checkboxes were selected for Field {$checkbox_field_id}.");
-//         }
-//     }
-// }, 10, 2);
