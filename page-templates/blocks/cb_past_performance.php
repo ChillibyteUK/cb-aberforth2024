@@ -35,7 +35,8 @@ if (!function_exists('parse_csv_to_array')) {
     }
 }
 
-function is_valid_date($value) {
+function is_valid_date($value)
+{
     // Define the supported date formats
     $formats = ['d/m/Y', 'Y-m-d'];
 
@@ -100,12 +101,12 @@ function render_csv_as_table($csv_data, $tab)
             if ($header === 'PerfPeriod') {
                 $header = 'Period';
                 $tclass = '';
-            } 
-            
+            }
+
             if ($header === 'DNSCI') {
                 $header = 'DNSCI (XIC)';
             }
-            
+
             if ($tab != 'discrete' && $header == 'PerformancePeriod') {
 
                 foreach ($csv_data[1] as $index => $value) {
@@ -114,11 +115,11 @@ function render_csv_as_table($csv_data, $tab)
                         break;
                     }
                 }
-                
+
                 if (empty($formattedDate)) {
                     $formattedDate = print_r($csv_data[1], true); // Convert array to string for debugging
-                } 
-                
+                }
+
                 $header = 'Period to ' . $formattedDate;
                 $tclass = '';
             }
@@ -146,8 +147,7 @@ function render_csv_as_table($csv_data, $tab)
                         $formatted_value = '(' . number_format(abs($formatted_value), 1, '.', '') . ')';
                     }
                     $html .= '<td' . $tclass . '>' . htmlspecialchars($formatted_value) . '</td>';
-                }
-                else {
+                } else {
                     $html .= '<td' . $tclass . '>' . htmlspecialchars($cell) . '</td>';
                 }
             }
@@ -167,8 +167,10 @@ $parsed_data = [];
 foreach ($csv_files as $file) {
     $parsed_data[] = parse_csv_to_array($file);
 }
+
+$classes = $block['className'] ?? null;
 ?>
-<section class="past_performance py-5">
+<section class="past_performance py-5 <?= $classes ?>">
     <div class="container-xl">
         <h2>Past Performance</h2>
         <?php
@@ -207,10 +209,10 @@ foreach ($csv_files as $file) {
 
             if (get_field('notes') ?? null) {
             ?>
-            <div class="small mt-4">
-                <strong>Notes</strong><br>
-                <?= get_field('notes') ?? null ?>
-            </div>
+                <div class="small mt-4">
+                    <strong>Notes</strong><br>
+                    <?= get_field('notes') ?? null ?>
+                </div>
             <?php
             }
             ?>
