@@ -38,11 +38,13 @@ if (empty($data) || count($data) < 2) {
 
 $file_creation_date = isset($data[1][0]) ? date("d/m/Y", strtotime($data[1][0])) : "Unknown Date";
 
+$classes = $block['className'] ?? null;
+
 ?>
-<section class="weightings py-5">
+<section class="weightings py-5 <?= $classes ?>">
     <div class="container-xl">
         <h2>Industry Weightings</h2>
-        
+
         <?php
         // Read the CSV file into an array again to process data
         $header = $data[0];

@@ -1,4 +1,7 @@
-<section class="trusts_funds py-5">
+<?php
+$classes = $block['className'] ?? null;
+?>
+<section class="trusts_funds py-5 <?= $classes ?>">
     <div class="container-xl">
         <h2 class="text-center mb-5">Trusts &amp; Funds</h2>
         <div class="row g-4">
@@ -6,9 +9,9 @@
                 <div class="trusts_funds__card theme--ascot">
                     <h3 class="trusts_funds__header">Aberforth Smaller Companies Trust plc</h3>
                     <div class="trusts_funds__inner">
-                        <div><?=get_field('ascot_intro','option')?></div>
+                        <div><?= get_field('ascot_intro', 'option') ?></div>
                         <div class="lined">
-                            <?=get_field('ascot_info','option')?>
+                            <?= get_field('ascot_info', 'option') ?>
                         </div>
                         <?php
                         $page_slug = '/trusts-and-funds/aberforth-smaller-companies-trust-plc/performance/';
@@ -31,7 +34,7 @@
                                     if ($block_data) {
                                         // Extract the number of rows from the 'rows' key
                                         $row_count = $block_data['rows'] ?? 0;
-                        
+
                                         // Loop through rows using the flattened key format
                                         for ($i = 0; $i < $row_count; $i++) {
                                             $name_key = "rows_{$i}_name";
@@ -40,20 +43,20 @@
                                             if (isset($block_data[$name_key])) {
                                                 $name = $block_data[$name_key];
                                                 $value = $block_data[$value_key] ?? null;
-                        
+
                                                 // Check for "Market value of investments"
                                                 if ($name === 'Market value of investments') {
                                                     $cleaned = str_replace(['£', 'm', ','], '', $value);
                                                     $rounded_value = round((float)$cleaned);
                                                     $ascot_value = '£' . number_format($rounded_value) . 'm';
                                                 }
-                        
+
                                                 // Check if the name starts with "All data as at"
                                                 if (str_starts_with($name, 'All data as at')) {
                                                     // Extract the date part using regex
                                                     if (preg_match('/All data as at (.+)$/', $name, $matches)) {
                                                         $date_string = $matches[1]; // Extract the date part
-                        
+
                                                         // Convert to DD/MM/YYYY format
                                                         $date = DateTime::createFromFormat('j F Y', $date_string);
                                                         if ($date) {
@@ -66,14 +69,12 @@
                                                 if (str_starts_with($name, 'Ordinary Share NAV')) {
                                                     $ascot_nav = $value;
                                                 }
-
                                             }
-                        
+
                                             // Break the loop if both values are found
                                             if ($ascot_value && $ascot_date && $ascot_nav) {
                                                 break;
                                             }
-                        
                                         }
                                     }
                                 }
@@ -93,27 +94,26 @@
                             if ($xml === false) {
                                 warn("Error: Failed to parse XML.");
                             }
-        
+
                             $shares = isset($xml->share) ? $xml->share : [$xml];
-        
+
                             // Display the data for each share
                             foreach ($shares as $share) {
                                 // Convert XML to JSON and then to an associative array for easy access
                                 $json = json_encode($share);
                                 $data = json_decode($json, true);
-        
+
                                 if ($data) {
                                     $symbol = $data['Symbol'];
                                     $currentPrice = $data['CurrentPrice'];
                                     $change = $data['Change'];
                                     $date = $data['Date'];
-        
+
                                     $change_status = ($change >= 0) ? 'ticker__change--up' : 'ticker__change--down';
 
                                     $ascot_price_date = $date;
                                     $ascot_price = $currentPrice;
                                     $ascot_change = $change;
-                                    
                                 } else {
                                     echo 'Error: No data found.';
                                 }
@@ -123,19 +123,19 @@
                         <div class="stats">
                             <div class="stats--ascot span-2">
                                 <div class="stats__title">Market Value</div>
-                                <div class="stats__date"><?=$ascot_date?></div>
-                                <div class="stats__value"><?=$ascot_value?></div>
+                                <div class="stats__date"><?= $ascot_date ?></div>
+                                <div class="stats__value"><?= $ascot_value ?></div>
                             </div>
                             <div class="stats--ascot">
                                 <div class="stats__title">Ordinary Share Price</div>
-                                <div class="stats__date"><?=$ascot_price_date?></div>
-                                <div class="stats__value"><?=$ascot_price?>p</div>
-                                
+                                <div class="stats__date"><?= $ascot_price_date ?></div>
+                                <div class="stats__value"><?= $ascot_price ?>p</div>
+
                             </div>
                             <div class="stats--ascot">
                                 <div class="stats__title">Ordinary Share NAV</div>
-                                <div class="stats__date"><?=$ascot_nav_date?></div>
-                                <div class="stats__value"><?=$ascot_nav?></div>
+                                <div class="stats__date"><?= $ascot_nav_date ?></div>
+                                <div class="stats__value"><?= $ascot_nav ?></div>
                             </div>
                         </div>
                         <div class="text-end">
@@ -148,9 +148,9 @@
                 <div class="trusts_funds__card theme--agvit">
                     <h3 class="trusts_funds__header">Aberforth Geared Value &amp; Income Trust plc</h3>
                     <div class="trusts_funds__inner">
-                        <div><?=get_field('agvit_intro','option')?></div>
+                        <div><?= get_field('agvit_intro', 'option') ?></div>
                         <div class="lined">
-                            <span><?=get_field('agvit_info','option')?></span>
+                            <span><?= get_field('agvit_info', 'option') ?></span>
                         </div>
                         <div class="tickers">
                             <?php
@@ -184,7 +184,6 @@
                                         case 'AGZI.L':
                                             $symbol = 'ZDP Share Price';
                                             break;
-
                                     }
                             ?>
                                     <div class="ticker mb-4">
@@ -192,7 +191,7 @@
                                         <div class="ticker__date"><?= $date ?></div>
                                         <div class="ticker__price"><?= $currentPrice ?>p</div>
                                     </div>
-                                    <?php
+                            <?php
                                 } else {
                                     echo 'Error: No data found.';
                                 }
@@ -210,7 +209,7 @@
                                     if ($block['blockName'] === 'acf/cb-data-table') {
                                         // Retrieve the block data
                                         $block_data = $block['attrs']['data'] ?? null;
-    
+
                                         if ($block_data) {
                                             // Extract the number of rows from the 'rows' key
                                             $row_count = $block_data['rows'] ?? 0;
@@ -222,19 +221,19 @@
                                                 if (isset($block_data[$name_key])) {
                                                     $name = $block_data[$name_key];
                                                     $value = $block_data[$value_key] ?? null;
-                            
+
                                                     if ($name === 'Ordinary Share NAV (including current year revenue)') {
                                                         $osnav = $value;
                                                     }
                                                     if ($name === 'Zero Dividend Preference Share NAV (accounts basis)') {
                                                         $zdpnav = $value;
                                                     }
-                                                                                                    // Check if the name starts with "All data as at"
+                                                    // Check if the name starts with "All data as at"
                                                     if (str_starts_with($name, 'All data as at')) {
                                                         // Extract the date part using regex
                                                         if (preg_match('/All data as at (.+)$/', $name, $matches)) {
                                                             $date_string = $matches[1]; // Extract the date part
-                            
+
                                                             // Convert to DD/MM/YYYY format
                                                             $date = DateTime::createFromFormat('j F Y', $date_string);
                                                             if ($date) {
@@ -258,15 +257,15 @@
                             <div class="stats">
                                 <div class="stats--agvit">
                                     <div class="stats__title">Ordinary Share NAV</div>
-                                    <div class="stats__date"><?=$agvit_date?></div>
-                                    <div class="stats__value"><?=$osnav?></div>
+                                    <div class="stats__date"><?= $agvit_date ?></div>
+                                    <div class="stats__value"><?= $osnav ?></div>
                                 </div>
                             </div>
                             <div class="stats">
                                 <div class="stats--agvit">
                                     <div class="stats__title">ZDP Share NAV</div>
-                                    <div class="stats__date"><?=$agvit_date?></div>
-                                    <div class="stats__value"><?=$zdpnav?></div>
+                                    <div class="stats__date"><?= $agvit_date ?></div>
+                                    <div class="stats__value"><?= $zdpnav ?></div>
                                 </div>
                             </div>
                         </div>
@@ -280,7 +279,7 @@
                 <div class="trusts_funds__card theme--afund h-100">
                     <h3 class="trusts_funds__header">Aberforth UK Small Companies Fund</h3>
                     <div class="trusts_funds__inner  justify-content-between">
-                        <p class="trusts_funds__content span-2"><?=get_field('afund_intro','option')?></p>
+                        <p class="trusts_funds__content span-2"><?= get_field('afund_intro', 'option') ?></p>
                         <div class="lined span-2 py-2">
                             <span>Launched: 20 March 1991</span>
                         </div>
@@ -308,7 +307,7 @@
                                         // Extract the date part using regex
                                         if (preg_match('/Valuation Date: (.+)$/', $title, $matches)) {
                                             $date_string = $matches[1]; // Extract the date part
-            
+
                                             // Convert to DD/MM/YYYY format
                                             $date = DateTime::createFromFormat('j F Y', $date_string);
                                             if ($date) {
@@ -322,7 +321,7 @@
                                     if ($block_data) {
                                         // Extract the number of rows from the 'rows' key
                                         $row_count = $block_data['rows'] ?? 0;
-                                        
+
 
                                         // Loop through rows using the flattened key format
                                         for ($i = 0; $i < $row_count; $i++) {
@@ -332,7 +331,7 @@
                                             if (isset($block_data[$name_key])) {
                                                 $name = $block_data[$name_key];
                                                 $value = $block_data[$value_key] ?? null;
-                        
+
                                                 if ($name === 'Accumulation Buying Price') {
                                                     $afund_acc_buy = $value;
                                                 }
@@ -357,32 +356,32 @@
                         }
 
                         ?>
-                        <div class="stats__date span-2"><?=$afund_date?></div>
+                        <div class="stats__date span-2"><?= $afund_date ?></div>
                         <div class="stats">
                             <div class="stats--afund">
                                 <div class="stats__title">Buying Price (Acc)</div>
-                                <div class="stats__value"><?=$afund_acc_buy?></div>
+                                <div class="stats__value"><?= $afund_acc_buy ?></div>
                             </div>
                         </div>
                         <div class="stats">
                             <div class="stats--afund">
                                 <div class="stats__title">Selling Price (Acc)</div>
-                                <div class="stats__value"><?=$afund_acc_sell?></div>
+                                <div class="stats__value"><?= $afund_acc_sell ?></div>
                             </div>
                         </div>
                         <div class="stats">
                             <div class="stats--afund">
                                 <div class="stats__title">Buying Price (Inc)</div>
-                                <div class="stats__value"><?=$afund_inc_buy?></div>
+                                <div class="stats__value"><?= $afund_inc_buy ?></div>
                             </div>
                         </div>
                         <div class="stats">
                             <div class="stats--afund">
                                 <div class="stats__title">Selling Price (Inc)</div>
-                                <div class="stats__value"><?=$afund_inc_sell?></div>
+                                <div class="stats__value"><?= $afund_inc_sell ?></div>
                             </div>
                         </div>
-                        
+
                         <div class="text-end mt-auto span-2">
                             <a href="/trusts-and-funds/aberforth-uk-small-companies-fund/" class="button">Learn more</a>
                         </div>

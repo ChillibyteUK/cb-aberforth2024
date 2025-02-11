@@ -1,4 +1,7 @@
-<section class="holdings mt-5 py-5">
+<?php
+$classes = $block['className'] ?? null;
+?>
+<section class="holdings mt-5 py-5 <?= $classes ?>">
     <div class="container-xl">
         <?php
 

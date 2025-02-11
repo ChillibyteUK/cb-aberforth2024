@@ -22,8 +22,10 @@ if (array_key_exists($fund, $fund_options)) {
     $xmlContent = null;
 }
 
+$classes = $block['className'] ?? null;
+
 ?>
-<section class="fund_hero pb-5">
+<section class="fund_hero pb-5 <?= $classes ?>">
     <div class="container-xl">
         <div class="row g-4">
             <div class="col-md-8">
@@ -31,19 +33,19 @@ if (array_key_exists($fund, $fund_options)) {
                 <?php
                 $sheet = get_field($fund . '_factsheet', 'option') ?? null;
                 if ($sheet) {
-                    $file = get_field('file',$sheet);
+                    $file = get_field('file', $sheet);
                     $file_url = wp_get_attachment_url($file);
-                    if ($file_url ?? null) { 
-                        ?>
-                <a href="<?=$file_url?>" target="_blank" class="button button--download"><?=get_the_title($sheet)?></a>
-                        <?php
+                    if ($file_url ?? null) {
+                ?>
+                        <a href="<?= $file_url ?>" target="_blank" class="button button--download"><?= get_the_title($sheet) ?></a>
+                    <?php
                     }
                 }
-                $link = get_field($fund . '_kepler_link','option') ?? null;
+                $link = get_field($fund . '_kepler_link', 'option') ?? null;
                 if ($link ?? null) {
                     ?>
-                <a href="<?=$link['url']?>" target="<?=$link['target']?>" class="button button--external"><?=$link['title']?></a>
-                    <?php
+                    <a href="<?= $link['url'] ?>" target="<?= $link['target'] ?>" class="button button--external"><?= $link['title'] ?></a>
+                <?php
                 }
                 ?>
             </div>
@@ -77,7 +79,7 @@ if (array_key_exists($fund, $fund_options)) {
                                 <div class="ticker__date">Share Price: <?= $date ?></div>
                                 <div class="ticker__symbol"><?= $symbol ?></div>
                                 <div class="ticker__price"><?= $currentPrice ?></div>
-                                <div class="ticker__change <?=$change_status?>"><?= $change ?></div>
+                                <div class="ticker__change <?= $change_status ?>"><?= $change ?></div>
                             </div>
                 <?php
                         } else {

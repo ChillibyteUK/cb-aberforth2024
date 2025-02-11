@@ -3,13 +3,15 @@ $field_value = get_field('theme');
 $theme = $field_value !== null ? strtolower((string)$field_value) : null;
 
 $bg = get_field('background') == 'White' ? 'fund_nav--white' : '';
+$classes = $block['className'] ?? null;
+
 ?>
-<section class="fund_nav <?= $bg ?> py-5">
+<section class="fund_nav <?= $bg ?> py-5 <?= $classes ?>">
     <div class="container-xl">
         <div class="text-center">
             <h2>Explore Aberforth Trusts &amp; Funds</h2>
             <div class="w-constrained mx-auto mb-4">
-                <?=get_field('intro')?>
+                <?= get_field('intro') ?>
             </div>
         </div>
         <div class="row g-4">
@@ -35,14 +37,14 @@ $bg = get_field('background') == 'White' ? 'fund_nav--white' : '';
             <?php
             }
             if ($theme != 'afund') {
-                ?>
-                    <div class="col-md-4">
-                        <div class="fund_nav__card fund_nav--afund">
-                            <h3>Aberforth UK Small Companies Fund</h3>
-                            <a href="/trusts-and-funds/aberforth-uk-small-companies-fund/" class="button button-secondary button--arrow">Learn more</a>
-                        </div>
+            ?>
+                <div class="col-md-4">
+                    <div class="fund_nav__card fund_nav--afund">
+                        <h3>Aberforth UK Small Companies Fund</h3>
+                        <a href="/trusts-and-funds/aberforth-uk-small-companies-fund/" class="button button-secondary button--arrow">Learn more</a>
                     </div>
-                <?php
+                </div>
+            <?php
             }
             if ($theme != 'aslit') {
             ?>

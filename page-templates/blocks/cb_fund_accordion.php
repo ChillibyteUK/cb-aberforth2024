@@ -1,4 +1,7 @@
-<section class="fund_accordion pt-4 pb-5">
+<?php
+$classes = $block['className'] ?? null;
+?>
+<section class="fund_accordion pt-4 pb-5 <?= $classes ?>">
     <div class="container-xl">
 
         <div class="accordion" id="fundAccordion">
@@ -18,14 +21,13 @@
                             <div class="tab-pane fade show active" id="ascot-investing" aria-labelledby="ascot-investing-tab">
                                 <?php
                                 if (get_field('ascot_invest_intro') ?? null) {
-                                    ?>
-                                <div class="p-4"><?=get_field('ascot_invest_intro')?></div>
+                                ?>
+                                    <div class="p-4"><?= get_field('ascot_invest_intro') ?></div>
                                 <?php
-                                }
-                                else {
-                                    ?>
+                                } else {
+                                ?>
                                     <div class="p-2"></div>
-                                    <?php
+                                <?php
                                 }
                                 $ascot_cards = [
                                     get_field('ascot_invest_card_1'),
@@ -37,24 +39,24 @@
                                 <div class="row g-4">
                                     <?php
                                     foreach ($ascot_cards as $ac) {
-                                        ?>
-                                    <div class="col-md-6 col-lg-3">
-                                        <div class="fund_accordion__card d-grid">
-                                            <div>
-                                                <h3 class="mb-4"><?=$ac['card_title']?></h3>
-                                                <p><?=$ac['card_content']?></p>
-                                            </div>
-                                            <?php
-                                            if ($ac['card_button'] ?? null) {
-                                                $l = $ac['card_button'];
-                                                ?>
-                                            <a href="<?=$l['url']?>" target="<?=$l['target']?>" class="button button-secondary align-self-end"><?=$l['title']?></a>
+                                    ?>
+                                        <div class="col-md-6 col-lg-3">
+                                            <div class="fund_accordion__card d-grid">
+                                                <div>
+                                                    <h3 class="mb-4"><?= $ac['card_title'] ?></h3>
+                                                    <p><?= $ac['card_content'] ?></p>
+                                                </div>
                                                 <?php
-                                            }
-                                            ?>
+                                                if ($ac['card_button'] ?? null) {
+                                                    $l = $ac['card_button'];
+                                                ?>
+                                                    <a href="<?= $l['url'] ?>" target="<?= $l['target'] ?>" class="button button-secondary align-self-end"><?= $l['title'] ?></a>
+                                                <?php
+                                                }
+                                                ?>
+                                            </div>
                                         </div>
-                                    </div>
-                                        <?php
+                                    <?php
                                     }
                                     ?>
                                 </div>
@@ -81,16 +83,15 @@
                         </div>
                         <div class="tab-content" id="agvit-content">
                             <div class="tab-pane fade show active" id="agvit-investing" aria-labelledby="agvit-investing-tab">
-                            <?php
-                                if (get_field('agvit_invest_intro') ?? null) {
-                                    ?>
-                                <div class="p-4"><?=get_field('agvit_invest_intro')?></div>
                                 <?php
-                                }
-                                else {
-                                    ?>
+                                if (get_field('agvit_invest_intro') ?? null) {
+                                ?>
+                                    <div class="p-4"><?= get_field('agvit_invest_intro') ?></div>
+                                <?php
+                                } else {
+                                ?>
                                     <div class="p-2"></div>
-                                    <?php
+                                <?php
                                 }
                                 $agvit_cards = [
                                     get_field('agvit_invest_card_1'),
@@ -102,24 +103,24 @@
                                 <div class="row g-4">
                                     <?php
                                     foreach ($agvit_cards as $ac) {
-                                        ?>
-                                    <div class="col-md-6 col-lg-3">
-                                        <div class="fund_accordion__card d-grid">
-                                            <div>
-                                                <h3 class="mb-4"><?=$ac['card_title']?></h3>
-                                                <p><?=$ac['card_content']?></p>
-                                            </div>
-                                            <?php
-                                            if ($ac['card_button'] ?? null) {
-                                                $l = $ac['card_button'];
-                                                ?>
-                                            <a href="<?=$l['url']?>" target="<?=$l['target']?>" class="button button-secondary align-self-end"><?=$l['title']?></a>
+                                    ?>
+                                        <div class="col-md-6 col-lg-3">
+                                            <div class="fund_accordion__card d-grid">
+                                                <div>
+                                                    <h3 class="mb-4"><?= $ac['card_title'] ?></h3>
+                                                    <p><?= $ac['card_content'] ?></p>
+                                                </div>
                                                 <?php
-                                            }
-                                            ?>
+                                                if ($ac['card_button'] ?? null) {
+                                                    $l = $ac['card_button'];
+                                                ?>
+                                                    <a href="<?= $l['url'] ?>" target="<?= $l['target'] ?>" class="button button-secondary align-self-end"><?= $l['title'] ?></a>
+                                                <?php
+                                                }
+                                                ?>
+                                            </div>
                                         </div>
-                                    </div>
-                                        <?php
+                                    <?php
                                     }
                                     ?>
                                 </div>
@@ -151,14 +152,13 @@
                             <div class="tab-pane fade show active" id="afund-investing" aria-labelledby="afund-investing-tab">
                                 <?php
                                 if (get_field('afund_invest_intro') ?? null) {
-                                    ?>
-                                <div class="p-4"><?=get_field('afund_invest_intro')?></div>
-                                    <?php
-                                }
-                                else {
-                                    ?>
+                                ?>
+                                    <div class="p-4"><?= get_field('afund_invest_intro') ?></div>
+                                <?php
+                                } else {
+                                ?>
                                     <div class="p-2"></div>
-                                    <?php
+                                <?php
                                 }
                                 $afund_cards = [
                                     get_field('afund_invest_card_1'),
@@ -170,30 +170,30 @@
                                 <div class="row g-4">
                                     <?php
                                     foreach ($afund_cards as $ac) {
-                                        ?>
-                                    <div class="col-md-6 col-lg-3">
-                                        <div class="fund_accordion__card d-grid">
-                                            <div>
-                                                <h3 class="mb-4"><?=$ac['card_title']?></h3>
-                                                <p><?=$ac['card_content']?></p>
-                                            </div>
-                                            <?php
-                                            if ($ac['card_button'] ?? null) {
-                                                $l = $ac['card_button'];
-                                                ?>
-                                            <a href="<?=$l['url']?>" target="<?=$l['target']?>" class="button button-secondary align-self-end"><?=$l['title']?></a>
+                                    ?>
+                                        <div class="col-md-6 col-lg-3">
+                                            <div class="fund_accordion__card d-grid">
+                                                <div>
+                                                    <h3 class="mb-4"><?= $ac['card_title'] ?></h3>
+                                                    <p><?= $ac['card_content'] ?></p>
+                                                </div>
                                                 <?php
-                                            }
-                                            ?>
+                                                if ($ac['card_button'] ?? null) {
+                                                    $l = $ac['card_button'];
+                                                ?>
+                                                    <a href="<?= $l['url'] ?>" target="<?= $l['target'] ?>" class="button button-secondary align-self-end"><?= $l['title'] ?></a>
+                                                <?php
+                                                }
+                                                ?>
+                                            </div>
                                         </div>
-                                    </div>
-                                        <?php
+                                    <?php
                                     }
                                     ?>
                                 </div>
                             </div>
                             <div class="tab-pane fade px-0" id="afund-dealing" aria-labelledby="afund-dealing-tab">
-                                <div class="p-4"><?=get_field('afund_dealing_intro')?></div>
+                                <div class="p-4"><?= get_field('afund_dealing_intro') ?></div>
                             </div>
                             <div class="tab-pane fade px-0" id="afund-docs" aria-labelledby="afund-docs-tab">
                                 <table class="table fs-300">
@@ -203,19 +203,21 @@
                                         if ($docs) {
                                             $documents = [];
                                             $all_disclaimers = get_field('disclaimers', 'option');
-                                            
+
 
                                             foreach (get_field('afund_docs') as $f) {
                                                 $file = get_field('file', $f);
-                                                if (!$file) { continue; }
-                                            
+                                                if (!$file) {
+                                                    continue;
+                                                }
+
                                                 $attachment_url = wp_get_attachment_url($file);
                                                 $file_path = get_attached_file($file);
                                                 $file_size = file_exists($file_path) ? filesize($file_path) : 0;
-                                            
+
                                                 $category = get_the_terms($f, 'doccat');
                                                 $category_name = !empty($category) && !is_wp_error($category) ? $category[0]->name : 'Uncategorised';
-                                            
+
                                                 $documents[] = [
                                                     'id' => $f,
                                                     'title' => get_the_title($f),
@@ -227,20 +229,20 @@
                                                     'disclaimers' => get_field('disclaimers_selection', $f) ?? null
                                                 ];
                                             }
-                                            
+
                                             // Sort documents by title
                                             usort($documents, function ($a, $b) {
                                                 return strcasecmp($a['title'], $b['title']); // Case-insensitive sorting
                                             });
-                                            
-                                            ?>
-                                            
+
+                                        ?>
+
                                             <?php foreach ($documents as $doc) { ?>
                                                 <?php
                                                 $id = esc_attr($doc['id']);
                                                 $disclaimers = $doc['disclaimers'];
                                                 ?>
-                                            
+
                                                 <tr <?php if (!empty($disclaimers)) { ?> data-bs-toggle="modal" data-bs-target="#modal_<?= $id ?>" <?php } else { ?> onclick="window.open('<?= $doc['url'] ?>', '_blank')" <?php } ?> style="cursor: pointer;">
                                                     <td class="fw-500"><?= $doc['title'] ?></td>
                                                     <td><?= esc_html($doc['category']) ?></td>
@@ -248,44 +250,43 @@
                                                     <td><?= $doc['date']; ?></td>
                                                     <td><span class="icon-download" style="text-decoration: none; color: inherit;"></span></td>
                                                 </tr>
-                                            
+
                                                 <?php if (!empty($disclaimers) && is_array($disclaimers)) { ?>
-                                                <!-- Disclaimer Modal -->
-                                                <div class="modal fade" id="modal_<?= $id ?>" tabindex="-1">
-                                                    <div class="modal-dialog modal-dialog-centered">
-                                                        <div class="modal-content">
-                                                            <div class="modal-body">
-                                                                <div id="disclaimer-list-<?= $id ?>" class="disclaimer-list">
-                                                                    <?php foreach ($disclaimers as $index => $disclaimer_name) { ?>
-                                                                        <?php foreach ($all_disclaimers as $disclaimer) { ?>
-                                                                            <?php if ($disclaimer['disclaimer_name'] === $disclaimer_name) { ?>
-                                                                                <div class="disclaimer-container" id="disclaimer-<?= $id ?>">
-                                                                                    <label for="disclaimer-<?= $id ?>-<?= $index ?>" class="switch-label">
-                                                                                        <?= $disclaimer['disclaimer_content'] ?>
-                                                                                    </label>
-                                                                                    <div class="switch-container">
-                                                                                        <input type="checkbox" class="disclaimer-checkbox" id="disclaimer-<?= $id ?>-<?= $index ?>">
-                                                                                        <label for="disclaimer-<?= $id ?>-<?= $index ?>" class="switch"></label>
+                                                    <!-- Disclaimer Modal -->
+                                                    <div class="modal fade" id="modal_<?= $id ?>" tabindex="-1">
+                                                        <div class="modal-dialog modal-dialog-centered">
+                                                            <div class="modal-content">
+                                                                <div class="modal-body">
+                                                                    <div id="disclaimer-list-<?= $id ?>" class="disclaimer-list">
+                                                                        <?php foreach ($disclaimers as $index => $disclaimer_name) { ?>
+                                                                            <?php foreach ($all_disclaimers as $disclaimer) { ?>
+                                                                                <?php if ($disclaimer['disclaimer_name'] === $disclaimer_name) { ?>
+                                                                                    <div class="disclaimer-container" id="disclaimer-<?= $id ?>">
+                                                                                        <label for="disclaimer-<?= $id ?>-<?= $index ?>" class="switch-label">
+                                                                                            <?= $disclaimer['disclaimer_content'] ?>
+                                                                                        </label>
+                                                                                        <div class="switch-container">
+                                                                                            <input type="checkbox" class="disclaimer-checkbox" id="disclaimer-<?= $id ?>-<?= $index ?>">
+                                                                                            <label for="disclaimer-<?= $id ?>-<?= $index ?>" class="switch"></label>
+                                                                                        </div>
                                                                                     </div>
-                                                                                </div>
+                                                                                <?php } ?>
                                                                             <?php } ?>
                                                                         <?php } ?>
-                                                                    <?php } ?>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="button button-secondary" data-bs-dismiss="modal">Close</button>
-                                                                <button type="button" class="button accept-button" id="accept-button-<?= $id ?>" onclick="window.open('<?= $doc['url'] ?>', '_blank')" disabled>Accept</button>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="button button-secondary" data-bs-dismiss="modal">Close</button>
+                                                                    <button type="button" class="button accept-button" id="accept-button-<?= $id ?>" onclick="window.open('<?= $doc['url'] ?>', '_blank')" disabled>Accept</button>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
                                                 <?php } ?>
-                                            
-                                            <?php }
 
+                                        <?php }
                                         }
-                                            ?>
+                                        ?>
                                     </tbody>
                                 </table>
                             </div>

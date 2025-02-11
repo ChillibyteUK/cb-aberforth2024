@@ -1,4 +1,7 @@
-<section class="gravityform">
+<?php
+$classes = $block['className'] ?? null;
+?>
+<section class="gravityform <?= $classes ?>">
     <div class="container-xl mx-auto">
         <?php
         if (get_field('form_id') ?? null) {
