@@ -404,7 +404,7 @@ function fetch_and_update_pricing_data()
 
     if (!empty($failed_feeds)) {
         $subject = "⚠️ Pricing Feed Fetch Failed";
-        $message = "The following pricing feeds failed to update:\n\n" . implode("\n", $failed_feeds) . "\n\nChecked at: {$current_time}\n\nMessage sent to: " . implode("\n", $email_recipients);
+        $message = "The following pricing feeds failed to update:\n\n" . implode("\n", $failed_feeds) . "\n\nChecked at: {$current_time}";
 
         // Send email to recipients
         foreach ($email_recipients as $recipient) {
