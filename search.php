@@ -57,6 +57,7 @@ $theme = 'default';
 	</div>
 	<div class="container-xl pb-5">
 		<?php
+		$all_disclaimers = get_field('disclaimers', 'option');
 
 		if (have_posts()) {
 			while (have_posts()) {
@@ -64,19 +65,71 @@ $theme = 'default';
 				if (get_post_type() == 'document') {
 					$link = get_field('file');
 					$attachment_url = wp_get_attachment_url(get_field('file', get_the_ID()));
+
+					$disclaimers = get_field('disclaimers_selection', get_the_ID()) ?? null;
+
+					if (!empty($disclaimers) && is_array($disclaimers) && isset($disclaimers[0])) {
+
+						$id = esc_attr($link);
 		?>
-					<div class="border-bottom pb-3 mb-2">
-						<a href="<?php echo $attachment_url; ?>" class="w-100" download>
+						<div class="border-bottom pb-3 mb-2 w-100" data-bs-toggle="modal" data-bs-target="#modal_<?= $id ?>" style="cursor:pointer">
 							<div class="fs-300"><?= esc_html(get_the_terms(get_the_ID(), 'doccat')[0]->name ?? ''); ?></div>
 							<div class="d-flex justify-content-between">
 								<h2 class="h4 pt-3"><?php the_title() ?></h2>
 								<div class="icon-download"></div>
 							</div>
-						</a>
-					</div>
-				<?php
+						</div>
+						<div class="modal fade" id="modal_<?= $id ?>" tabindex="-1">
+							<div class="modal-dialog modal-dialog-centered">
+								<div class="modal-content">
+									<div class="modal-body">
+										<div id="disclaimer-list-<?= $id ?>" class="disclaimer-list">
+											<?php
+											foreach ($disclaimers as $index => $disclaimer_name) {
+
+												foreach ($all_disclaimers as $disclaimer) {
+													if ($disclaimer['disclaimer_name'] === $disclaimer_name) {
+											?>
+														<div class="disclaimer-container" id="disclaimer-<?= $id ?>">
+															<label for="disclaimer-<?= $id ?>-<?= $index ?>" class="switch-label">
+																<?= $disclaimer['disclaimer_content'] ?>
+															</label>
+															<div class="switch-container">
+																<input type="checkbox" class="disclaimer-checkbox" id="disclaimer-<?= $id ?>-<?= $index ?>">
+																<label class="switch" for="disclaimer-<?= $id ?>-<?= $index ?>"></label>
+															</div>
+														</div>
+											<?php
+														break;
+													}
+												}
+											}
+											?>
+										</div>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="button button-secondary" data-bs-dismiss="modal">Close</button>
+										<button type="button" class="button accept-button" id="accept-button-<?= $id ?>" onclick="window.open('<?= esc_url($attachment_url) ?>', '_blank')" disabled>Accept</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					<?php
+					} else {
+					?>
+						<div class="border-bottom pb-3 mb-2">
+							<a href="<?php echo $attachment_url; ?>" class="w-100" download>
+								<div class="fs-300"><?= esc_html(get_the_terms(get_the_ID(), 'doccat')[0]->name ?? ''); ?></div>
+								<div class="d-flex justify-content-between">
+									<h2 class="h4 pt-3"><?php the_title() ?></h2>
+									<div class="icon-download"></div>
+								</div>
+							</a>
+						</div>
+					<?php
+					}
 				} else {
-				?>
+					?>
 					<div class="border-bottom pb-3 mb-2">
 						<a href="<?= esc_url(get_permalink()) ?>" rel="bookmark" class="noline">
 							<h2 class="h4 pt-3" style="text-transform:initial"><?= get_the_title() ?></h2>
