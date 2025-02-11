@@ -385,6 +385,14 @@ function fetch_and_update_pricing_data()
         // Retrieve the body content (the XML data)
         $data = wp_remote_retrieve_body($response);
 
+        // Detect if the response is unexpected HTML instead of XML
+        if (stripos($data, '<html') !== false || stripos($data, '<!DOCTYPE html>') !== false) {
+            error_log("❌ Failed to fetch {$option_name}: Received an HTML error page instead of XML.");
+            update_option($option_name . '_last_failure', $current_time);
+            $failed_feeds[] = "{$option_name}: Unexpected HTML content (Possible 404 page).";
+            continue;
+        }
+
         // Store the data in WordPress options
         update_option($option_name, $data); // Store XML in the respective option
         update_option($option_name . '_last_success', $current_time);
