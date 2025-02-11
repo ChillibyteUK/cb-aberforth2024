@@ -595,7 +595,7 @@ add_action('init', 'trigger_feed_download');
 // Global flag to prevent recursive delete
 $delete_in_progress = false;
 
-// 1. Create Document CPT when a PDF is uploaded and attach the PDF to the CPT
+// 1. Create Document CPT when a PDF is uploaded and attached to a Document CPT
 function create_document_cpt_on_pdf_upload($post_id)
 {
     // Get the uploaded file's post object
@@ -603,35 +603,23 @@ function create_document_cpt_on_pdf_upload($post_id)
 
     // Check if the uploaded file is a PDF
     if ($attachment->post_mime_type === 'application/pdf') {
-        // Get the file title to use as the CPT post title
-        $document_title = $attachment->post_title;
 
-        // Create a new post in your custom post type
-        $document_args = array(
-            'post_title'    => $document_title,
-            'post_content'  => '',  // Leave content empty, you can always add more details later
-            'post_status'   => 'publish',
-            'post_type'     => 'document',  // Replace 'document' with your CPT slug if different
-        );
+        // Check if the file is attached to a post
+        if ($attachment->post_parent) {
+            // Get the parent post
+            $parent_post = get_post($attachment->post_parent);
 
-        // Insert the new CPT post
-        $document_post_id = wp_insert_post($document_args);
-
-        if ($document_post_id) {
-            // Attach the media to the newly created CPT entry
-            wp_update_post(array(
-                'ID' => $post_id,
-                'post_parent' => $document_post_id
-            ));
-
-            // Use ACF to set the 'file' field with the attachment ID
-            if (function_exists('update_field')) {
-                update_field('file', $post_id, $document_post_id);
+            // Ensure the parent post is a 'document' CPT
+            if ($parent_post && $parent_post->post_type === 'document') {
+                // Use ACF to associate the PDF with the existing document post
+                if (function_exists('update_field')) {
+                    update_field('file', $post_id, $parent_post->ID);
+                }
+                return; // Stop here, do not create a new document post
             }
-
-            // Optionally set a default taxonomy term if applicable
-            wp_set_post_terms($document_post_id, 'default-category', 'doccat', true);
         }
+
+        // If not attached to an existing 'document' CPT, do nothing (prevents creation)
     }
 }
 
@@ -650,39 +638,40 @@ function delete_document_cpt_when_attachment_is_deleted($post_id)
     // Get the attachment post object
     $attachment = get_post($post_id);
 
-    // Check if the deleted post is an attachment and it's a PDF
+    // Ensure it's a valid attachment and a PDF file
     if ($attachment && $attachment->post_type === 'attachment' && $attachment->post_mime_type === 'application/pdf') {
-        // Set the flag to indicate we're in the process of deleting
-        $delete_in_progress = true;
 
-        // Query for the CPT post that uses this attachment ID
+        // Query for the associated 'document' CPT that has this attachment ID
         $args = array(
             'post_type'  => 'document',
             'meta_query' => array(
                 array(
-                    'key'     => 'file',  // The ACF field that holds the attachment ID
+                    'key'     => 'file',  // The ACF field that stores the attachment ID
                     'value'   => $post_id,
                     'compare' => '='
                 )
-            )
+            ),
+            'posts_per_page' => 1, // Only get one result (since each PDF should be linked to a single document)
         );
 
         $document_posts = get_posts($args);
 
-        // Delete the associated CPT post if found
         if (!empty($document_posts)) {
+            // Set the flag to prevent recursive deletion
+            $delete_in_progress = true;
+
+            // Delete the associated document CPT
             foreach ($document_posts as $document_post) {
                 wp_delete_post($document_post->ID, true);
             }
-        }
 
-        // Reset the flag after deletion is complete
-        $delete_in_progress = false;
+            // Reset the flag
+            $delete_in_progress = false;
+        }
     }
 }
 
 add_action('delete_attachment', 'delete_document_cpt_when_attachment_is_deleted');
-
 // 3. Delete the PDF Attachment When Document CPT is Deleted
 function delete_pdf_on_document_delete($post_id)
 {
@@ -693,31 +682,39 @@ function delete_pdf_on_document_delete($post_id)
         return;
     }
 
-    // Check if the deleted post is the document CPT
-    if (get_post_type($post_id) == 'document') {  // Replace 'document' with your CPT slug if different
+    // Check if the deleted post is a 'document' CPT
+    if (get_post_type($post_id) === 'document') {
+
         // Get the attachment ID from the ACF field
         $attachment_id = get_field('file', $post_id);
 
-        // Delete the attachment if it exists
+        // Ensure the attachment ID exists
         if ($attachment_id) {
-            // Set the flag to indicate we're in the process of deleting
+
+            // Set flag to prevent recursion
             $delete_in_progress = true;
 
             // Temporarily remove the delete_attachment hook to prevent recursion
             remove_action('delete_attachment', 'delete_document_cpt_when_attachment_is_deleted');
 
+            // Delete the attachment (true = force delete)
             wp_delete_attachment($attachment_id, true);
 
             // Re-add the delete_attachment hook
             add_action('delete_attachment', 'delete_document_cpt_when_attachment_is_deleted');
 
-            // Reset the flag after deletion is complete
+            // Reset the flag
             $delete_in_progress = false;
         }
     }
 }
 
+// Hook into 'before_delete_post' to remove the attachment first
 add_action('before_delete_post', 'delete_pdf_on_document_delete');
+
+// Ensure ACF fields are loaded before deletion
+add_action('wp_trash_post', 'delete_pdf_on_document_delete');
+
 
 
 // filterable document tax columns
