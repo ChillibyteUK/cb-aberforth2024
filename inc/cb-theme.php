@@ -428,8 +428,14 @@ function display_pricing_data_status()
     // Initialise the output variable
     $output = '<div class="pricing-data-status mb-5">';
 
+    // Convert timestamps to comparable format
+    $ascot_success_time = $ascot_last_success ? strtotime($ascot_last_success) : 0;
+    $ascot_failure_time = $ascot_last_failure ? strtotime($ascot_last_failure) : 0;
+    $agvit_success_time = $agvit_last_success ? strtotime($agvit_last_success) : 0;
+    $agvit_failure_time = $agvit_last_failure ? strtotime($agvit_last_failure) : 0;
+
     // Check and display Ascot data
-    if ($ascot_data) {
+    if ($ascot_data && $ascot_success_time > $ascot_failure_time) {
         $output .= '<h3>ASCOT Pricing Data:</h3>';
         $output .= '<div class="fs-300 mb-4 bg-light p-2"><code>' . esc_html($ascot_data) . '</code></div>';
         $output .= '<p>Last successful update: ' . ($ascot_last_success ? esc_html($ascot_last_success) : 'N/A') . '</p>';
@@ -440,7 +446,7 @@ function display_pricing_data_status()
     }
 
     // Check and display AGVIT data
-    if ($agvit_data) {
+    if ($agvit_data && $agvit_success_time > $agvit_failure_time) {
         $output .= '<h3 class="mt-5">AGVIT Pricing Data:</h3>';
         $output .= '<div class="fs-300 mb-4 bg-light p-2"><code>' . esc_html($agvit_data) . '</code></div>';
         $output .= '<p>Last successful update: ' . ($agvit_last_success ? esc_html($agvit_last_success) : 'N/A') . '</p>';
