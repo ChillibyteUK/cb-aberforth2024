@@ -101,6 +101,27 @@
             "allow_in_bindings": 0
         },
         {
+            "key": "field_67ab6fb4f4dbc",
+            "label": "Feed Notification Email",
+            "name": "feed_notification_email",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "separate multiple email addresses with commas",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "allow_in_bindings": 0,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
             "key": "field_644a4141fb5b6",
             "label": "Analytics",
             "name": "",
@@ -822,5 +843,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1738773084
+    "modified": 1739288545
 }

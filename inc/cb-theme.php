@@ -342,6 +342,9 @@ function fetch_and_update_pricing_data()
 {
 
     $admin_email = get_option('admin_email');
+    $email_recipients = array_map('trim', explode(',', $admin_emails));
+
+    $email_recipients[] = $admin_email;
 
     // Feed URLs
     $ascot_feed = get_field('ascot_feed_url', 'option') ?? 'https://irs.tools.investis.com/clients/uk/aberforth/xml/xml.aspx';
@@ -402,8 +405,10 @@ function fetch_and_update_pricing_data()
         $subject = "⚠️ Pricing Feed Fetch Failed";
         $message = "The following pricing feeds failed to update:\n\n" . implode("\n", $failed_feeds) . "\n\nChecked at: {$current_time}";
 
-        // Send email to the admin
-        wp_mail($admin_email, $subject, $message);
+        // Send email to recipients
+        foreach ($email_recipients as $recipient) {
+            wp_mail($recipient, $subject, $message);
+        }
     }
 }
 add_action('check_pricing_data', 'fetch_and_update_pricing_data');
