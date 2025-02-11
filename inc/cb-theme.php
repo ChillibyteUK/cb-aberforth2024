@@ -342,7 +342,7 @@ function fetch_and_update_pricing_data()
 {
 
     $admin_email = get_option('admin_email');
-    $admin_emails = get_field('feed_notification_email', 'option') ?: get_option('admin_email');
+    $admin_emails = get_field('feed_notification_email', 'option') ?? null;
     $email_recipients = array_map('trim', explode(',', $admin_emails));
 
     $email_recipients[] = $admin_email;
