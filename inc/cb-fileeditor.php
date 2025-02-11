@@ -2,7 +2,8 @@
 
 add_action('admin_menu', 'fileed_admin_menu');
 
-function fileed_admin_menu() {
+function fileed_admin_menu()
+{
     // Use the add_menu_page function to add a new menu item
     add_menu_page(
         'File Editor',        // Page title
@@ -16,7 +17,8 @@ function fileed_admin_menu() {
 }
 
 // Function that renders the content of the custom admin page
-function fileed_admin_page_html() {
+function fileed_admin_page_html()
+{
     // Security check to make sure the user has the required permissions
     if (!current_user_can('manage_options')) {
         return;
@@ -31,7 +33,7 @@ function fileed_admin_page_html() {
         return; // Make sure no further HTML is output
     }
 
-    ?>
+?>
     <div class="wrap">
         <h1>Document Meta Data Editor</h1>
         <p>This tool is for bulk updating file titles, date, categories, etc.</p>
@@ -89,6 +91,32 @@ function fileed_admin_page_html() {
     echo '<input type="submit" name="upload_csv" value="Upload CSV" class="button button-primary" />';
     echo '</form>';
 
+    // DELETE
+    echo '<div style="background-color: white; border: 1px solid #2271b1; padding: 1rem; margin-top: 2rem; width:max-content;">
+            <p>Upload a CSV in the same format as that output from the Download containing the rows you wish to remove.</p>
+            <p style="background-color:yellow;display:inline;">Only include the items you wish to <strong>REMOVE PERMANENTLY</strong> in the CSV.</p>
+        </div>';
+    echo '<h2>Upload CSV for DELETION</h2>';
+    echo '<form method="post" enctype="multipart/form-data">';
+    echo '<input type="hidden" name="fileed_nonce" value="' . wp_create_nonce('fileed_nonce_action') . '" />';
+    echo '<input type="file" name="uploaded_delete_csv" accept=".csv" />';
+    echo '<br><label style="display: block; margin-top: 10px;">
+        <input type="checkbox" id="confirm-delete-checkbox"> CONFIRM DELETION?
+      </label>';
+    echo '<br><input type="submit" name="upload_delete_csv" value="Upload CSV" class="button button-primary" id="delete-submit-btn" disabled />';
+    echo '</form>';
+
+    echo '<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const checkbox = document.getElementById("confirm-delete-checkbox");
+        const submitBtn = document.getElementById("delete-submit-btn");
+
+        checkbox.addEventListener("change", function () {
+            submitBtn.disabled = !this.checked;
+        });
+    });
+</script>';
+
     echo '</div>';
 
     // Process CSV upload request
@@ -98,10 +126,19 @@ function fileed_admin_page_html() {
         }
         fileed_handle_file_upload();
     }
+
+    // Process CSV DELETE upload request
+    if (isset($_POST['upload_delete_csv'])) {
+        if (!isset($_POST['fileed_nonce']) || !wp_verify_nonce($_POST['fileed_nonce'], 'fileed_nonce_action')) {
+            die('Security check failed');
+        }
+        fileed_handle_file_upload_delete();
+    }
 }
 
 // Function to download WP_Query data as CSV
-function fileed_download_csv() {
+function fileed_download_csv()
+{
     // Clean output buffer to prevent unwanted headers or whitespace
     if (ob_get_length()) {
         ob_end_clean();
@@ -113,56 +150,56 @@ function fileed_download_csv() {
         'posts_per_page' => -1,
     );
     $query = new WP_Query($args);
-    
+
     // Prepare CSV headers
     $csv_data = [];
     $headings = ['Doc ID', 'File ID', 'Date Created', 'Title', 'Filename', 'Category', 'Type'];
-    
+
     // Retrieve all possible disclaimers from the options page
     $disclaimer_headings = [];
-    
+
     if (have_rows('disclaimers', 'option')) {
         while (have_rows('disclaimers', 'option')) {
             the_row();
             $disclaimer_headings[] = get_sub_field('disclaimer_name');
         }
     }
-    
+
     // Merge disclaimers into the headers
     $headings = array_merge($headings, $disclaimer_headings);
     $csv_data[] = $headings;
-    
+
     // Loop through posts and add to CSV data
     if ($query->have_posts()) {
         while ($query->have_posts()) {
             $query->the_post();
-    
+
             $doccat = '';
             $doctype = '';
             $doccat_terms = get_the_terms(get_the_ID(), 'doccat');
-    
+
             if (!is_wp_error($doccat_terms) && !empty($doccat_terms)) {
                 // Return the slug of the first term in the list
                 $doccat = $doccat_terms[0]->slug;
             }
             $doctype_terms = get_the_terms(get_the_ID(), 'doctype');
-    
+
             if (!is_wp_error($doctype_terms) && !empty($doctype_terms)) {
                 // Return the slug of the first term in the list
                 $doctype = $doctype_terms[0]->slug;
             }
-    
+
             $attachment_id = get_field('file', get_the_ID());
             $attachment_filename = ($attachment_id) ? basename(get_attached_file($attachment_id)) : '';
-    
+
             // Fetch selected disclaimers for this document
             $selected_disclaimers = get_field('disclaimers_selection', get_the_ID()) ?? [];
-    
+
             // Ensure $selected_disclaimers is an array
             if (!is_array($selected_disclaimers)) {
                 $selected_disclaimers = [];
             }
-    
+
             // Create a row with default empty disclaimer columns
             $row = [
                 get_the_ID(),
@@ -173,12 +210,12 @@ function fileed_download_csv() {
                 $doccat,
                 $doctype
             ];
-    
+
             // Add 'X' if the disclaimer is selected
             foreach ($disclaimer_headings as $disclaimer) {
                 $row[] = in_array($disclaimer, $selected_disclaimers) ? 'X' : '';
             }
-    
+
             $csv_data[] = $row;
         }
         wp_reset_postdata();
@@ -212,14 +249,15 @@ function fileed_download_csv() {
 }
 
 // Function to handle CSV file upload and update posts
-function fileed_handle_file_upload() {
+function fileed_handle_file_upload()
+{
     if (!empty($_FILES['uploaded_csv']['tmp_name'])) {
         $file = $_FILES['uploaded_csv']['tmp_name'];
         $handle = fopen($file, 'r');
-        
+
         // Skip the header row
         fgetcsv($handle);
-        
+
         // Accumulate output messages
         $output_messages = "";
         $has_updates = false;
@@ -227,6 +265,11 @@ function fileed_handle_file_upload() {
         // Loop through CSV rows
         while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
             $doc_id = intval($data[0]);
+
+            if (empty($doc_id)) {
+                continue;
+            }
+
             $date_created = sanitize_text_field($data[2]);
             $title = sanitize_text_field($data[3]);
             $doccat_slug = sanitize_text_field($data[5]);
@@ -299,7 +342,7 @@ function fileed_handle_file_upload() {
             }
         }
         fclose($handle);
-        
+
         echo $output_messages;
 
         echo '<div class="updated"><p>CSV file processed successfully.</p></div>';
@@ -308,5 +351,44 @@ function fileed_handle_file_upload() {
     }
 }
 
+// Function to handle CSV file upload and update posts
+function fileed_handle_file_upload_delete()
+{
+    if (!empty($_FILES['uploaded_delete_csv']['tmp_name'])) {
+        $file = $_FILES['uploaded_delete_csv']['tmp_name'];
+        $handle = fopen($file, 'r');
 
-?>
+        // Skip the header row
+        fgetcsv($handle);
+
+        // Accumulate output messages
+        $output_messages = "";
+
+        // Loop through CSV rows
+        while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
+            $doc_id = intval($data[0]);
+
+            if (empty($doc_id)) {
+                continue;
+            }
+
+            // Check if post exists before deleting
+            if (get_post_status($doc_id)) {
+                wp_delete_post($doc_id, true); // Force delete
+                $output_messages .= '<div class="updated"><p>Deleted Document (CPT) with ID ' . $doc_id . '.</p></div>';
+            } else {
+                $output_messages .= '<div class="error"><p>Document ID ' . $doc_id . ' not found.</p></div>';
+            }
+        }
+
+        fclose($handle);
+
+        echo $output_messages;
+
+        echo '<div class="updated"><p>CSV file processed successfully.</p></div>';
+    } else {
+        echo '<div class="error"><p>Please upload a valid CSV file.</p></div>';
+    }
+}
+
+    ?>
