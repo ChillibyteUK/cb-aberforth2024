@@ -65,6 +65,9 @@
         <div class="tab-content" id="documentTabsContent">
             <?php
             $first = true;
+
+            $all_disclaimers = get_field('disclaimers', 'option');
+
             foreach ($documents_by_doctype as $doctype => $doctype_documents) {
                 $doctype_slug = sanitize_title($doctype); // Generate a slug for the tab pane ID
                 $is_active = $first ? 'show active' : '';
