@@ -21888,6 +21888,7 @@ header .dropdown.current-menu-item::after {
   list-style: none;
   -webkit-padding-start: 0;
   padding-inline-start: 0;
+  flex-wrap: wrap;
 }
 
 .gform_required_legend,
