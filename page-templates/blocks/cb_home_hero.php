@@ -1,4 +1,4 @@
-<section class="home_hero d-flex flex-column justify-content-center">
+<section class="home_hero">
     <div class="container-xl">
         <div class="row g-5">
             <div class="col-lg-8 my-auto">

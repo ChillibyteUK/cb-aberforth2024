@@ -21939,9 +21939,7 @@ header .dropdown.current-menu-item::after {
 }
 
 .home_hero {
-  min-height: 450px;
-  display: flex;
-  align-items: center;
+  margin-top: 3rem;
 }
 
 .trusts_funds {
