@@ -1,5 +1,9 @@
 .nav-tabs {
     background-color: var(--col-blue-400);
+    width: 100%;
+    @media (min-width:576px) {
+        width: auto;
+    }
     .nav-link.active {
         background-color: white;
     }
@@ -11,6 +15,7 @@
 }
 
 .past_performance {
+
 
     .table {
         width: 100%;

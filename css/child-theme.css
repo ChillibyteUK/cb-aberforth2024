@@ -22419,6 +22419,12 @@ header .dropdown.current-menu-item::after {
 
 .nav-tabs {
   background-color: var(--col-blue-400);
+  width: 100%;
+}
+@media (min-width: 576px) {
+  .nav-tabs {
+    width: auto;
+  }
 }
 .nav-tabs .nav-link.active {
   background-color: white;
