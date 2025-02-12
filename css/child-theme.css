@@ -21971,11 +21971,18 @@ header .dropdown.current-menu-item::after {
   border-top: 1px solid var(--col-grey-200);
   border-bottom: 1px solid var(--col-grey-200);
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
 }
-.trusts_funds .lined .bar {
-  border-left: 1px solid var(--col-grey-200);
+.trusts_funds .lined .span {
+  display: flex;
+  flex-wrap: wrap;
+}
+@media (min-width: 576px) {
+  .trusts_funds .lined .bar {
+    border-left: 1px solid var(--col-grey-200);
+  }
 }
 .trusts_funds .lined-top {
   border-top: 1px solid var(--col-grey-200);

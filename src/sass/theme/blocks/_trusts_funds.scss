@@ -27,11 +27,18 @@
         border-top: 1px solid var(--col-grey-200);
         border-bottom: 1px solid var(--col-grey-200);
         display: flex;
+        flex-wrap: wrap;
+        .span {
+            display: flex;
+            flex-wrap: wrap;
+        }
         align-items: center;
         justify-content: space-between;
 
         .bar {
-            border-left: 1px solid var(--col-grey-200);
+            @media (min-width:576px) {
+               border-left: 1px solid var(--col-grey-200);
+            }
         }
     }
 
