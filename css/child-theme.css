@@ -22135,6 +22135,12 @@ header .dropdown.current-menu-item::after {
 .two_cards__inner {
   display: flex;
   flex-direction: column;
+  align-items: center;
+}
+@media (min-width: 576px) {
+  .two_cards__inner {
+    align-items: start;
+  }
 }
 .two_cards__inner p {
   max-width: 26ch;

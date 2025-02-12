@@ -8,7 +8,7 @@ $classes = $block['className'] ?? null;
 ?>
 <section class="two_cards py-5 <?= $bg ?> <?= $classes ?>">
     <div class="container-xl">
-        <div class="row g-4">
+        <div class="row g-5">
             <div class="col-md-6">
                 <div class="two_cards__card">
                     <?php
