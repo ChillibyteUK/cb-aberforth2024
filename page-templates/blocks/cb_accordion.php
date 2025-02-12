@@ -67,7 +67,7 @@ $classes = $block['className'] ?? null;
                                         $link2 = get_sub_field('cta_card2') ?? null;
                                         $link3 = get_sub_field('cta_card3') ?? null;
                                         ?>
-                                        <div class="row">
+                                        <div class="row g-4">
                                             <div class="col-md-4">
                                                 <div class="fund_accordion__card d-grid">
                                                     <div>
