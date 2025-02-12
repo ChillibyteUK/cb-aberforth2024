@@ -22428,6 +22428,15 @@ header .dropdown.current-menu-item::after {
     width: auto;
   }
 }
+.nav-tabs .nav-link {
+  width: 100%;
+  text-align: start;
+}
+@media (min-width: 576px) {
+  .nav-tabs .nav-link {
+    text-align: center;
+  }
+}
 .nav-tabs .nav-link.active {
   background-color: white;
 }
