@@ -22143,6 +22143,9 @@ header .dropdown.current-menu-item::after {
     align-items: start;
     text-align: start;
   }
+  .two_cards__inner .button, .two_cards__inner .wp-block-search__button, .two_cards__inner .gform_button.wp-block-search__button, .two_cards__inner .gform_button.button.button {
+    align-self: start;
+  }
 }
 .two_cards__inner p {
   max-width: 26ch;

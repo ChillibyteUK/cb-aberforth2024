@@ -24,6 +24,9 @@
         @media (min-width:576px) {
             align-items: start;
             text-align: start;
+            .button {
+                align-self: start;
+            }
         }
         p {
             max-width: 26ch;
