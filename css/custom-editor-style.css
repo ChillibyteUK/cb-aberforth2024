@@ -45,8 +45,8 @@
   /* Effects */
   --transition: 250ms ease-out;
   /* Site General */
-  --h-top: 90px;
-  --h-top-desktop: 125px;
+  --h-top: 130px;
+  --h-top-desktop: 130px;
 }
 
 *,
