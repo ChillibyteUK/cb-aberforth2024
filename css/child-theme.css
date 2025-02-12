@@ -22136,10 +22136,12 @@ header .dropdown.current-menu-item::after {
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
 }
 @media (min-width: 576px) {
   .two_cards__inner {
     align-items: start;
+    text-align: start;
   }
 }
 .two_cards__inner p {
