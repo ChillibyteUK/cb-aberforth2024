@@ -24,7 +24,7 @@ $classes = $block['className'] ?? null;
                         <?php
                         if ($card1_link) {
                         ?>
-                            <a href="<?= $card1_link['url'] ?>" target="<?= $card1_link['target'] ?>" class="button button-secondary align-self-start"><?= $card1_link['title'] ?></a>
+                            <a href="<?= $card1_link['url'] ?>" target="<?= $card1_link['target'] ?>" class="button button-secondary"><?= $card1_link['title'] ?></a>
                         <?php
                         }
                         ?>
@@ -46,7 +46,7 @@ $classes = $block['className'] ?? null;
                         <?php
                         if ($card2_link) {
                         ?>
-                            <a href="<?= $card2_link['url'] ?>" target="<?= $card2_link['target'] ?>" class="button button-secondary align-self-start"><?= $card2_link['title'] ?></a>
+                            <a href="<?= $card2_link['url'] ?>" target="<?= $card2_link['target'] ?>" class="button button-secondary"><?= $card2_link['title'] ?></a>
                         <?php
                         }
                         ?>
