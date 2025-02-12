@@ -22434,6 +22434,7 @@ header .dropdown.current-menu-item::after {
 }
 @media (min-width: 576px) {
   .nav-tabs .nav-link {
+    width: auto;
     text-align: center;
   }
 }

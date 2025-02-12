@@ -11,6 +11,7 @@
         width: 100%;
         text-align: start;
         @media (min-width:576px) {
+            width: auto;
             text-align: center;
         }
     }
