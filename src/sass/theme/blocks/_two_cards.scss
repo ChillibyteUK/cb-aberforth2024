@@ -5,7 +5,10 @@
     }
     &__card {
         display: grid;
-        grid-template-columns: 1fr 2fr;
+        gap: 1rem;
+        @media (min-width:576px) {
+            grid-template-columns: 1fr 2fr;
+        }
     }
     &__icon {
         aspect-ratio: 9 / 10;

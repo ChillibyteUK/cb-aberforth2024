@@ -11,7 +11,7 @@ defined('ABSPATH') || exit;
                 <?= get_field('footer_disclaimer', 'option') ?>
             </div>
         </div>
-        <div class="row">
+        <div class="row g-5">
             <div class="col-md-8">
                 &copy; <?= date('Y') ?> Aberforth Partners LLP. Authorised and regulated by the <a href="https://www.fca.org.uk/" target="_blank">Financial Conduct Authority</a> in the United Kingdom.
             </div>

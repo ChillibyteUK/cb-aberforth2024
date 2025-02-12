@@ -22119,7 +22119,12 @@ header .dropdown.current-menu-item::after {
 }
 .two_cards__card {
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  gap: 1rem;
+}
+@media (min-width: 576px) {
+  .two_cards__card {
+    grid-template-columns: 1fr 2fr;
+  }
 }
 .two_cards__icon {
   aspect-ratio: 9/10;
