@@ -21975,7 +21975,7 @@ header .dropdown.current-menu-item::after {
   align-items: center;
   justify-content: space-between;
 }
-.trusts_funds .lined .span {
+.trusts_funds .lined > span {
   display: flex;
   flex-wrap: wrap;
 }

@@ -28,7 +28,7 @@
         border-bottom: 1px solid var(--col-grey-200);
         display: flex;
         flex-wrap: wrap;
-        .span {
+        & > span {
             display: flex;
             flex-wrap: wrap;
         }
