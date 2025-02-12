@@ -284,6 +284,14 @@ function cb_theme_enqueue()
 add_action('wp_enqueue_scripts', 'cb_theme_enqueue');
 
 
+add_theme_support('disable-theme-editor');
+
+add_action('admin_init', function () {
+    if (current_theme_supports('disable-theme-editor')) {
+        define('DISALLOW_FILE_EDIT', true);
+    }
+});
+
 function add_custom_menu_item($items, $args)
 {
     if ($args->theme_location == 'primary_nav') {
