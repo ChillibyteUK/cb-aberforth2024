@@ -953,3 +953,11 @@ add_filter('acf/fields/relationship/query', function ($args, $field, $post_id) {
 
     return $args;
 }, 10, 3);
+
+
+// stop text/visual/text from stripping JS
+function disable_tinymce_cleanup( $options ) {
+    $options['verify_html'] = false; 
+    return $options;
+}
+add_filter( 'tiny_mce_before_init', 'disable_tinymce_cleanup' );
