@@ -227,7 +227,7 @@
                                     },
                                     "default_value": "",
                                     "allow_in_bindings": 0,
-                                    "tabs": "text",
+                                    "tabs": "all",
                                     "toolbar": "full",
                                     "media_upload": 0,
                                     "delay": 0
