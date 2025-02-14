@@ -62,18 +62,17 @@ header {
     .dropdown.current-menu-item > .nav-link {
         position: relative;
     
-        &::after {
+        &::before { // Use ::before instead of ::after
             content: "";
             position: absolute;
             width: 100%;
             height: 4px;
             display: block;
             background-color: var(--col-blue-700);
-            margin-top: 28px; // Adjust this if necessary to align properly
-            left: -2px
+            bottom: -24px; // Adjust to align properly
+            left: 0px;
         }
-    }
-    
+    }  
     
 
 }

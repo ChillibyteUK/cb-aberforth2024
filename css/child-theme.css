@@ -21855,18 +21855,18 @@ header .dropdown.current-page-ancestor > .nav-link,
 header .dropdown.current-menu-item > .nav-link {
   position: relative;
 }
-header .current_page_item > .nav-link::after,
-header .current_page_parent > .nav-link::after,
-header .dropdown.current-page-ancestor > .nav-link::after,
-header .dropdown.current-menu-item > .nav-link::after {
+header .current_page_item > .nav-link::before,
+header .current_page_parent > .nav-link::before,
+header .dropdown.current-page-ancestor > .nav-link::before,
+header .dropdown.current-menu-item > .nav-link::before {
   content: "";
   position: absolute;
   width: 100%;
   height: 4px;
   display: block;
   background-color: var(--col-blue-700);
-  margin-top: 28px;
-  left: -2px;
+  bottom: -24px;
+  left: 0px;
 }
 
 .footer {
