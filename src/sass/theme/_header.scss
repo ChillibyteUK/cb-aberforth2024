@@ -56,11 +56,12 @@ header {
         }
     }
 
-    .current_page_item,
-    .current_page_parent,
-    .dropdown.current-page-ancestor,
-    .dropdown.current-menu-item {
+    .current_page_item > .nav-link,
+    .current_page_parent > .nav-link,
+    .dropdown.current-page-ancestor > .nav-link,
+    .dropdown.current-menu-item > .nav-link {
         position: relative;
+    
         &::after {
             content: "";
             position: absolute;
@@ -68,9 +69,11 @@ header {
             height: 4px;
             display: block;
             background-color: var(--col-blue-700);
-            margin-top: 21px; // 1.5rem - border width
+            margin-top: 28px; // Adjust this if necessary to align properly
+            left: -2px
         }
     }
+    
     
 
 }

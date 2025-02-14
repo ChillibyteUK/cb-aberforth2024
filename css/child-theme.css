@@ -21849,23 +21849,24 @@ header .dropdown-menu .dropdown-item:hover {
   background-color: var(--col-grey-400);
   opacity: 1;
 }
-header .current_page_item,
-header .current_page_parent,
-header .dropdown.current-page-ancestor,
-header .dropdown.current-menu-item {
+header .current_page_item > .nav-link,
+header .current_page_parent > .nav-link,
+header .dropdown.current-page-ancestor > .nav-link,
+header .dropdown.current-menu-item > .nav-link {
   position: relative;
 }
-header .current_page_item::after,
-header .current_page_parent::after,
-header .dropdown.current-page-ancestor::after,
-header .dropdown.current-menu-item::after {
+header .current_page_item > .nav-link::after,
+header .current_page_parent > .nav-link::after,
+header .dropdown.current-page-ancestor > .nav-link::after,
+header .dropdown.current-menu-item > .nav-link::after {
   content: "";
   position: absolute;
   width: 100%;
   height: 4px;
   display: block;
   background-color: var(--col-blue-700);
-  margin-top: 21px;
+  margin-top: 28px;
+  left: -2px;
 }
 
 .footer {
