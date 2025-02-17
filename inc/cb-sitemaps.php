@@ -37,55 +37,80 @@ $sitemaps = [
     ]
 ];
 
-function generate_custom_sitemap($sitemap_name) {
-    global $sitemaps; // Access the global sitemaps array
-
-    if (!isset($sitemaps[$sitemap_name])) {
-        return;
-    }
-
-    header("Content-Type: application/xml; charset=utf-8");
-    echo '<?xml version="1.0" encoding="UTF-8"?>';
-    echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
-    
-    foreach ($sitemaps[$sitemap_name] as $url) {
-        echo '<url>';
-        echo '<loc>' . site_url() . esc_url($url) . '</loc>';
-        echo '<lastmod>' . date("Y-m-d") . '</lastmod>';
-        echo '<changefreq>weekly</changefreq>';
-        echo '<priority>0.8</priority>';
-        echo '</url>';
-    }
-
-    echo '</urlset>';
-    exit;
-}
-
-add_action('init', function() {
-    if (isset($_GET['custom_sitemap'])) {
-        generate_custom_sitemap($_GET['custom_sitemap']);
-    }
-});
-
+// Function to get the post ID by full URL path
 function get_the_ID_by_url($url) {
     // Remove the domain and extract the path
     $parsed_url = parse_url($url);
     $path = trim($parsed_url['path'], '/');
 
     // Use get_page_by_path() to retrieve the correct post
-    $page = get_page_by_path($path, OBJECT, 'page'); // Looks for a page with this full path
+    $page = get_page_by_path($path, OBJECT, 'page');
 
-    if ($page) {
-        error_log("Correct Post ID found for $url: " . $page->ID);
-        return $page->ID;
-    }
-
-    error_log("No post found for path: $path");
-    return null;
+    return $page ? $page->ID : null;
 }
 
+// Function to generate static sitemap files
+function generate_static_sitemaps() {
+    global $sitemaps;
+    $upload_dir = ABSPATH; // Root directory of WordPress
+
+    foreach ($sitemaps as $key => $urls) {
+        $sitemap_file = $upload_dir . "{$key}-sitemap.xml";
+
+        $xml_content = '<?xml version="1.0" encoding="UTF-8"?>';
+        $xml_content .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+
+        foreach ($urls as $url) {
+            $xml_content .= '<url>';
+            $xml_content .= '<loc>' . esc_url(home_url($url)) . '</loc>';
+            $xml_content .= '<lastmod>' . date("Y-m-d") . '</lastmod>';
+            $xml_content .= '<changefreq>weekly</changefreq>';
+            $xml_content .= '<priority>0.8</priority>';
+            $xml_content .= '</url>';
+        }
+
+        $xml_content .= '</urlset>';
+
+        // Write to static file
+        file_put_contents($sitemap_file, $xml_content);
+    }
+}
+
+// Hook into WP-Cron to regenerate sitemaps every 6 hours
+if (!wp_next_scheduled('generate_custom_sitemaps_event')) {
+    wp_schedule_event(time(), 'twicedaily', 'generate_custom_sitemaps_event');
+}
+add_action('generate_custom_sitemaps_event', 'generate_static_sitemaps');
+
+
+// Ensure the filter runs at the correct time
+add_action('init', function() {
+    add_filter('wpseo_sitemap_index', 'add_custom_sitemaps_to_yoast', 10, 1);
+});
+
+function add_custom_sitemaps_to_yoast($sitemap_index) {
+    $custom_sitemaps = [
+        'asl-sitemap.xml',
+        'agvi-sitemap.xml',
+        'asit-sitemap.xml',
+        'uk-small-sitemap.xml'
+    ];
+
+    $home_url = home_url('/');
+
+    foreach ($custom_sitemaps as $sitemap) {
+        $sitemap_index .= '<sitemap>
+            <loc>' . esc_url($home_url . $sitemap) . '</loc>
+            <lastmod>' . date('c') . '</lastmod>
+        </sitemap>';
+    }
+
+    return $sitemap_index;
+}
+
+// Exclude the pages from Yoast's page-sitemap.xml
 add_filter('wpseo_exclude_from_sitemap_by_post_ids', function($excluded_posts) {
-    global $sitemaps; // Use the global sitemap array
+    global $sitemaps;
 
     foreach ($sitemaps as $sitemap => $urls) {
         foreach ($urls as $url) {
@@ -100,24 +125,3 @@ add_filter('wpseo_exclude_from_sitemap_by_post_ids', function($excluded_posts) {
 
     return $excluded_posts;
 }, 10, 1);
-
-
-add_filter('wpseo_sitemap_index', function($sitemap_index) {
-    $custom_sitemaps = [
-        'asl' => 'custom_sitemap=asl',
-        'agvi' => 'custom_sitemap=agvi',
-        'asit' => 'custom_sitemap=asit',
-        'uk-small' => 'custom_sitemap=uk-small',
-    ];
-
-    $home_url = home_url('/');
-
-    foreach ($custom_sitemaps as $key => $query) {
-        $sitemap_index .= '<sitemap>
-            <loc>' . esc_url($home_url . '?' . $query) . '</loc>
-            <lastmod>' . date('c') . '</lastmod>
-        </sitemap>';
-    }
-
-    return $sitemap_index;
-});
