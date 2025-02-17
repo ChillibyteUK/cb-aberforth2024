@@ -4,36 +4,36 @@
 global $sitemaps;
 $sitemaps = [
     'asl' => [
-        'https://www.aberforth.co.uk/trusts-and-funds/aberforth-smaller-companies-trust-plc/',
-        'https://www.aberforth.co.uk/trusts-and-funds/aberforth-smaller-companies-trust-plc/dividends/',
-        'https://www.aberforth.co.uk/trusts-and-funds/aberforth-smaller-companies-trust-plc/documents/',
-        'https://www.aberforth.co.uk/trusts-and-funds/aberforth-smaller-companies-trust-plc/fees-charges/',
-        'https://www.aberforth.co.uk/trusts-and-funds/aberforth-smaller-companies-trust-plc/performance/',
-        'https://www.aberforth.co.uk/trusts-and-funds/aberforth-smaller-companies-trust-plc/portfolio/'
+        '/trusts-and-funds/aberforth-smaller-companies-trust-plc/',
+        '/trusts-and-funds/aberforth-smaller-companies-trust-plc/dividends/',
+        '/trusts-and-funds/aberforth-smaller-companies-trust-plc/documents/',
+        '/trusts-and-funds/aberforth-smaller-companies-trust-plc/fees-charges/',
+        '/trusts-and-funds/aberforth-smaller-companies-trust-plc/performance/',
+        '/trusts-and-funds/aberforth-smaller-companies-trust-plc/portfolio/'
     ],
     'agvi' => [
-        'https://www.aberforth.co.uk/trusts-and-funds/aberforth-geared-value-income-trust-plc/',
-        'https://www.aberforth.co.uk/trusts-and-funds/aberforth-geared-value-income-trust-plc/capital-structure/',
-        'https://www.aberforth.co.uk/trusts-and-funds/aberforth-geared-value-income-trust-plc/dividends/',
-        'https://www.aberforth.co.uk/trusts-and-funds/aberforth-geared-value-income-trust-plc/documents/',
-        'https://www.aberforth.co.uk/trusts-and-funds/aberforth-geared-value-income-trust-plc/fees-charges/',
-        'https://www.aberforth.co.uk/trusts-and-funds/aberforth-geared-value-income-trust-plc/launch-information/',
-        'https://www.aberforth.co.uk/trusts-and-funds/aberforth-geared-value-income-trust-plc/performance/',
-        'https://www.aberforth.co.uk/trusts-and-funds/aberforth-geared-value-income-trust-plc/portfolio/'
+        '/trusts-and-funds/aberforth-geared-value-income-trust-plc/',
+        '/trusts-and-funds/aberforth-geared-value-income-trust-plc/capital-structure/',
+        '/trusts-and-funds/aberforth-geared-value-income-trust-plc/dividends/',
+        '/trusts-and-funds/aberforth-geared-value-income-trust-plc/documents/',
+        '/trusts-and-funds/aberforth-geared-value-income-trust-plc/fees-charges/',
+        '/trusts-and-funds/aberforth-geared-value-income-trust-plc/launch-information/',
+        '/trusts-and-funds/aberforth-geared-value-income-trust-plc/performance/',
+        '/trusts-and-funds/aberforth-geared-value-income-trust-plc/portfolio/'
     ],
     'asit' => [
-        'https://www.aberforth.co.uk/trusts-and-funds/aberforth-split-level-income-trust-plc/',
-        'https://www.aberforth.co.uk/trusts-and-funds/aberforth-split-level-income-trust-plc/dividends/',
-        'https://www.aberforth.co.uk/trusts-and-funds/aberforth-split-level-income-trust-plc/documents/',
-        'https://www.aberforth.co.uk/trusts-and-funds/aberforth-split-level-income-trust-plc/performance/'
+        '/trusts-and-funds/aberforth-split-level-income-trust-plc/',
+        '/trusts-and-funds/aberforth-split-level-income-trust-plc/dividends/',
+        '/trusts-and-funds/aberforth-split-level-income-trust-plc/documents/',
+        '/trusts-and-funds/aberforth-split-level-income-trust-plc/performance/'
     ],
     'uk-small' => [
-        'https://www.aberforth.co.uk/trusts-and-funds/aberforth-uk-small-companies-fund/',
-        'https://www.aberforth.co.uk/trusts-and-funds/aberforth-uk-small-companies-fund/documents/',
-        'https://www.aberforth.co.uk/trusts-and-funds/aberforth-uk-small-companies-fund/fees-charges/',
-        'https://www.aberforth.co.uk/trusts-and-funds/aberforth-uk-small-companies-fund/income/',
-        'https://www.aberforth.co.uk/trusts-and-funds/aberforth-uk-small-companies-fund/performance/',
-        'https://www.aberforth.co.uk/trusts-and-funds/aberforth-uk-small-companies-fund/portfolio/'
+        '/trusts-and-funds/aberforth-uk-small-companies-fund/',
+        '/trusts-and-funds/aberforth-uk-small-companies-fund/documents/',
+        '/trusts-and-funds/aberforth-uk-small-companies-fund/fees-charges/',
+        '/trusts-and-funds/aberforth-uk-small-companies-fund/income/',
+        '/trusts-and-funds/aberforth-uk-small-companies-fund/performance/',
+        '/trusts-and-funds/aberforth-uk-small-companies-fund/portfolio/'
     ]
 ];
 
@@ -50,7 +50,7 @@ function generate_custom_sitemap($sitemap_name) {
     
     foreach ($sitemaps[$sitemap_name] as $url) {
         echo '<url>';
-        echo '<loc>' . esc_url($url) . '</loc>';
+        echo '<loc>' . site_url() . esc_url($url) . '</loc>';
         echo '<lastmod>' . date("Y-m-d") . '</lastmod>';
         echo '<changefreq>weekly</changefreq>';
         echo '<priority>0.8</priority>';
@@ -68,27 +68,24 @@ add_action('init', function() {
 });
 
 function get_the_ID_by_url($url) {
-    global $wpdb;
-
-    // Extract the post slug from the URL
+    // Remove the domain and extract the path
     $parsed_url = parse_url($url);
     $path = trim($parsed_url['path'], '/');
-    $slug = basename($path);
 
-    // Try retrieving the post ID using post_name instead
-    $post_id = $wpdb->get_var($wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_name = %s", $slug));
+    // Use get_page_by_path() to retrieve the correct post
+    $page = get_page_by_path($path, OBJECT, 'page'); // Looks for a page with this full path
 
-    if ($post_id) {
-        error_log("Post ID found for $url: $post_id");
-    } else {
-        error_log("No post ID found for $url");
+    if ($page) {
+        error_log("Correct Post ID found for $url: " . $page->ID);
+        return $page->ID;
     }
 
-    return $post_id ? $post_id : null;
+    error_log("No post found for path: $path");
+    return null;
 }
 
 add_filter('wpseo_exclude_from_sitemap_by_post_ids', function($excluded_posts) {
-    global $sitemaps; // Access the global sitemaps array
+    global $sitemaps; // Use the global sitemap array
 
     foreach ($sitemaps as $sitemap => $urls) {
         foreach ($urls as $url) {
@@ -99,5 +96,28 @@ add_filter('wpseo_exclude_from_sitemap_by_post_ids', function($excluded_posts) {
         }
     }
 
+    error_log("Excluded Post IDs: " . implode(', ', $excluded_posts));
+
     return $excluded_posts;
+}, 10, 1);
+
+
+add_filter('wpseo_sitemap_index', function($sitemap_index) {
+    $custom_sitemaps = [
+        'asl' => 'custom_sitemap=asl',
+        'agvi' => 'custom_sitemap=agvi',
+        'asit' => 'custom_sitemap=asit',
+        'uk-small' => 'custom_sitemap=uk-small',
+    ];
+
+    $home_url = home_url('/');
+
+    foreach ($custom_sitemaps as $key => $query) {
+        $sitemap_index .= '<sitemap>
+            <loc>' . esc_url($home_url . '?' . $query) . '</loc>
+            <lastmod>' . date('c') . '</lastmod>
+        </sitemap>';
+    }
+
+    return $sitemap_index;
 });
