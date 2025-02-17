@@ -69,7 +69,21 @@ add_action('init', function() {
 
 function get_the_ID_by_url($url) {
     global $wpdb;
-    $post_id = $wpdb->get_var($wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE guid = %s", esc_url($url)));
+
+    // Extract the post slug from the URL
+    $parsed_url = parse_url($url);
+    $path = trim($parsed_url['path'], '/');
+    $slug = basename($path);
+
+    // Try retrieving the post ID using post_name instead
+    $post_id = $wpdb->get_var($wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_name = %s", $slug));
+
+    if ($post_id) {
+        error_log("Post ID found for $url: $post_id");
+    } else {
+        error_log("No post ID found for $url");
+    }
+
     return $post_id ? $post_id : null;
 }
 
