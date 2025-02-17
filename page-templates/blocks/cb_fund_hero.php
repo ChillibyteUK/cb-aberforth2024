@@ -29,7 +29,7 @@ $classes = $block['className'] ?? null;
     <div class="container-xl">
         <div class="row g-4">
             <div class="col-md-8">
-                <div class="h1"><?= $funds[$fund] ?></div>
+                <h1><?= $funds[$fund] ?></h1>
                 <?php
                 $sheet = get_field($fund . '_factsheet', 'option') ?? null;
                 if ($sheet) {
