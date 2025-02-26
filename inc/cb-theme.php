@@ -14,14 +14,14 @@ require_once CB_THEME_DIR . '/inc/cb-sitemaps.php';
 // remove_action('wp_enqueue_scripts', 'wp_enqueue_global_styles');
 // remove_action('wp_body_open', 'wp_global_styles_render_svg_filters');
 
-add_filter('gform_validation_1', function($validation_result) { // Change _1 to the form ID
+add_filter('gform_validation_1', function($validation_result) { // _1 is the form ID
     $form = $validation_result['form'];
 
     foreach ($form['fields'] as &$field) {
         if ($field->id == 6) { // First Name field ID
-            $submitted_value = rgpost("input_6"); // Get first name input value
+            $submitted_value = rgpost("input_6"); // first name input
 
-            if (strcasecmp(trim($submitted_value), 'Robertaduro') === 0) { // Case-insensitive match
+            if (stripos($submitted_value, 'aduro') !== false) {
                 $validation_result['is_valid'] = false;
                 $field->failed_validation = true;
                 $field->validation_message = "This name is not allowed.";
