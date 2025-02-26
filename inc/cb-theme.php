@@ -14,12 +14,26 @@ require_once CB_THEME_DIR . '/inc/cb-sitemaps.php';
 // remove_action('wp_enqueue_scripts', 'wp_enqueue_global_styles');
 // remove_action('wp_body_open', 'wp_global_styles_render_svg_filters');
 
-function enqueue_recaptcha_script() {
-    if (is_page() || is_single()) {
-        wp_enqueue_script('google-recaptcha', 'https://www.google.com/recaptcha/api.js?render=explicit', array(), null, true);
+add_filter('gform_validation_1', function($validation_result) { // Change _1 to the form ID
+    $form = $validation_result['form'];
+
+    foreach ($form['fields'] as &$field) {
+        if ($field->id == 6) { // First Name field ID
+            $submitted_value = rgpost("input_6"); // Get first name input value
+
+            if (strcasecmp(trim($submitted_value), 'Robertaduro') === 0) { // Case-insensitive match
+                $validation_result['is_valid'] = false;
+                $field->failed_validation = true;
+                $field->validation_message = "This name is not allowed.";
+            }
+        }
     }
-}
-add_action('wp_enqueue_scripts', 'enqueue_recaptcha_script');
+
+    return $validation_result;
+});
+
+
+
 
 define('CSV_HOST', 'https://ap01.chillihosting.co.uk');
 
