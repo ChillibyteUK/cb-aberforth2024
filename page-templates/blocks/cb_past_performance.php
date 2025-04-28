@@ -54,112 +54,112 @@ if (!function_exists('is_valid_date')) {
 }
 
 
-
-function render_csv_as_table($csv_data, $tab)
-{
-    if (empty($csv_data) || isset($csv_data['error'])) {
-        return '<p>Error loading CSV data.</p>';
-    }
-
-    // Identify column indices to exclude
-    $excluded_columns = [];
-    foreach ($csv_data[0] as $index => $header) {
-        if ($header === 'MonthendDate') {
-            $excluded_columns[] = $index;
+if (!function_exists('render_csv_as_table')) {
+    function render_csv_as_table($csv_data, $tab) {
+        if (empty($csv_data) || isset($csv_data['error'])) {
+            return '<p>Error loading CSV data.</p>';
         }
-        if ($header === 'Monthend') {
-            $excluded_columns[] = $index;
-        }
-        if ($header === 'PerfDate') {
-            $excluded_columns[] = $index;
-        }
-    }
 
-    // ** Swap NAV and Share Price columns if tab is 'discrete' **
-    if ($tab === 'discrete') {
-        $headers = $csv_data[0]; // Capture header row
-        $nav_index = array_search('NAV', $headers);
-        $share_price_index = array_search('Share Price', $headers);
-
-        if ($nav_index !== false && $share_price_index !== false) {
-            // Swap columns in headers
-            [$csv_data[0][$nav_index], $csv_data[0][$share_price_index]] = [$csv_data[0][$share_price_index], $csv_data[0][$nav_index]];
-
-            // Swap columns in data rows
-            for ($i = 1; $i < count($csv_data); $i++) {
-                [$csv_data[$i][$nav_index], $csv_data[$i][$share_price_index]] = [$csv_data[$i][$share_price_index], $csv_data[$i][$nav_index]];
+        // Identify column indices to exclude
+        $excluded_columns = [];
+        foreach ($csv_data[0] as $index => $header) {
+            if ($header === 'MonthendDate') {
+                $excluded_columns[] = $index;
+            }
+            if ($header === 'Monthend') {
+                $excluded_columns[] = $index;
+            }
+            if ($header === 'PerfDate') {
+                $excluded_columns[] = $index;
             }
         }
-    }
 
-    $html = '<div class="table-responsive"><table class="table mt-3">';
+        // ** Swap NAV and Share Price columns if tab is 'discrete' **
+        if ($tab === 'discrete') {
+            $headers = $csv_data[0]; // Capture header row
+            $nav_index = array_search('NAV', $headers);
+            $share_price_index = array_search('Share Price', $headers);
 
-    // Output header row
-    $html .= '<thead><tr>';
-    foreach ($csv_data[0] as $index => $header) {
-        if (!in_array($index, $excluded_columns)) {
+            if ($nav_index !== false && $share_price_index !== false) {
+                // Swap columns in headers
+                [$csv_data[0][$nav_index], $csv_data[0][$share_price_index]] = [$csv_data[0][$share_price_index], $csv_data[0][$nav_index]];
 
-            $tclass = ' class="text-end"';
-            if ($header === 'PerfPeriod') {
-                $header = 'Period';
-                $tclass = '';
-            }
-
-            if ($header === 'DNSCI') {
-                $header = 'DNSCI (XIC)';
-            }
-
-            if ($tab != 'discrete' && $header == 'PerformancePeriod') {
-
-                foreach ($csv_data[1] as $index => $value) {
-                    $formattedDate = is_valid_date(trim($value)); // Now returns a formatted date or false
-                    if ($formattedDate) {
-                        break;
-                    }
+                // Swap columns in data rows
+                for ($i = 1; $i < count($csv_data); $i++) {
+                    [$csv_data[$i][$nav_index], $csv_data[$i][$share_price_index]] = [$csv_data[$i][$share_price_index], $csv_data[$i][$nav_index]];
                 }
-
-                if (empty($formattedDate)) {
-                    $formattedDate = print_r($csv_data[1], true); // Convert array to string for debugging
-                }
-
-                $header = 'Period to ' . $formattedDate;
-                $tclass = '';
             }
-
-            if ($header === 'PerformancePeriod') {
-                $header = 'Performance Period';
-                $tclass = '';
-            }
-
-            $html .= '<th' . $tclass . '>' . htmlspecialchars($header) . '</th>';
         }
-    }
-    $html .= '</tr></thead>';
 
-    // Output data rows
-    $html .= '<tbody>';
-    for ($i = 1; $i < count($csv_data); $i++) {
-        $html .= '<tr>';
-        $tclass = '';
-        foreach ($csv_data[$i] as $index => $cell) {
+        $html = '<div class="table-responsive"><table class="table mt-3">';
+
+        // Output header row
+        $html .= '<thead><tr>';
+        foreach ($csv_data[0] as $index => $header) {
             if (!in_array($index, $excluded_columns)) {
-                if (is_numeric($cell)) {
-                    $formatted_value = number_format((float) $cell * 100, 1, '.', '');
-                    if ((float) $formatted_value < 0) {
-                        $formatted_value = '(' . number_format(abs($formatted_value), 1, '.', '') . ')';
-                    }
-                    $html .= '<td' . $tclass . '>' . htmlspecialchars($formatted_value) . '</td>';
-                } else {
-                    $html .= '<td' . $tclass . '>' . htmlspecialchars($cell) . '</td>';
-                }
-            }
-            $tclass = ' class="text-end"';
-        }
-        $html .= '</tr>';
-    }
-    $html .= '</tbody></table></div>';
 
-    return $html;
+                $tclass = ' class="text-end"';
+                if ($header === 'PerfPeriod') {
+                    $header = 'Period';
+                    $tclass = '';
+                }
+
+                if ($header === 'DNSCI') {
+                    $header = 'DNSCI (XIC)';
+                }
+
+                if ($tab != 'discrete' && $header == 'PerformancePeriod') {
+
+                    foreach ($csv_data[1] as $index => $value) {
+                        $formattedDate = is_valid_date(trim($value)); // Now returns a formatted date or false
+                        if ($formattedDate) {
+                            break;
+                        }
+                    }
+
+                    if (empty($formattedDate)) {
+                        $formattedDate = print_r($csv_data[1], true); // Convert array to string for debugging
+                    }
+
+                    $header = 'Period to ' . $formattedDate;
+                    $tclass = '';
+                }
+
+                if ($header === 'PerformancePeriod') {
+                    $header = 'Performance Period';
+                    $tclass = '';
+                }
+
+                $html .= '<th' . $tclass . '>' . htmlspecialchars($header) . '</th>';
+            }
+        }
+        $html .= '</tr></thead>';
+
+        // Output data rows
+        $html .= '<tbody>';
+        for ($i = 1; $i < count($csv_data); $i++) {
+            $html .= '<tr>';
+            $tclass = '';
+            foreach ($csv_data[$i] as $index => $cell) {
+                if (!in_array($index, $excluded_columns)) {
+                    if (is_numeric($cell)) {
+                        $formatted_value = number_format((float) $cell * 100, 1, '.', '');
+                        if ((float) $formatted_value < 0) {
+                            $formatted_value = '(' . number_format(abs($formatted_value), 1, '.', '') . ')';
+                        }
+                        $html .= '<td' . $tclass . '>' . htmlspecialchars($formatted_value) . '</td>';
+                    } else {
+                        $html .= '<td' . $tclass . '>' . htmlspecialchars($cell) . '</td>';
+                    }
+                }
+                $tclass = ' class="text-end"';
+            }
+            $html .= '</tr>';
+        }
+        $html .= '</tbody></table></div>';
+
+        return $html;
+    }
 }
 
 
