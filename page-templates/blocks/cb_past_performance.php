@@ -35,20 +35,22 @@ if (!function_exists('parse_csv_to_array')) {
     }
 }
 
-function is_valid_date($value)
-{
-    // Define the supported date formats
-    $formats = ['d/m/Y', 'Y-m-d'];
+if (!function_exists('is_valid_date')) {
+    function is_valid_date($value)
+    {
+        // Define the supported date formats
+        $formats = ['d/m/Y', 'Y-m-d'];
 
-    foreach ($formats as $format) {
-        $date = DateTime::createFromFormat($format, $value);
-        if ($date && $date->format($format) === $value) {
-            // Return the formatted date as "d F Y"
-            return $date->format('d F Y');
+        foreach ($formats as $format) {
+            $date = DateTime::createFromFormat($format, $value);
+            if ($date && $date->format($format) === $value) {
+                // Return the formatted date as "d F Y"
+                return $date->format('d F Y');
+            }
         }
-    }
 
-    return false;
+        return false;
+    }
 }
 
 
