@@ -122,7 +122,7 @@ $classes = $block['className'] ?? null;
                         ?>
                         <div class="stats">
                             <div class="stats--ascot span-2">
-                                <div class="stats__title">Market Value</div>
+                                <div class="stats__title">Market Value of Investments</div>
                                 <div class="stats__date"><?= $ascot_date ?></div>
                                 <div class="stats__value"><?= $ascot_value ?></div>
                             </div>
