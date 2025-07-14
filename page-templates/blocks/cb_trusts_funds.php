@@ -234,7 +234,8 @@ $classes = $block['className'] ?? null;
                                                     if ( 'Ordinary Share NAV (including current year revenue)' === $name ) {
                                                         $osnav = $value;
                                                     }
-                                                    if ( 'Zero Dividend Preference Share NAV (accounts basis)' === $name ) {
+                                                    /* if ( 'Zero Dividend Preference Share NAV (accounts basis)' === $name ) { */
+                                                    if ( 'Zero Dividend Preference Share NAV (accrued entitlement per the Articles)' === $name ) {
                                                         $zdpnav = $value;
                                                     }
                                                     // Check if the name starts with "All data as at".
