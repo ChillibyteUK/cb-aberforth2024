@@ -273,9 +273,10 @@ $classes = $block['className'] ?? null;
                             </div>
                             <div class="stats">
                                 <div class="stats--agvit">
-                                    <div class="stats__title">ZDP Share NAV (accrued entitlement per the Articles)</div>
+                                    <div class="stats__title">ZDP Share NAV</div>
                                     <div class="stats__date"><?= esc_html( $agvit_date ); ?></div>
                                     <div class="stats__value"><?= esc_html( $zdpnav ); ?></div>
+                                    <div>(accrued entitlement per the Articles)</div>
                                 </div>
                             </div>
                         </div>
