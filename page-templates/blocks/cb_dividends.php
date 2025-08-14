@@ -40,7 +40,9 @@ $json_data = [
             'label' => 'Final',
             'data' => $final,
             'backgroundColor' => '#cae2ff',
-            'stack' => 'stack1'
+            'stack' => 'stack1',
+			'maxBarThickness' => '100',
+
         ]
     ]
 ];
@@ -50,7 +52,8 @@ if (array_sum($special) > 0) {
         'label' => 'Special',
         'data' => $special,
         'backgroundColor' => '#e5d7b2',
-        'stack' => 'stack1'
+        'stack' => 'stack1',
+		'maxBarThickness' => '100',
     ];
 }
 
