@@ -34,14 +34,14 @@ $json_data = [
             'data' => $interim,
             'backgroundColor' => '#173150',
             'stack' => 'stack1',
-			'maxBarThickness' => '100',
+			'maxBarThickness' => '200',
         ],
         [
             'label' => 'Final',
             'data' => $final,
             'backgroundColor' => '#cae2ff',
             'stack' => 'stack1',
-			'maxBarThickness' => '100',
+			'maxBarThickness' => '200',
 
         ]
     ]
@@ -53,7 +53,7 @@ if (array_sum($special) > 0) {
         'data' => $special,
         'backgroundColor' => '#e5d7b2',
         'stack' => 'stack1',
-		'maxBarThickness' => '100',
+		'maxBarThickness' => '200',
     ];
 }
 
