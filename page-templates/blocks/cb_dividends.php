@@ -33,7 +33,8 @@ $json_data = [
             'label' => 'Interim',
             'data' => $interim,
             'backgroundColor' => '#173150',
-            'stack' => 'stack1'
+            'stack' => 'stack1',
+			'maxBarThickness' => 8,
         ],
         [
             'label' => 'Final',
