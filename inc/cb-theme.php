@@ -6,6 +6,7 @@ require_once CB_THEME_DIR . '/inc/cb-utility.php';
 require_once CB_THEME_DIR . '/inc/cb-blocks.php';
 require_once CB_THEME_DIR . '/inc/cb-fileeditor.php';
 require_once CB_THEME_DIR . '/inc/cb-sitemaps.php';
+require_once CB_THEME_DIR . '/inc/cb-feed.php';
 // require_once CB_THEME_DIR . '/inc/cb-news.php';
 // require_once CB_THEME_DIR . '/inc/cb-careers.php';
 
@@ -35,36 +36,7 @@ add_filter('gform_validation_1', function($validation_result) { // _1 is the for
 
 
 
-// Client now FTPs files directly to /www/aberforthcouk_699/public/feed/
-// CSV_HOST points to the local site URL for remote checks
-define('CSV_HOST', get_site_url());
 
-define('CSV_FILES', [
-    '/feed/AFUND_Dividends.csv',
-    '/feed/AGVIT_Dividends.csv',
-    '/feed/ASCOT_Dividends.csv',
-    '/feed/ASLIT_Dividends.csv',
-    '/feed/AFUND_IndustryWeights.csv',
-    '/feed/AGVIT_IndustryWeights.csv',
-    '/feed/ASCOT_IndustryWeights.csv',
-    '/feed/ASLIT_IndustryWeights.csv',
-    '/feed/AFUND_CompoundPerformance.csv',
-    '/feed/AFUND_CumulativePerformance.csv',
-    '/feed/AFUND_DiscretePerformance.csv',
-    '/feed/AGVIT_CompoundPerformance.csv',
-    '/feed/AGVIT_CumulativePerformance.csv',
-    '/feed/AGVIT_DiscretePerformance.csv',
-    '/feed/ASCOT_CompoundPerformance.csv',
-    '/feed/ASCOT_CumulativePerformance.csv',
-    '/feed/ASCOT_DiscretePerformance.csv',
-    '/feed/ASLIT_CompoundPerformance.csv',
-    '/feed/ASLIT_CumulativePerformance.csv',
-    '/feed/ASLIT_DiscretePerformance.csv',
-    '/feed/AFUND_PortfolioHoldings.csv',
-    '/feed/AGVIT_PortfolioHoldings.csv',
-    '/feed/ASCOT_PortfolioHoldings.csv',
-    '/feed/ASLIT_PortfolioHoldings.csv',
-]);
 
 // Remove comment-reply.min.js from footer
 function remove_comment_reply_header_hook()
@@ -359,14 +331,7 @@ function schedule_pricing_check()
 }
 add_action('wp', 'schedule_pricing_check');
 
-// Schedule the feed event if it's not already scheduled
-function schedule_feed_download()
-{
-    if (!wp_next_scheduled('download_feed_files')) {
-        wp_schedule_event(time(), '6hours', 'download_feed_files');
-    }
-}
-add_action('wp', 'schedule_feed_download');
+
 
 
 // Fetch data from both Pricing URLs and update respective options
@@ -489,180 +454,15 @@ function display_pricing_data_status()
     }
 
     $output .= '</div>';
-    $output .= <<<EOT
-<div class="mb-5">
-<h2>CSV Data Files Feed</h2>
-EOT;
 
-    $file_path = $_SERVER['DOCUMENT_ROOT'] . '/feed/';
-
-	$output .= '<p>Checking files in: <code>' . esc_html($file_path) . '</code></p>';
-
-    $files = scandir( $file_path );
-
-    // Filter out '.' and '..' to only include actual files/directories
-    $files = array_filter($files, function ($file) use ($file_path) {
-        return is_file($file_path . $file); // Include only files
-    });
-    if (!empty($files)) {
-        $output .= <<<EOT
-<table class="table table-sm fs-300 mb-4">
-    <thead>
-        <tr>
-            <th>File Name</th>
-            <th>Local Size</th>
-            <th>Remote Size</th>
-            <th>Local Date</th>
-            <th>Remote Date</th>
-        </tr>
-    </thead>
-    <tbody>
-EOT;
-        foreach ($files as $file) {
-
-            $remote_file = null;
-            foreach (CSV_FILES as $file_with_path) {
-                if (basename($file_with_path) === $file) {
-                    $remote_file = $file_with_path;
-                    break;
-                }
-            }
-
-            $response = wp_remote_get(CSV_HOST . $remote_file, array('method' => 'HEAD'));
-            if (is_wp_error($response)) {
-                echo 'Error fetching remote file metadata: ' . $response->get_error_message();
-                return;
-            }
-            $headers = wp_remote_retrieve_headers($response);
-            if (isset($headers['content-length'])) {
-                $remote_size = intval($headers['content-length']); // remote size in bytes
-                $remote_size = number_format($remote_size / 1024, 2) . ' KB'; // Convert to KB
-            } else {
-                $remote_size = 'Unknown';
-            }
-
-            if (isset($headers['last-modified'])) {
-                $remote_modification_time = strtotime($headers['last-modified']); // Convert to Unix timestamp
-                $remote_date = date('Y-m-d H:i:s', $remote_modification_time); // Format the modification date
-            } else {
-                $remote_date = 'Unknown';
-            }
-
-
-            $file_full_path = $file_path . $file;
-
-            $file_modification_time = filemtime($file_full_path);
-            $local_date = date('Y-m-d H:i:s', $file_modification_time);
-
-            $local_size = filesize($file_full_path);
-            $local_size = number_format($local_size / 1024, 2) . ' KB';
-
-            $size_mismatch = $remote_size == $local_size ? '' : ' class="table-warning"';
-            $size_msg = $remote_size == $local_size ? '' : 'title="Local size is different to remote size - Run CSV download"';
-
-            $local_old = (time() - $file_modification_time) > (6 * 60 * 60 + 10 * 60); // 6h10m (7 * 60 * 60);
-            $local_old = $local_old ? ' class="table-warning"' : '';
-            $local_icon = $local_old ? '<i class="far fa-clock"></i>&nbsp;' : '';
-            $local_msg = $local_old ? 'title="Local file is too old - Run CSV download"' : '';
-
-            $remote_old = (time() - $remote_modification_time) > (6 * 60 * 60 + 10 * 60); // 6h10m (12 * 60 * 60);
-            $remote_old = $remote_old ? ' class="table-warning"' : '';
-            $remote_icon = $remote_old ? ' <i class="far fa-clock"></i>&nbsp;' : '';
-            $remote_msg = $remote_old ? 'title="Remote file is too old - Check sFTP job"' : '';
-
-            $output .= '<tr>';
-            $output .= "<td title='{$file_full_path}'>{$file}</td>";
-            $output .= "<td {$size_mismatch} {$size_msg}>{$local_size}</td>";
-            $output .= "<td {$size_mismatch} {$size_msg}>{$remote_size}</td>";
-            $output .= "<td {$local_old} {$local_msg}>{$local_icon}{$local_date}</td>";
-            $output .= "<td {$remote_old} {$remote_msg}>{$remote_icon}{$remote_date}</td>";
-            $output .= '</tr>';
-        }
-        $output .= "</tbody></table>";
-    } else {
-        $output .= "No files found in the directory.";
-    }
-
-    $output .= <<<EOT
-    <button id="triggerButton" class="button">Run Data CSV Download Now</button>
-    <div id="outputDiv" class="mt-4"></div>
-</div>
-<script>
-document.getElementById('triggerButton').addEventListener('click', function () {
-    const outputDiv = document.getElementById('outputDiv');
-    outputDiv.textContent = 'Loading...'; // Display a loading message while fetching
-
-    fetch('/?trigger_feed_download=run')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok ' + response.statusText);
-            }
-            return response.text();
-        })
-        .then(data => {
-            outputDiv.textContent = data; // Display the returned string in the div
-        })
-        .catch(error => {
-            outputDiv.textContent = 'An error occurred: ' + error.message; // Display error message
-        });
-});
-</script>
-EOT;
+    // Display CSV feed status from cb-feed.php.
+    $output .= display_csv_feed_status();
 
     return $output;
 }
 add_shortcode('pricing_data_status', 'display_pricing_data_status');
 
-// CSV Feed
-function fetch_and_save_feed_files()
-{
 
-    $urls = CSV_FILES;
-
-    foreach ($urls as $url) {
-        $response = wp_remote_get(CSV_HOST . $url);
-
-        if (is_wp_error($response)) {
-            error_log("Failed to download $url: " . $response->get_error_message());
-            continue;
-        }
-
-        $file_content = wp_remote_retrieve_body($response);
-        if (empty($file_content)) {
-            error_log("Empty file or error retrieving content from $url");
-            continue;
-        }
-
-        $file_name = basename($url);
-        // $upload_dir = wp_upload_dir();
-        // $file_path = $upload_dir['basedir'] . '/feed/' . $file_name;
-
-        // if (!file_exists($upload_dir['basedir'] . '/feed')) {
-        //     wp_mkdir_p($upload_dir['basedir'] . '/feed');
-        // }
-        $file_path = $_SERVER['DOCUMENT_ROOT'] . '/feed/' . $file_name;
-
-        if (!file_exists($_SERVER['DOCUMENT_ROOT'] . '/feed')) {
-            mkdir($_SERVER['DOCUMENT_ROOT'] . '/feed', 0755, true);
-        }
-
-        file_put_contents($file_path, $file_content);
-    }
-}
-add_action('download_feed_files', 'fetch_and_save_feed_files');
-
-
-// manual trigger
-// http://aberforth.local/?trigger_feed_download=run
-function trigger_feed_download()
-{
-    if (isset($_GET['trigger_feed_download']) && $_GET['trigger_feed_download'] == 'run') {
-        fetch_and_save_feed_files();
-        echo 'Feed files have been fetched and saved.';
-        exit;
-    }
-}
-add_action('init', 'trigger_feed_download');
 
 // DOCUMENT LIBRARY TAXONOMY DOMINE
 
