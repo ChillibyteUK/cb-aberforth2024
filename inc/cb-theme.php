@@ -493,7 +493,10 @@ function display_pricing_data_status()
 EOT;
 
     $file_path = $_SERVER['DOCUMENT_ROOT'] . '/feed/';
-    $files = scandir($file_path);
+
+	echo '<div>File Path: ' . esc_html($file_path) . '</div>';
+
+    $files = scandir( $file_path );
 
     // Filter out '.' and '..' to only include actual files/directories
     $files = array_filter($files, function ($file) use ($file_path) {
