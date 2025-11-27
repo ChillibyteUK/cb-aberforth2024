@@ -494,7 +494,7 @@ EOT;
 
     $file_path = $_SERVER['DOCUMENT_ROOT'] . '/feed/';
 
-	// $output .= '<div>File Path: ' . esc_html($file_path) . '</div>';
+	$output .= '<p>Checking files in: <code>' . esc_html($file_path) . '</code></p>';
 
     $files = scandir( $file_path );
 
