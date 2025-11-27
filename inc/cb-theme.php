@@ -35,33 +35,35 @@ add_filter('gform_validation_1', function($validation_result) { // _1 is the for
 
 
 
-define('CSV_HOST', 'https://ap01.chillihosting.co.uk');
+// Client now FTPs files directly to /www/aberforthcouk_699/public/feed/
+// CSV_HOST points to the local site URL for remote checks
+define('CSV_HOST', get_site_url());
 
 define('CSV_FILES', [
-    '/sftp/uploads/csv/Dividends/AFUND_Dividends.csv',
-    '/sftp/uploads/csv/Dividends/AGVIT_Dividends.csv',
-    '/sftp/uploads/csv/Dividends/ASCOT_Dividends.csv',
-    '/sftp/uploads/csv/Dividends/ASLIT_Dividends.csv',
-    '/sftp/uploads/csv/IndustryWeights/AFUND_IndustryWeights.csv',
-    '/sftp/uploads/csv/IndustryWeights/AGVIT_IndustryWeights.csv',
-    '/sftp/uploads/csv/IndustryWeights/ASCOT_IndustryWeights.csv',
-    '/sftp/uploads/csv/IndustryWeights/ASLIT_IndustryWeights.csv',
-    '/sftp/uploads/csv/Performance/AFUND_CompoundPerformance.csv',
-    '/sftp/uploads/csv/Performance/AFUND_CumulativePerformance.csv',
-    '/sftp/uploads/csv/Performance/AFUND_DiscretePerformance.csv',
-    '/sftp/uploads/csv/Performance/AGVIT_CompoundPerformance.csv',
-    '/sftp/uploads/csv/Performance/AGVIT_CumulativePerformance.csv',
-    '/sftp/uploads/csv/Performance/AGVIT_DiscretePerformance.csv',
-    '/sftp/uploads/csv/Performance/ASCOT_CompoundPerformance.csv',
-    '/sftp/uploads/csv/Performance/ASCOT_CumulativePerformance.csv',
-    '/sftp/uploads/csv/Performance/ASCOT_DiscretePerformance.csv',
-    '/sftp/uploads/csv/Performance/ASLIT_CompoundPerformance.csv',
-    '/sftp/uploads/csv/Performance/ASLIT_CumulativePerformance.csv',
-    '/sftp/uploads/csv/Performance/ASLIT_DiscretePerformance.csv',
-    '/sftp/uploads/csv/PortfolioHoldings/AFUND_PortfolioHoldings.csv',
-    '/sftp/uploads/csv/PortfolioHoldings/AGVIT_PortfolioHoldings.csv',
-    '/sftp/uploads/csv/PortfolioHoldings/ASCOT_PortfolioHoldings.csv',
-    '/sftp/uploads/csv/PortfolioHoldings/ASLIT_PortfolioHoldings.csv',
+    '/feed/AFUND_Dividends.csv',
+    '/feed/AGVIT_Dividends.csv',
+    '/feed/ASCOT_Dividends.csv',
+    '/feed/ASLIT_Dividends.csv',
+    '/feed/AFUND_IndustryWeights.csv',
+    '/feed/AGVIT_IndustryWeights.csv',
+    '/feed/ASCOT_IndustryWeights.csv',
+    '/feed/ASLIT_IndustryWeights.csv',
+    '/feed/AFUND_CompoundPerformance.csv',
+    '/feed/AFUND_CumulativePerformance.csv',
+    '/feed/AFUND_DiscretePerformance.csv',
+    '/feed/AGVIT_CompoundPerformance.csv',
+    '/feed/AGVIT_CumulativePerformance.csv',
+    '/feed/AGVIT_DiscretePerformance.csv',
+    '/feed/ASCOT_CompoundPerformance.csv',
+    '/feed/ASCOT_CumulativePerformance.csv',
+    '/feed/ASCOT_DiscretePerformance.csv',
+    '/feed/ASLIT_CompoundPerformance.csv',
+    '/feed/ASLIT_CumulativePerformance.csv',
+    '/feed/ASLIT_DiscretePerformance.csv',
+    '/feed/AFUND_PortfolioHoldings.csv',
+    '/feed/AGVIT_PortfolioHoldings.csv',
+    '/feed/ASCOT_PortfolioHoldings.csv',
+    '/feed/ASLIT_PortfolioHoldings.csv',
 ]);
 
 // Remove comment-reply.min.js from footer
