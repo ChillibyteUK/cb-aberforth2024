@@ -10,6 +10,59 @@ $funds = array(
     'aslit' => 'Aberforth Split Level Income Trust plc'
 );
 
+// Page-specific overrides
+if (is_page(82)) {
+    $funds['ascot'] = 'Aberforth Smaller Companies Trust plc - Portfolio';
+}
+if (is_page(331)) {
+    $funds['ascot'] = 'Aberforth Smaller Companies Trust plc - Fees & Charges';
+}
+if (is_page(297)) {
+    $funds['ascot'] = 'Aberforth Smaller Companies Trust plc - Share Price';
+}
+if (is_page(299)) {
+    $funds['ascot'] = 'Aberforth Smaller Companies Trust plc - Dividends';
+}
+if (is_page(333)) {
+    $funds['ascot'] = 'Aberforth Smaller Companies Trust plc - Documents';
+}
+if (is_page(2596)) {
+    $funds['agvit'] = 'Aberforth Geared Value & Income Trust - Capital Structure';
+}
+if (is_page(54)) {
+    $funds['agvit'] = 'Aberforth Geared Value & Income Trust plc - Dividends';
+}
+if (is_page(351)) {
+    $funds['agvit'] = 'Aberforth Geared Value & Income Trust plc - Share Price';
+}
+if (is_page(349)) {
+    $funds['agvit'] = 'Aberforth Geared Value & Income Trust plc - Portfolio';
+}
+if (is_page(56)) {
+    $funds['agvit'] = 'Aberforth Geared Value & Income Trust plc - Fees & Charges';
+}
+if (is_page(2591)) {
+    $funds['agvit'] = 'Aberforth Geared Value & Income Trust plc - Launch Information';
+}
+if (is_page(353)) {
+    $funds['agvit'] = 'Aberforth Geared Value & Income Trust plc - Documents';
+}
+if (is_page(108)) {
+    $funds['afund'] = 'Aberforth UK Small Companies Fund - Portfolio';
+}
+if (is_page(359)) {
+    $funds['afund'] = 'Aberforth UK Small Companies Fund - Income';
+}
+if (is_page(361)) {
+    $funds['afund'] = 'Aberforth UK Small Companies Fund - Fees & Charges';
+}
+if (is_page(364)) {
+    $funds['afund'] = 'Aberforth UK Small Companies Fund - Documents';
+}
+if (is_page(357)) {
+    $funds['afund'] = 'Aberforth UK Small Companies Fund - Performance';
+}
+
 $fund_options = array(
     'ascot' => 'ascot_pricing_data',
     'agvit' => 'agvit_pricing_data'
