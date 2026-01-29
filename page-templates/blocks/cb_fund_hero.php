@@ -4,8 +4,8 @@ $theme = 'fund_subnav--' . $fund;
 $sheet = get_field($fund . '_factsheet', 'option');
 
 $funds = array(
-    'ascot' => 'Aberforth Smaller Companies Trust plc',
-    'agvit' => 'Aberforth Geared Value & Income Trust plc',
+    'ascot' => 'Aberforth Smaller Companies Trust plc (ASL)',
+    'agvit' => 'Aberforth Geared Value & Income Trust plc (AGVI)',
     'afund' => 'Aberforth UK Small Companies Fund',
     'aslit' => 'Aberforth Split Level Income Trust plc'
 );
