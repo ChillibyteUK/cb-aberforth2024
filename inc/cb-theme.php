@@ -541,7 +541,7 @@ EOT;
             } else {
                 $remote_size = 'Unknown';
                 $remote_date = 'Unknown';
-                $remote_modification_time = time();
+                $remote_modification_time = 0;
             }
 
             $file_full_path = $_SERVER['DOCUMENT_ROOT'] . '/feed/' . $file;
@@ -552,18 +552,18 @@ EOT;
             $local_size = filesize( $file_full_path );
             $local_size = number_format( $local_size / 1024, 2 ) . ' KB';
 
-            $size_mismatch = $remote_size === $local_size ? '' : ' class="table-warning"';
-            $size_msg      = $remote_size === $local_size ? '' : 'title="Local size is different to remote size - Run CSV download"';
+            $size_mismatch = ( 'Unknown' === $remote_size || $remote_size === $local_size ) ? '' : ' class="table-warning"';
+            $size_msg      = ( 'Unknown' === $remote_size || $remote_size === $local_size ) ? '' : 'title="Local size is different to remote size - Run CSV download"';
 
             $local_old  = ( time() - $file_modification_time ) > ( 6 * 60 * 60 + 10 * 60 ); // 6h10m (7 * 60 * 60);
             $local_old  = $local_old ? ' class="table-warning"' : '';
             $local_icon = $local_old ? '<i class="far fa-clock"></i>&nbsp;' : '';
             $local_msg  = $local_old ? 'title="Local file is too old - Run CSV download"' : '';
 
-            $remote_old  = ( time() - $remote_modification_time ) > ( 6 * 60 * 60 + 10 * 60 ); // 6h10m (12 * 60 * 60);
-            $remote_old  = $remote_old ? ' class="table-warning"' : '';
-            $remote_icon = $remote_old ? ' <i class="far fa-clock"></i>&nbsp;' : '';
-            $remote_msg  = $remote_old ? 'title="Remote file is too old - Check sFTP job"' : '';
+            $remote_is_old = $remote_modification_time > 0 && ( time() - $remote_modification_time ) > ( 6 * 60 * 60 + 10 * 60 ); // 6h10m
+            $remote_old  = $remote_is_old ? ' class="table-warning"' : '';
+            $remote_icon = $remote_is_old ? ' <i class="far fa-clock"></i>&nbsp;' : '';
+            $remote_msg  = $remote_is_old ? 'title="Remote file is too old - Check sFTP job"' : '';
 
             $output .= '<tr>';
             $output .= "<td title='{$file_full_path}'>{$file}</td>";
@@ -614,7 +614,33 @@ function fetch_and_save_feed_files() {
     $urls = CSV_FILES;
 
     foreach ( $urls as $url ) {
-        $response = wp_remote_get( CSV_HOST . $url );
+        $full_url = CSV_HOST . $url;
+
+        $head_response = wp_remote_head(
+            $full_url,
+            array(
+                'redirection' => 5,
+                'timeout'     => 20,
+            )
+        );
+
+        $remote_last_modified = 'Unknown';
+        $remote_content_length = null;
+
+        if ( ! is_wp_error( $head_response ) ) {
+            $head_headers = wp_remote_retrieve_headers( $head_response );
+            $head_headers_lower = array_change_key_case( (array) $head_headers, CASE_LOWER );
+
+            if ( isset( $head_headers_lower['last-modified'] ) ) {
+                $remote_last_modified = $head_headers_lower['last-modified'];
+            }
+
+            if ( isset( $head_headers_lower['content-length'] ) ) {
+                $remote_content_length = (int) $head_headers_lower['content-length'];
+            }
+        }
+
+        $response = wp_remote_get( $full_url );
 
         if ( is_wp_error( $response ) ) {
             error_log( "Failed to download $url: " . $response->get_error_message() );
@@ -635,18 +661,26 @@ function fetch_and_save_feed_files() {
         }
 
         file_put_contents( $file_path, $file_content );
-        
-        // Store download timestamp and file size as remote metadata
-        $download_timestamp = current_time( 'Y-m-d H:i:s' );
+
+        if ( 'Unknown' === $remote_last_modified ) {
+            $get_headers = wp_remote_retrieve_headers( $response );
+            $get_headers_lower = array_change_key_case( (array) $get_headers, CASE_LOWER );
+            if ( isset( $get_headers_lower['last-modified'] ) ) {
+                $remote_last_modified = $get_headers_lower['last-modified'];
+            }
+            if ( null === $remote_content_length && isset( $get_headers_lower['content-length'] ) ) {
+                $remote_content_length = (int) $get_headers_lower['content-length'];
+            }
+        }
+
         $file_size = strlen( $file_content );
-        
+        $stored_remote_size = null !== $remote_content_length ? $remote_content_length : $file_size;
+
         $option_key_date = 'csv_file_' . sanitize_key( $file_name ) . '_remote_date';
         $option_key_size = 'csv_file_' . sanitize_key( $file_name ) . '_remote_size';
-        
-        update_option( $option_key_date, $download_timestamp );
-        update_option( $option_key_size, $file_size );
-        
-        error_log( "Downloaded {$file_name}: {$file_size} bytes at {$download_timestamp}" );
+
+        update_option( $option_key_date, $remote_last_modified );
+        update_option( $option_key_size, $stored_remote_size );
     }
 }
 add_action( 'download_feed_files', 'fetch_and_save_feed_files' );
