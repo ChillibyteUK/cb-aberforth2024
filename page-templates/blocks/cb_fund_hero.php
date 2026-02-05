@@ -107,7 +107,7 @@ $classes = $block['className'] ?? null;
                         $data = json_decode( $json, true );
                         if ( $data ) {
                             $symbol        = $data['Symbol'];
-                            $current_price = $data['current_price'];
+                            $current_price = $data['CurrentPrice'];
                             $change        = $data['Change'];
                             $date          = $data['Date'];
 
