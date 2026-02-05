@@ -579,6 +579,7 @@ EOT;
                             'Accept' => 'text/csv,*/*;q=0.9',
                         ),
                         'user-agent'  => 'curl/7.88.1',
+                        'ip_resolve'  => 'v4',
                     )
                 );
 
@@ -628,6 +629,7 @@ EOT;
                                 'Accept' => 'text/csv,*/*;q=0.9',
                             ),
                             'user-agent'  => 'curl/7.88.1',
+                            'ip_resolve'  => 'v4',
                         )
                     );
 
@@ -764,6 +766,7 @@ function fetch_and_save_feed_files() {
                     'Accept' => 'text/csv,*/*;q=0.9',
                 ),
                 'user-agent'  => 'curl/7.88.1',
+                'ip_resolve'  => 'v4',
             )
         );
 
@@ -797,6 +800,7 @@ function fetch_and_save_feed_files() {
                     'Accept' => 'text/csv,*/*;q=0.9',
                 ),
                 'user-agent'  => 'curl/7.88.1',
+                'ip_resolve'  => 'v4',
             )
         );
 
