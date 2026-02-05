@@ -552,7 +552,12 @@ EOT;
             $stored_remote_date = get_option( 'csv_file_' . sanitize_key( $file ) . '_remote_date', 'Unknown' );
             $stored_remote_size = get_option( 'csv_file_' . sanitize_key( $file ) . '_remote_size', false );
 
-            if ( ( ! $stored_remote_date || 'Unknown' === $stored_remote_date || ! $stored_remote_size ) && $remote_url ) {
+            $missing_remote_meta = ( ! $stored_remote_date || 'Unknown' === $stored_remote_date || ! $stored_remote_size );
+            if ( $missing_remote_meta ) {
+                error_log( "Missing cached remote metadata for {$file}. url=" . ( $remote_url ?: 'N/A' ) );
+            }
+
+            if ( $missing_remote_meta && $remote_url ) {
                 $head_response = wp_remote_head(
                     $remote_url,
                     array(
@@ -562,6 +567,9 @@ EOT;
                 );
 
                 $head_failed = is_wp_error( $head_response );
+                if ( $head_failed ) {
+                    error_log( "HEAD failed for {$file}: " . $head_response->get_error_message() );
+                }
 
                 if ( ! $head_failed ) {
                     $head_last_modified = cb_get_response_header_value( $head_response, 'last-modified' );
@@ -574,6 +582,10 @@ EOT;
                     if ( $head_content_length ) {
                         $stored_remote_size = (int) $head_content_length;
                         update_option( 'csv_file_' . sanitize_key( $file ) . '_remote_size', $stored_remote_size );
+                    }
+
+                    if ( ! $head_last_modified && ! $head_content_length ) {
+                        error_log( "HEAD returned no last-modified/content-length for {$file}" );
                     }
                 }
 
@@ -603,6 +615,12 @@ EOT;
                                 update_option( 'csv_file_' . sanitize_key( $file ) . '_remote_size', $stored_remote_size );
                             }
                         }
+
+                        if ( ( 'Unknown' === $stored_remote_date || ! $stored_remote_size ) ) {
+                            error_log( "GET range returned no last-modified/content-length for {$file}" );
+                        }
+                    } else {
+                        error_log( "GET range failed for {$file}: " . $get_response->get_error_message() );
                     }
                 }
             }
