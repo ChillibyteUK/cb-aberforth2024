@@ -109,7 +109,8 @@ function cb_fetch_remote_metadata( $url ) {
         curl_setopt( $ch, CURLOPT_NOBODY, true );
         curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
         curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
-        curl_setopt( $ch, CURLOPT_USERAGENT, 'curl/7.88.1' );
+        curl_setopt( $ch, CURLOPT_USERAGENT, 'curl/8.5.0' );
+        curl_setopt( $ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2_0 );
         curl_setopt( $ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4 );
         curl_setopt( $ch, CURLOPT_HEADERFUNCTION, function ( $curl, $header ) use ( &$headers ) {
             $len = strlen( $header );
@@ -144,7 +145,8 @@ function cb_fetch_remote_metadata( $url ) {
         $ch = curl_init( $url );
         curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
         curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
-        curl_setopt( $ch, CURLOPT_USERAGENT, 'curl/7.88.1' );
+        curl_setopt( $ch, CURLOPT_USERAGENT, 'curl/8.5.0' );
+        curl_setopt( $ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2_0 );
         curl_setopt( $ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4 );
         curl_setopt( $ch, CURLOPT_RANGE, '0-0' );
         curl_setopt( $ch, CURLOPT_HEADERFUNCTION, function ( $curl, $header ) use ( &$headers ) {
