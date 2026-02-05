@@ -526,28 +526,28 @@ EOT;
                 }
             }
 
-            $response = wp_remote_get( CSV_HOST . $remote_file, array( 'method' => 'HEAD' ) );
+            // Use GET request instead of HEAD (some CDNs don't support HEAD properly)
+            $response = wp_remote_get( CSV_HOST . $remote_file );
             if ( is_wp_error( $response ) ) {
                 echo 'Error fetching remote file metadata: ' . $response->get_error_message();
                 return;
             }
             $headers = wp_remote_retrieve_headers( $response );
-            // Debug: log what we actually got
-            error_log( 'Raw headers for ' . $file . ': ' . print_r( $headers, true ) );
-            // Convert to array and normalize headers to lowercase keys for consistent access.
-            $headers_lower = array_change_key_case( (array) $headers, CASE_LOWER );
-            error_log( 'Normalized headers: ' . print_r( $headers_lower, true ) );
+            // Get the actual body to calculate size if headers don't provide it
+            $body = wp_remote_retrieve_body( $response );
+            $body_size = strlen( $body );
 
-            if ( isset( $headers_lower['content-length'] ) ) {
-                $remote_size = intval( $headers_lower['content-length'] ); // remote size in bytes.
-                $remote_size = number_format( $remote_size / 1024, 2 ) . ' KB'; // Convert to KB.
+            if ( ! empty( $body_size ) && $body_size > 0 ) {
+                $remote_size = number_format( $body_size / 1024, 2 ) . ' KB';
             } else {
                 $remote_size = 'Unknown';
             }
 
+            // Get last-modified from headers
+            $headers_lower = array_change_key_case( (array) $headers, CASE_LOWER );
             if ( isset( $headers_lower['last-modified'] ) ) {
-                $remote_modification_time = strtotime( $headers_lower['last-modified'] ); // Convert to Unix timestamp.
-                $remote_date              = gmdate( 'Y-m-d H:i:s', $remote_modification_time ); // Format the modification date.
+                $remote_modification_time = strtotime( $headers_lower['last-modified'] );
+                $remote_date              = gmdate( 'Y-m-d H:i:s', $remote_modification_time );
             } else {
                 $remote_date = 'Unknown';
             }
