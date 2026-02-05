@@ -588,6 +588,7 @@ EOT;
                 }
 
                 if ( ! $head_failed ) {
+                    $head_code = wp_remote_retrieve_response_code( $head_response );
                     $head_last_modified = cb_get_response_header_value( $head_response, 'last-modified' );
                     if ( $head_last_modified ) {
                         $stored_remote_date = $head_last_modified;
@@ -608,7 +609,11 @@ EOT;
                     }
 
                     if ( ! $head_last_modified && ! $head_content_length ) {
-                        error_log( "HEAD returned no last-modified/content-length for {$file}" );
+                        $head_content_type = cb_get_response_header_value( $head_response, 'content-type' );
+                        $head_server = cb_get_response_header_value( $head_response, 'server' );
+                        $head_date = cb_get_response_header_value( $head_response, 'date' );
+                        $head_content_range = cb_get_response_header_value( $head_response, 'content-range' );
+                        error_log( "HEAD returned no last-modified/content-length for {$file} (code={$head_code}, type={$head_content_type}, server={$head_server}, date={$head_date}, range={$head_content_range})" );
                     }
                 }
 
@@ -627,6 +632,7 @@ EOT;
                     );
 
                     if ( ! is_wp_error( $get_response ) ) {
+                        $get_code = wp_remote_retrieve_response_code( $get_response );
                         if ( 'Unknown' === $stored_remote_date ) {
                             $get_last_modified = cb_get_response_header_value( $get_response, 'last-modified' );
                             if ( $get_last_modified ) {
@@ -651,7 +657,11 @@ EOT;
                         }
 
                         if ( ( 'Unknown' === $stored_remote_date || ! $stored_remote_size ) ) {
-                            error_log( "GET range returned no last-modified/content-length for {$file}" );
+                            $get_content_type = cb_get_response_header_value( $get_response, 'content-type' );
+                            $get_server = cb_get_response_header_value( $get_response, 'server' );
+                            $get_date = cb_get_response_header_value( $get_response, 'date' );
+                            $get_content_range = cb_get_response_header_value( $get_response, 'content-range' );
+                            error_log( "GET range returned no last-modified/content-length for {$file} (code={$get_code}, type={$get_content_type}, server={$get_server}, date={$get_date}, range={$get_content_range})" );
                         }
                     } else {
                         error_log( "GET range failed for {$file}: " . $get_response->get_error_message() );
