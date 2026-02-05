@@ -67,6 +67,14 @@ define(
 	)
 );
 
+function cb_normalize_http_headers( $headers ) {
+    if ( is_object( $headers ) && method_exists( $headers, 'getAll' ) ) {
+        return $headers->getAll();
+    }
+
+    return (array) $headers;
+}
+
 // Remove comment-reply.min.js from footer
 function remove_comment_reply_header_hook() {
     wp_deregister_script('comment-reply');
@@ -549,7 +557,7 @@ EOT;
 
                 if ( ! $head_failed ) {
                     $head_headers = wp_remote_retrieve_headers( $head_response );
-                    $head_headers_lower = array_change_key_case( (array) $head_headers, CASE_LOWER );
+                    $head_headers_lower = array_change_key_case( cb_normalize_http_headers( $head_headers ), CASE_LOWER );
 
                     if ( isset( $head_headers_lower['last-modified'] ) ) {
                         $stored_remote_date = $head_headers_lower['last-modified'];
@@ -574,7 +582,7 @@ EOT;
 
                     if ( ! is_wp_error( $get_response ) ) {
                         $get_headers = wp_remote_retrieve_headers( $get_response );
-                        $get_headers_lower = array_change_key_case( (array) $get_headers, CASE_LOWER );
+                        $get_headers_lower = array_change_key_case( cb_normalize_http_headers( $get_headers ), CASE_LOWER );
 
                         if ( 'Unknown' === $stored_remote_date && isset( $get_headers_lower['last-modified'] ) ) {
                             $stored_remote_date = $get_headers_lower['last-modified'];
@@ -688,7 +696,7 @@ function fetch_and_save_feed_files() {
 
         if ( ! is_wp_error( $head_response ) ) {
             $head_headers = wp_remote_retrieve_headers( $head_response );
-            $head_headers_lower = array_change_key_case( (array) $head_headers, CASE_LOWER );
+            $head_headers_lower = array_change_key_case( cb_normalize_http_headers( $head_headers ), CASE_LOWER );
 
             if ( isset( $head_headers_lower['last-modified'] ) ) {
                 $remote_last_modified = $head_headers_lower['last-modified'];
@@ -723,7 +731,7 @@ function fetch_and_save_feed_files() {
 
         if ( 'Unknown' === $remote_last_modified ) {
             $get_headers = wp_remote_retrieve_headers( $response );
-            $get_headers_lower = array_change_key_case( (array) $get_headers, CASE_LOWER );
+            $get_headers_lower = array_change_key_case( cb_normalize_http_headers( $get_headers ), CASE_LOWER );
             if ( isset( $get_headers_lower['last-modified'] ) ) {
                 $remote_last_modified = $get_headers_lower['last-modified'];
             }
