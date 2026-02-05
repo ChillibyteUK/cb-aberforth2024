@@ -38,11 +38,11 @@ add_filter('gform_validation_1', function($validation_result) { // _1 is the for
 define( 'CSV_HOST', 'https://ap01.chillihosting.co.uk' );
 
 // FTP Configuration for downloading from 20i
-define( 'CSV_FTP_HOST', 'ftp.gb.stackcp.com' ); // 20i SFTP CNAME
+define( 'CSV_FTP_HOST', 'ftp.gb.stackcp.com' ); // 20i FTP CNAME
 define( 'CSV_FTP_USER', 'aberforth-sftp@ap01.chillihosting.co.uk' );
 define( 'CSV_FTP_PASS', '@£nTl9BEqaR5' );
 define( 'CSV_FTP_PATH', '/www/aberforthcouk_699/public/feed/' );
-define( 'CSV_FTP_PORT', 22 ); // Port 22 = SFTP (requires SSH2 extension)
+define( 'CSV_FTP_PORT', 21 );
 
 define(
 	'CSV_FILES',
@@ -105,76 +105,69 @@ function cb_get_outbound_ip() {
 
 
 
-function cb_fetch_csv_via_sftp( $remote_filename ) {
-    if ( ! function_exists( 'ssh2_connect' ) ) {
-        error_log( 'SSH2 extension not available. Install php-ssh2 for SFTP support.' );
-        return false;
-    }
-    
+function cb_fetch_csv_via_ftp( $remote_filename ) {
     $remote_file = rtrim( CSV_FTP_PATH, '/' ) . '/' . $remote_filename;
     
-    $connection = @ssh2_connect( CSV_FTP_HOST, CSV_FTP_PORT );
-    if ( ! $connection ) {
-        error_log( "SFTP connection failed to " . CSV_FTP_HOST . ":" . CSV_FTP_PORT );
+    $ftp_conn = @ftp_connect( CSV_FTP_HOST, CSV_FTP_PORT, 30 );
+    if ( ! $ftp_conn ) {
+        error_log( "FTP connection failed to " . CSV_FTP_HOST . ":" . CSV_FTP_PORT );
         return false;
     }
     
-    if ( ! @ssh2_auth_password( $connection, CSV_FTP_USER, CSV_FTP_PASS ) ) {
-        error_log( "SFTP authentication failed for user " . CSV_FTP_USER );
+    if ( ! @ftp_login( $ftp_conn, CSV_FTP_USER, CSV_FTP_PASS ) ) {
+        error_log( "FTP login failed for user " . CSV_FTP_USER );
+        ftp_close( $ftp_conn );
         return false;
     }
     
-    $sftp = @ssh2_sftp( $connection );
-    if ( ! $sftp ) {
-        error_log( "SFTP subsystem initialization failed" );
+    ftp_pasv( $ftp_conn, true );
+    
+    $temp_file = tmpfile();
+    $temp_path = stream_get_meta_data( $temp_file )['uri'];
+    
+    if ( ! @ftp_get( $ftp_conn, $temp_path, $remote_file, FTP_BINARY ) ) {
+        error_log( "FTP download failed for {$remote_file}" );
+        fclose( $temp_file );
+        ftp_close( $ftp_conn );
         return false;
     }
     
-    $stream = @fopen( "ssh2.sftp://" . intval( $sftp ) . $remote_file, 'r' );
-    if ( ! $stream ) {
-        error_log( "SFTP file open failed for {$remote_file}" );
-        return false;
-    }
-    
-    $file_content = stream_get_contents( $stream );
-    fclose( $stream );
+    $file_content = file_get_contents( $temp_path );
+    fclose( $temp_file );
+    ftp_close( $ftp_conn );
     
     return $file_content;
 }
 
-function cb_fetch_csv_metadata_via_sftp( $remote_filename ) {
+function cb_fetch_csv_metadata_via_ftp( $remote_filename ) {
     $metadata = array(
         'last_modified'  => null,
         'content_length' => null,
         'response_code'  => null,
     );
     
-    if ( ! function_exists( 'ssh2_connect' ) ) {
-        return $metadata;
-    }
-    
     $remote_file = rtrim( CSV_FTP_PATH, '/' ) . '/' . $remote_filename;
     
-    $connection = @ssh2_connect( CSV_FTP_HOST, CSV_FTP_PORT );
-    if ( ! $connection ) {
+    $ftp_conn = @ftp_connect( CSV_FTP_HOST, CSV_FTP_PORT, 30 );
+    if ( ! $ftp_conn ) {
         return $metadata;
     }
     
-    if ( ! @ssh2_auth_password( $connection, CSV_FTP_USER, CSV_FTP_PASS ) ) {
+    if ( ! @ftp_login( $ftp_conn, CSV_FTP_USER, CSV_FTP_PASS ) ) {
+        ftp_close( $ftp_conn );
         return $metadata;
     }
     
-    $sftp = @ssh2_sftp( $connection );
-    if ( ! $sftp ) {
-        return $metadata;
+    ftp_pasv( $ftp_conn, true );
+    
+    $metadata['response_code'] = 200;
+    $metadata['content_length'] = @ftp_size( $ftp_conn, $remote_file );
+    $modified_time = @ftp_mdtm( $ftp_conn, $remote_file );
+    if ( $modified_time !== -1 ) {
+        $metadata['last_modified'] = gmdate( 'D, d M Y H:i:s \\G\\M\\T', $modified_time );
     }
     
-    $stat = @ssh2_sftp_stat( $sftp, $remote_file );
-    if ( $stat ) {
-        $metadata['response_code'] = 200;
-        $metadata['content_length'] = $stat['size'];
-        $metadata['last_modified'] = gmdate( 'D, d M Y H:i:s \\G\\M\\T', $stat['mtime'] );
-    }
+    ftp_close( $ftp_conn );
     
     return $metadata;
 }
@@ -602,21 +595,16 @@ function display_pricing_data_status() {
 
     $output .= '</div>';
     
-    // Add SFTP Connection Status Section
+    // Add FTP Connection Status Section
     $outbound_ip = cb_get_outbound_ip();
-    $ssh2_available = function_exists( 'ssh2_connect' );
     
     $output .= '<div class="mb-4 p-3 border rounded">';
-    $output .= '<h3>SFTP Configuration</h3>';
-    $output .= '<p><strong>Protocol:</strong> SFTP (SSH File Transfer)</p>';
-    $output .= '<p><strong>SFTP Host:</strong> ' . esc_html( CSV_FTP_HOST ) . ':' . CSV_FTP_PORT . '</p>';
-    $output .= '<p><strong>SFTP User:</strong> ' . esc_html( CSV_FTP_USER ) . '</p>';
-    $output .= '<p><strong>SSH2 Extension:</strong> ' . ( $ssh2_available ? '<span style="color:green;">✓ Available</span>' : '<span style="color:red;">✗ Not installed</span>' ) . '</p>';
-    if ( ! $ssh2_available ) {
-        $output .= '<p class="text-danger"><small>Install php-ssh2 extension to enable SFTP downloads</small></p>';
-    }
+    $output .= '<h3>FTP Configuration</h3>';
+    $output .= '<p><strong>Protocol:</strong> FTP (File Transfer Protocol)</p>';
+    $output .= '<p><strong>FTP Host:</strong> ' . esc_html( CSV_FTP_HOST ) . ':' . CSV_FTP_PORT . '</p>';
+    $output .= '<p><strong>FTP User:</strong> ' . esc_html( CSV_FTP_USER ) . '</p>';
     $output .= '<p><strong>Kinsta Outbound IP:</strong> <code>' . esc_html( $outbound_ip ) . '</code></p>';
-    $output .= '<p class="text-muted small">Whitelist this IP in 20i SFTP firewall settings</p>';
+    $output .= '<p class="text-muted small">Whitelist this IP in 20i FTP firewall settings</p>';
     $output .= '</div>';
     
     $output .= <<<EOT
@@ -676,7 +664,7 @@ EOT;
             }
 
             if ( $missing_remote_meta ) {
-                $metadata = cb_fetch_csv_metadata_via_sftp( $file );
+                $metadata = cb_fetch_csv_metadata_via_ftp( $file );
                 if ( $metadata['last_modified'] ) {
                     $stored_remote_date = $metadata['last_modified'];
                     update_option( 'csv_file_' . sanitize_key( $file ) . '_remote_date', $stored_remote_date );
@@ -768,7 +756,7 @@ EOT;
 }
 add_shortcode( 'pricing_data_status', 'display_pricing_data_status' );
 
-// CSV Feed - SFTP Only
+// CSV Feed - FTP Only
 function fetch_and_save_feed_files() {
     $urls = CSV_FILES;
 
@@ -776,15 +764,15 @@ function fetch_and_save_feed_files() {
         $file_name = basename( $url );
         
         // Fetch metadata
-        $metadata = cb_fetch_csv_metadata_via_sftp( $file_name );
+        $metadata = cb_fetch_csv_metadata_via_ftp( $file_name );
         $remote_last_modified = $metadata['last_modified'] ? $metadata['last_modified'] : 'Unknown';
         $remote_content_length = $metadata['content_length'] ? (int) $metadata['content_length'] : null;
         
-        // Download file via SFTP
-        $file_content = cb_fetch_csv_via_sftp( $file_name );
+        // Download file via FTP
+        $file_content = cb_fetch_csv_via_ftp( $file_name );
         
         if ( false === $file_content || empty( $file_content ) ) {
-            error_log( "SFTP download failed or empty for {$file_name}" );
+            error_log( "FTP download failed or empty for {$file_name}" );
             continue;
         }
 
