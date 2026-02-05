@@ -38,11 +38,21 @@ add_filter('gform_validation_1', function($validation_result) { // _1 is the for
 define( 'CSV_HOST', 'https://ap01.chillihosting.co.uk' );
 
 // FTP Configuration for downloading from 20i
-define( 'CSV_FTP_HOST', 'ftp.gb.stackcp.com' ); // 20i FTP CNAME
-define( 'CSV_FTP_USER', 'aberforth-sftp@ap01.chillihosting.co.uk' );
-define( 'CSV_FTP_PASS', '@£nTl9BEqaR5' );
-define( 'CSV_FTP_PATH', '/sftp/uploads/csv/' ); // Path on 20i FTP server where CSVs are stored
-define( 'CSV_FTP_PORT', 21 );
+if ( ! defined( 'CSV_FTP_HOST' ) ) {
+    define( 'CSV_FTP_HOST', 'ftp.gb.stackcp.com' ); // 20i FTP CNAME
+}
+if ( ! defined( 'CSV_FTP_USER' ) ) {
+    define( 'CSV_FTP_USER', 'aberforth-sftp@ap01.chillihosting.co.uk' );
+}
+if ( ! defined( 'CSV_FTP_PASS' ) ) {
+    define( 'CSV_FTP_PASS', '@£nTl9BEqaR5' );
+}
+if ( ! defined( 'CSV_FTP_PATH' ) ) {
+    define( 'CSV_FTP_PATH', '/sftp/uploads/csv/' ); // Path on 20i FTP server where CSVs are stored
+}
+if ( ! defined( 'CSV_FTP_PORT' ) ) {
+    define( 'CSV_FTP_PORT', 21 );
+}
 
 define(
 	'CSV_FILES',
@@ -192,8 +202,7 @@ function cb_fetch_csv_metadata_via_ftp( $remote_filename ) {
     ftp_close( $ftp_conn );
     
     return $metadata;
-}}
-
+}
 
 
 // Remove comment-reply.min.js from footer
