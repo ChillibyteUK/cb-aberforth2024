@@ -75,6 +75,14 @@ function cb_normalize_http_headers( $headers ) {
     return (array) $headers;
 }
 
+function cb_get_response_header_value( $response, $header_name ) {
+    $value = wp_remote_retrieve_header( $response, $header_name );
+    if ( is_array( $value ) ) {
+        $value = reset( $value );
+    }
+    return $value ?: null;
+}
+
 // Remove comment-reply.min.js from footer
 function remove_comment_reply_header_hook() {
     wp_deregister_script('comment-reply');
@@ -556,16 +564,15 @@ EOT;
                 $head_failed = is_wp_error( $head_response );
 
                 if ( ! $head_failed ) {
-                    $head_headers = wp_remote_retrieve_headers( $head_response );
-                    $head_headers_lower = array_change_key_case( cb_normalize_http_headers( $head_headers ), CASE_LOWER );
-
-                    if ( isset( $head_headers_lower['last-modified'] ) ) {
-                        $stored_remote_date = $head_headers_lower['last-modified'];
+                    $head_last_modified = cb_get_response_header_value( $head_response, 'last-modified' );
+                    if ( $head_last_modified ) {
+                        $stored_remote_date = $head_last_modified;
                         update_option( 'csv_file_' . sanitize_key( $file ) . '_remote_date', $stored_remote_date );
                     }
 
-                    if ( isset( $head_headers_lower['content-length'] ) ) {
-                        $stored_remote_size = (int) $head_headers_lower['content-length'];
+                    $head_content_length = cb_get_response_header_value( $head_response, 'content-length' );
+                    if ( $head_content_length ) {
+                        $stored_remote_size = (int) $head_content_length;
                         update_option( 'csv_file_' . sanitize_key( $file ) . '_remote_size', $stored_remote_size );
                     }
                 }
@@ -581,17 +588,20 @@ EOT;
                     );
 
                     if ( ! is_wp_error( $get_response ) ) {
-                        $get_headers = wp_remote_retrieve_headers( $get_response );
-                        $get_headers_lower = array_change_key_case( cb_normalize_http_headers( $get_headers ), CASE_LOWER );
-
-                        if ( 'Unknown' === $stored_remote_date && isset( $get_headers_lower['last-modified'] ) ) {
-                            $stored_remote_date = $get_headers_lower['last-modified'];
+                        if ( 'Unknown' === $stored_remote_date ) {
+                            $get_last_modified = cb_get_response_header_value( $get_response, 'last-modified' );
+                            if ( $get_last_modified ) {
+                                $stored_remote_date = $get_last_modified;
                             update_option( 'csv_file_' . sanitize_key( $file ) . '_remote_date', $stored_remote_date );
+                            }
                         }
 
-                        if ( ! $stored_remote_size && isset( $get_headers_lower['content-length'] ) ) {
-                            $stored_remote_size = (int) $get_headers_lower['content-length'];
-                            update_option( 'csv_file_' . sanitize_key( $file ) . '_remote_size', $stored_remote_size );
+                        if ( ! $stored_remote_size ) {
+                            $get_content_length = cb_get_response_header_value( $get_response, 'content-length' );
+                            if ( $get_content_length ) {
+                                $stored_remote_size = (int) $get_content_length;
+                                update_option( 'csv_file_' . sanitize_key( $file ) . '_remote_size', $stored_remote_size );
+                            }
                         }
                     }
                 }
@@ -695,15 +705,14 @@ function fetch_and_save_feed_files() {
         $remote_content_length = null;
 
         if ( ! is_wp_error( $head_response ) ) {
-            $head_headers = wp_remote_retrieve_headers( $head_response );
-            $head_headers_lower = array_change_key_case( cb_normalize_http_headers( $head_headers ), CASE_LOWER );
-
-            if ( isset( $head_headers_lower['last-modified'] ) ) {
-                $remote_last_modified = $head_headers_lower['last-modified'];
+            $head_last_modified = cb_get_response_header_value( $head_response, 'last-modified' );
+            if ( $head_last_modified ) {
+                $remote_last_modified = $head_last_modified;
             }
 
-            if ( isset( $head_headers_lower['content-length'] ) ) {
-                $remote_content_length = (int) $head_headers_lower['content-length'];
+            $head_content_length = cb_get_response_header_value( $head_response, 'content-length' );
+            if ( $head_content_length ) {
+                $remote_content_length = (int) $head_content_length;
             }
         }
 
@@ -730,13 +739,16 @@ function fetch_and_save_feed_files() {
         file_put_contents( $file_path, $file_content );
 
         if ( 'Unknown' === $remote_last_modified ) {
-            $get_headers = wp_remote_retrieve_headers( $response );
-            $get_headers_lower = array_change_key_case( cb_normalize_http_headers( $get_headers ), CASE_LOWER );
-            if ( isset( $get_headers_lower['last-modified'] ) ) {
-                $remote_last_modified = $get_headers_lower['last-modified'];
+            $get_last_modified = cb_get_response_header_value( $response, 'last-modified' );
+            if ( $get_last_modified ) {
+                $remote_last_modified = $get_last_modified;
             }
-            if ( null === $remote_content_length && isset( $get_headers_lower['content-length'] ) ) {
-                $remote_content_length = (int) $get_headers_lower['content-length'];
+
+            if ( null === $remote_content_length ) {
+                $get_content_length = cb_get_response_header_value( $response, 'content-length' );
+                if ( $get_content_length ) {
+                    $remote_content_length = (int) $get_content_length;
+                }
             }
         }
 
