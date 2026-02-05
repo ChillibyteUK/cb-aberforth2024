@@ -532,8 +532,11 @@ EOT;
                 return;
             }
             $headers = wp_remote_retrieve_headers( $response );
+            // Debug: log what we actually got
+            error_log( 'Raw headers for ' . $file . ': ' . print_r( $headers, true ) );
             // Convert to array and normalize headers to lowercase keys for consistent access.
             $headers_lower = array_change_key_case( (array) $headers, CASE_LOWER );
+            error_log( 'Normalized headers: ' . print_r( $headers_lower, true ) );
 
             if ( isset( $headers_lower['content-length'] ) ) {
                 $remote_size = intval( $headers_lower['content-length'] ); // remote size in bytes.
