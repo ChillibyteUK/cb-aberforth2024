@@ -526,22 +526,22 @@ EOT;
                 }
             }
 
-            // Get the stored remote date from when the file was last downloaded
+            // Get the stored remote date and size from when the file was last downloaded
             $stored_remote_date = get_option( 'csv_file_' . sanitize_key( $file ) . '_remote_date', 'Unknown' );
+            $stored_remote_size = get_option( 'csv_file_' . sanitize_key( $file ) . '_remote_size', false );
             
             if ( $stored_remote_date && $stored_remote_date !== 'Unknown' ) {
+                $remote_date = $stored_remote_date;
+                if ( $stored_remote_size ) {
+                    $remote_size = number_format( $stored_remote_size / 1024, 2 ) . ' KB';
+                } else {
+                    $remote_size = 'Unknown';
+                }
                 $remote_modification_time = strtotime( $stored_remote_date );
-                $remote_date = gmdate( 'Y-m-d H:i:s', $remote_modification_time );
-                // Calculate file size from local file since we have it
-                $file_full_path = $_SERVER['DOCUMENT_ROOT'] . '/feed/' . $file;
-                $body = file_get_contents( $file_full_path );
-                $body_size = strlen( $body );
-                $remote_size = number_format( $body_size / 1024, 2 ) . ' KB';
             } else {
                 $remote_size = 'Unknown';
                 $remote_date = 'Unknown';
                 $remote_modification_time = time();
-                $file_full_path = $_SERVER['DOCUMENT_ROOT'] . '/feed/' . $file;
             }
 
             $file_full_path = $_SERVER['DOCUMENT_ROOT'] . '/feed/' . $file;
@@ -636,19 +636,17 @@ function fetch_and_save_feed_files() {
 
         file_put_contents( $file_path, $file_content );
         
-        // Capture and store the last-modified header from the response
-        $headers = wp_remote_retrieve_headers( $response );
-        $headers_lower = array_change_key_case( (array) $headers, CASE_LOWER );
-        $last_modified = 'Unknown';
+        // Store download timestamp and file size as remote metadata
+        $download_timestamp = current_time( 'Y-m-d H:i:s' );
+        $file_size = strlen( $file_content );
         
-        if ( isset( $headers_lower['last-modified'] ) ) {
-            $last_modified = $headers_lower['last-modified'];
-        }
+        $option_key_date = 'csv_file_' . sanitize_key( $file_name ) . '_remote_date';
+        $option_key_size = 'csv_file_' . sanitize_key( $file_name ) . '_remote_size';
         
-        // Store the remote file's last-modified time
-        $option_key = 'csv_file_' . sanitize_key( $file_name ) . '_remote_date';
-        update_option( $option_key, $last_modified );
-        error_log( "Stored remote date for {$file_name}: {$last_modified} (key: {$option_key})" );
+        update_option( $option_key_date, $download_timestamp );
+        update_option( $option_key_size, $file_size );
+        
+        error_log( "Downloaded {$file_name}: {$file_size} bytes at {$download_timestamp}" );
     }
 }
 add_action( 'download_feed_files', 'fetch_and_save_feed_files' );
