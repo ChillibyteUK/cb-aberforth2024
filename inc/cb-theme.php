@@ -745,7 +745,11 @@ EOT;
     }
 
     $output .= <<<EOT
-    <button id="triggerButton" class="button">Run Data CSV Download Now</button>
+    <div class="d-flex flex-wrap gap-2">
+        <button id="triggerButton" class="button">Run Data CSV Download Now</button>
+        <button id="ipButton" class="button button-secondary">Show outbound IP to whitelist</button>
+    </div>
+    <div id="ipOutput" class="mt-3"></div>
     <div id="outputDiv" class="mt-4"></div>
 </div>
 <script>
@@ -804,6 +808,31 @@ document.getElementById('triggerButton').addEventListener('click', function () {
             button.disabled = false;
         });
 });
+
+document.getElementById('ipButton').addEventListener('click', function () {
+    const ipOutput = document.getElementById('ipOutput');
+    const button = this;
+    button.disabled = true;
+
+    ipOutput.innerHTML = '<div class="alert alert-info">Checking outbound IP...</div>';
+
+    fetch('/?get_outbound_ip=1')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            ipOutput.innerHTML = '<div class="alert alert-success">Outbound IP: <strong>' + data.ip + '</strong> <span class="text-muted">(' + data.timestamp + ')</span></div>';
+        })
+        .catch(error => {
+            ipOutput.innerHTML = '<div class="alert alert-danger">Error: ' + error.message + '</div>';
+        })
+        .finally(() => {
+            button.disabled = false;
+        });
+});
 </script>
 EOT;
 
@@ -856,6 +885,17 @@ add_action( 'download_feed_files', 'fetch_and_save_feed_files' );
 // http://aberforth.local/?trigger_feed_download=run
 function trigger_feed_download()
 {
+    if (isset($_GET['get_outbound_ip']) && $_GET['get_outbound_ip'] == '1') {
+        header( 'Content-Type: application/json' );
+        echo wp_json_encode(
+            array(
+                'ip' => cb_get_outbound_ip(),
+                'timestamp' => current_time( 'Y-m-d H:i:s' ),
+            )
+        );
+        exit;
+    }
+
     if (isset($_GET['trigger_feed_download']) && $_GET['trigger_feed_download'] == 'run') {
         header( 'Content-Type: application/json' );
         
