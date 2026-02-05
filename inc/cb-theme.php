@@ -48,7 +48,7 @@ if ( ! defined( 'CSV_FTP_PASS' ) ) {
     define( 'CSV_FTP_PASS', '@£nTl9BEqaR5' );
 }
 if ( ! defined( 'CSV_FTP_PATH' ) ) {
-    define( 'CSV_FTP_PATH', '/sftp/uploads/csv/' ); // Path on 20i FTP server where CSVs are stored
+    define( 'CSV_FTP_PATH', '/uploads/csv/' ); // Path on 20i FTP server where CSVs are stored
 }
 if ( ! defined( 'CSV_FTP_PORT' ) ) {
     define( 'CSV_FTP_PORT', 21 );
@@ -57,30 +57,30 @@ if ( ! defined( 'CSV_FTP_PORT' ) ) {
 define(
 	'CSV_FILES',
 	array(
-		'/sftp/uploads/csv/AFUND_Dividends.csv',
-		'/sftp/uploads/csv/AGVIT_Dividends.csv',
-		'/sftp/uploads/csv/ASCOT_Dividends.csv',
-		'/sftp/uploads/csv/ASLIT_Dividends.csv',
-		'/sftp/uploads/csv/AFUND_IndustryWeights.csv',
-		'/sftp/uploads/csv/AGVIT_IndustryWeights.csv',
-		'/sftp/uploads/csv/ASCOT_IndustryWeights.csv',
-		'/sftp/uploads/csv/ASLIT_IndustryWeights.csv',
-		'/sftp/uploads/csv/AFUND_CompoundPerformance.csv',
-		'/sftp/uploads/csv/AFUND_CumulativePerformance.csv',
-		'/sftp/uploads/csv/AFUND_DiscretePerformance.csv',
-		'/sftp/uploads/csv/AGVIT_CompoundPerformance.csv',
-		'/sftp/uploads/csv/AGVIT_CumulativePerformance.csv',
-		'/sftp/uploads/csv/AGVIT_DiscretePerformance.csv',
-		'/sftp/uploads/csv/ASCOT_CompoundPerformance.csv',
-		'/sftp/uploads/csv/ASCOT_CumulativePerformance.csv',
-		'/sftp/uploads/csv/ASCOT_DiscretePerformance.csv',
-		'/sftp/uploads/csv/ASLIT_CompoundPerformance.csv',
-		'/sftp/uploads/csv/ASLIT_CumulativePerformance.csv',
-		'/sftp/uploads/csv/ASLIT_DiscretePerformance.csv',
-		'/sftp/uploads/csv/AFUND_PortfolioHoldings.csv',
-		'/sftp/uploads/csv/AGVIT_PortfolioHoldings.csv',
-		'/sftp/uploads/csv/ASCOT_PortfolioHoldings.csv',
-		'/sftp/uploads/csv/ASLIT_PortfolioHoldings.csv',
+		'/uploads/csv/AFUND_Dividends.csv',
+		'/uploads/csv/AGVIT_Dividends.csv',
+		'/uploads/csv/ASCOT_Dividends.csv',
+		'/uploads/csv/ASLIT_Dividends.csv',
+		'/uploads/csv/AFUND_IndustryWeights.csv',
+		'/uploads/csv/AGVIT_IndustryWeights.csv',
+		'/uploads/csv/ASCOT_IndustryWeights.csv',
+		'/uploads/csv/ASLIT_IndustryWeights.csv',
+		'/uploads/csv/AFUND_CompoundPerformance.csv',
+		'/uploads/csv/AFUND_CumulativePerformance.csv',
+		'/uploads/csv/AFUND_DiscretePerformance.csv',
+		'/uploads/csv/AGVIT_CompoundPerformance.csv',
+		'/uploads/csv/AGVIT_CumulativePerformance.csv',
+		'/uploads/csv/AGVIT_DiscretePerformance.csv',
+		'/uploads/csv/ASCOT_CompoundPerformance.csv',
+		'/uploads/csv/ASCOT_CumulativePerformance.csv',
+		'/uploads/csv/ASCOT_DiscretePerformance.csv',
+		'/uploads/csv/ASLIT_CompoundPerformance.csv',
+		'/uploads/csv/ASLIT_CumulativePerformance.csv',
+		'/uploads/csv/ASLIT_DiscretePerformance.csv',
+		'/uploads/csv/AFUND_PortfolioHoldings.csv',
+		'/uploads/csv/AGVIT_PortfolioHoldings.csv',
+		'/uploads/csv/ASCOT_PortfolioHoldings.csv',
+		'/uploads/csv/ASLIT_PortfolioHoldings.csv',
 	)
 );
 
