@@ -594,19 +594,6 @@ function display_pricing_data_status() {
     }
 
     $output .= '</div>';
-    
-    // Add FTP Connection Status Section
-    $outbound_ip = cb_get_outbound_ip();
-    
-    $output .= '<div class="mb-4 p-3 border rounded">';
-    $output .= '<h3>FTP Configuration</h3>';
-    $output .= '<p><strong>Protocol:</strong> FTP (File Transfer Protocol)</p>';
-    $output .= '<p><strong>FTP Host:</strong> ' . esc_html( CSV_FTP_HOST ) . ':' . CSV_FTP_PORT . '</p>';
-    $output .= '<p><strong>FTP User:</strong> ' . esc_html( CSV_FTP_USER ) . '</p>';
-    $output .= '<p><strong>Kinsta Outbound IP:</strong> <code>' . esc_html( $outbound_ip ) . '</code></p>';
-    $output .= '<p class="text-muted small">Whitelist this IP in 20i FTP firewall settings</p>';
-    $output .= '</div>';
-    
     $output .= <<<EOT
 <div class="mb-5">
 <h2>CSV Data Files Feed</h2>
@@ -733,20 +720,57 @@ EOT;
 <script>
 document.getElementById('triggerButton').addEventListener('click', function () {
     const outputDiv = document.getElementById('outputDiv');
-    outputDiv.textContent = 'Loading...'; // Display a loading message while fetching
-
+    const button = this;
+    button.disabled = true;
+    
+    outputDiv.innerHTML = '<div class="alert alert-info">Starting download...</div>';
+    
     fetch('/?trigger_feed_download=run')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok ' + response.statusText);
             }
-            return response.text();
+            return response.json();
         })
         .then(data => {
-            outputDiv.textContent = data; // Display the returned string in the div
+            let html = '<div class="mt-3">';
+            html += '<p><strong>\u2705 Download completed at ' + data.completed_at + '</strong></p>';
+            html += '<p>Processed ' + data.summary.success + ' file(s) successfully, ' + data.summary.failed + ' failed.</p>';
+            
+            html += '<div class="mt-3"><strong>Details:</strong></div>';
+            html += '<div style="max-height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background: #f5f5f5; font-size: 12px; font-family: monospace;">';
+            
+            data.files.forEach(function(file) {
+                const success = file.steps[file.steps.length - 1].status === 'success';
+                html += '<div style="margin-bottom: 15px; padding: 8px; background: ' + (success ? '#e8f5e9' : '#ffebee') + '; border-left: 3px solid ' + (success ? '#4caf50' : '#f44336') + ';">';
+                html += '<strong>' + file.name + '</strong>';
+                html += '<ul style="margin: 5px 0; padding-left: 20px;">';
+                
+                file.steps.forEach(function(step) {
+                    let icon = '⏳';
+                    if (step.status === 'success') icon = '✓';
+                    if (step.status === 'error') icon = '✗';
+                    
+                    html += '<li>' + icon + ' ' + step.step + ' (' + step.timestamp + ')';
+                    if (step.size) html += ' - ' + (step.size / 1024).toFixed(2) + ' KB';
+                    if (step.bytes) html += ' - ' + (step.bytes / 1024).toFixed(2) + ' KB';
+                    if (step.error) html += ' - <span style="color: red;">' + step.error + '</span>';
+                    html += '</li>';
+                });
+                
+                html += '</ul></div>';
+            });
+            
+            html += '</div>';
+            html += '</div>';
+            
+            outputDiv.innerHTML = html;
         })
         .catch(error => {
-            outputDiv.textContent = 'An error occurred: ' + error.message; // Display error message
+            outputDiv.innerHTML = '<div class="alert alert-danger">Error: ' + error.message + '</div>';
+        })
+        .finally(() => {
+            button.disabled = false;
         });
 });
 </script>
@@ -797,13 +821,133 @@ function fetch_and_save_feed_files() {
 }
 add_action( 'download_feed_files', 'fetch_and_save_feed_files' );
 
-// manual trigger
+// manual trigger with detailed JSON output
 // http://aberforth.local/?trigger_feed_download=run
 function trigger_feed_download()
 {
     if (isset($_GET['trigger_feed_download']) && $_GET['trigger_feed_download'] == 'run') {
-        fetch_and_save_feed_files();
-        echo 'Feed files have been fetched and saved.';
+        header( 'Content-Type: application/json' );
+        
+        $progress = array(
+            'status' => 'started',
+            'timestamp' => current_time( 'Y-m-d H:i:s' ),
+            'files' => array(),
+            'summary' => array(
+                'total' => 0,
+                'success' => 0,
+                'failed' => 0,
+            ),
+        );
+        
+        $urls = CSV_FILES;
+        foreach ( $urls as $url ) {
+            $file_name = basename( $url );
+            $file_log = array(
+                'name' => $file_name,
+                'steps' => array(),
+            );
+            
+            // Fetch metadata
+            $file_log['steps'][] = array(
+                'step' => 'Fetching metadata',
+                'status' => 'in_progress',
+                'timestamp' => current_time( 'Y-m-d H:i:s' ),
+            );
+            
+            $metadata = cb_fetch_csv_metadata_via_ftp( $file_name );
+            $remote_last_modified = $metadata['last_modified'] ? $metadata['last_modified'] : 'Unknown';
+            $remote_content_length = $metadata['content_length'] ? (int) $metadata['content_length'] : null;
+            
+            $file_log['steps'][] = array(
+                'step' => 'Metadata fetched',
+                'status' => 'success',
+                'size' => $remote_content_length,
+                'modified' => $remote_last_modified,
+                'timestamp' => current_time( 'Y-m-d H:i:s' ),
+            );
+            
+            // Download file via FTP
+            $file_log['steps'][] = array(
+                'step' => 'Downloading via FTP',
+                'status' => 'in_progress',
+                'timestamp' => current_time( 'Y-m-d H:i:s' ),
+            );
+            
+            $file_content = cb_fetch_csv_via_ftp( $file_name );
+            
+            if ( false === $file_content || empty( $file_content ) ) {
+                error_log( "FTP download failed or empty for {$file_name}" );
+                $file_log['steps'][] = array(
+                    'step' => 'Download failed',
+                    'status' => 'error',
+                    'error' => 'FTP download returned empty content',
+                    'timestamp' => current_time( 'Y-m-d H:i:s' ),
+                );
+                $progress['summary']['failed']++;
+                $progress['files'][] = $file_log;
+                continue;
+            }
+            
+            $file_log['steps'][] = array(
+                'step' => 'Downloaded successfully',
+                'status' => 'success',
+                'bytes' => strlen( $file_content ),
+                'timestamp' => current_time( 'Y-m-d H:i:s' ),
+            );
+            
+            // Save to local disk
+            $file_log['steps'][] = array(
+                'step' => 'Saving to local storage',
+                'status' => 'in_progress',
+                'timestamp' => current_time( 'Y-m-d H:i:s' ),
+            );
+            
+            $file_path = $_SERVER['DOCUMENT_ROOT'] . '/feed/' . $file_name;
+            
+            if ( ! file_exists( $_SERVER['DOCUMENT_ROOT'] . '/feed' ) ) {
+                mkdir( $_SERVER['DOCUMENT_ROOT'] . '/feed', 0755, true );
+            }
+            
+            file_put_contents( $file_path, $file_content );
+            
+            $file_log['steps'][] = array(
+                'step' => 'Saved to disk',
+                'status' => 'success',
+                'path' => $file_path,
+                'timestamp' => current_time( 'Y-m-d H:i:s' ),
+            );
+            
+            // Update options
+            $file_log['steps'][] = array(
+                'step' => 'Updating WordPress options',
+                'status' => 'in_progress',
+                'timestamp' => current_time( 'Y-m-d H:i:s' ),
+            );
+            
+            $file_size = strlen( $file_content );
+            $stored_remote_size = null !== $remote_content_length ? $remote_content_length : $file_size;
+            
+            $option_key_date = 'csv_file_' . sanitize_key( $file_name ) . '_remote_date';
+            $option_key_size = 'csv_file_' . sanitize_key( $file_name ) . '_remote_size';
+            
+            update_option( $option_key_date, $remote_last_modified );
+            update_option( $option_key_size, $stored_remote_size );
+            
+            $file_log['steps'][] = array(
+                'step' => 'Complete',
+                'status' => 'success',
+                'timestamp' => current_time( 'Y-m-d H:i:s' ),
+            );
+            
+            $progress['summary']['success']++;
+            $progress['files'][] = $file_log;
+        }
+        
+        $progress['summary']['total'] = count( CSV_FILES );
+        $progress['status'] = 'completed';
+        $progress['completed_at'] = current_time( 'Y-m-d H:i:s' );
+        
+        echo wp_json_encode( $progress );
         exit;
     }
 }
