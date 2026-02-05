@@ -46,8 +46,8 @@ $page_title_overrides = array(
 // Normalize path (remove leading/trailing slashes) and check for override.
 $normalized_path = trim( $current_page_path, '/' );
 if ( isset( $page_title_overrides[ $normalized_path ] ) ) {
-	list( $fund_key, $title ) = $page_title_overrides[ $normalized_path ];
-	$funds[ $fund_key ]       = $title;
+    list( $fund_key, $page_title ) = $page_title_overrides[ $normalized_path ];
+    $funds[ $fund_key ]            = $page_title;
 }
 
 $fund_options = array(
@@ -57,9 +57,9 @@ $fund_options = array(
 
 // Check if the given fund exists in the options array.
 if ( array_key_exists( $fund, $fund_options ) ) {
-    $xmlContent = get_option( $fund_options[ $fund ] ) ?? null;
+    $xml_content = get_option( $fund_options[ $fund ] ) ?? null;
 } else {
-    $xmlContent = null;
+    $xml_content = null;
 }
 
 $classes = $block['className'] ?? null;
@@ -81,19 +81,19 @@ $classes = $block['className'] ?? null;
                     	<?php
                     }
                 }
-                $link = get_field( $fund . '_kepler_link', 'option' ) ?? null;
-                if ( $link ?? null ) {
+                $kepler_link = get_field( $fund . '_kepler_link', 'option' ) ?? null;
+                if ( $kepler_link ?? null ) {
                     ?>
-                    <a href="<?= esc_url( $link['url'] ); ?>" target="<?= esc_attr( $link['target'] ); ?>" class="button button--external"><?= esc_html( $link['title'] ); ?></a>
+                    <a href="<?= esc_url( $kepler_link['url'] ); ?>" target="<?= esc_attr( $kepler_link['target'] ); ?>" class="button button--external"><?= esc_html( $kepler_link['title'] ); ?></a>
                 	<?php
                 }
                 ?>
             </div>
             <div class="col-md-4 d-flex gap-4 justify-content-md-end">
                 <?php
-                if ( $xmlContent ) {
+                if ( $xml_content ) {
                     // Parse the XML data.
-                    $xml = simplexml_load_string( $xmlContent );
+                    $xml = simplexml_load_string( $xml_content );
                     if ( false === $xml ) {
                         error_log( 'Error: Failed to parse XML.' );
                     }
@@ -106,10 +106,10 @@ $classes = $block['className'] ?? null;
                         $json = wp_json_encode( $share );
                         $data = json_decode( $json, true );
                         if ( $data ) {
-                            $symbol       = $data['Symbol'];
-                            $currentPrice = $data['CurrentPrice'];
-                            $change       = $data['Change'];
-                            $date         = $data['Date'];
+                            $symbol        = $data['Symbol'];
+                            $current_price = $data['current_price'];
+                            $change        = $data['Change'];
+                            $date          = $data['Date'];
 
                             $change_status = ( $change >= 0 ) ? 'ticker__change--up' : 'ticker__change--down';
 
@@ -117,7 +117,7 @@ $classes = $block['className'] ?? null;
                             <div class="ticker">
                                 <div class="ticker__date">Share Price: <?= esc_html( $date ); ?></div>
                                 <div class="ticker__symbol"><?= esc_html( $symbol ); ?></div>
-                                <div class="ticker__price"><?= esc_html( $currentPrice ); ?></div>
+                                <div class="ticker__price"><?= esc_html( $current_price ); ?></div>
                                 <div class="ticker__change <?= esc_attr( $change_status ); ?>"><?= esc_html( $change ); ?></div>
                             </div>
                 			<?php
@@ -147,7 +147,7 @@ $classes = $block['className'] ?? null;
         // Get pages to display in the navigation.
         if ( $current_page_id === $root_page_id ) {
             // If the current page is the root page, get all child pages of the root.
-            $pages = get_pages(
+            $p = get_pages(
 				array(
 					'parent'      => $root_page_id,
 					'sort_column' => 'menu_order',
@@ -155,10 +155,10 @@ $classes = $block['className'] ?? null;
 				)
 			);
             // Add the root page to the beginning of the list.
-            array_unshift( $pages, get_post( $root_page_id ) );
+            array_unshift( $p, get_post( $root_page_id ) );
         } else {
             // If the current page is a child page, add the root page and get the sibling pages.
-            $pages    = array( get_post( $root_page_id ) );
+            $p        = array( get_post( $root_page_id ) );
             $siblings = get_pages(
 				array(
 					'parent'      => $root_page_id,
@@ -166,15 +166,15 @@ $classes = $block['className'] ?? null;
 					'post_status' => 'publish',
 				)
 			);
-            $pages    = array_merge( $pages, $siblings );
+            $p        = array_merge( $p, $siblings );
         }
 
         // Output the navigation block.
         echo '<nav class="fund-nav">';
-        foreach ( $pages as $page ) {
-            $page_permalink = get_permalink( $page->ID );
-            $active_class   = ( $current_page_id === $page->ID ) ? 'active' : '';
-            $the_title      = ( $page->ID === $root_page_id ) ? 'Information' : get_the_title( $page->ID );
+        foreach ( $p as $pp ) {
+            $page_permalink = get_permalink( $pp->ID );
+            $active_class   = ( $current_page_id === $pp->ID ) ? 'active' : '';
+            $the_title      = ( $pp->ID === $root_page_id ) ? 'Information' : get_the_title( $pp->ID );
             if ( $active_class ) {
                 echo '<a href="' . esc_url( $page_permalink ) . '" class="' . esc_attr( $active_class ) . '">' . esc_html( $the_title ) . '</a>';
             } else {
