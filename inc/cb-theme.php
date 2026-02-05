@@ -545,7 +545,9 @@ EOT;
                     )
                 );
 
-                if ( ! is_wp_error( $head_response ) ) {
+                $head_failed = is_wp_error( $head_response );
+
+                if ( ! $head_failed ) {
                     $head_headers = wp_remote_retrieve_headers( $head_response );
                     $head_headers_lower = array_change_key_case( (array) $head_headers, CASE_LOWER );
 
@@ -557,6 +559,32 @@ EOT;
                     if ( isset( $head_headers_lower['content-length'] ) ) {
                         $stored_remote_size = (int) $head_headers_lower['content-length'];
                         update_option( 'csv_file_' . sanitize_key( $file ) . '_remote_size', $stored_remote_size );
+                    }
+                }
+
+                if ( $head_failed || ( 'Unknown' === $stored_remote_date && ! $stored_remote_size ) ) {
+                    $get_response = wp_remote_get(
+                        $remote_url,
+                        array(
+                            'redirection' => 5,
+                            'timeout'     => 20,
+                            'headers'     => array( 'Range' => 'bytes=0-0' ),
+                        )
+                    );
+
+                    if ( ! is_wp_error( $get_response ) ) {
+                        $get_headers = wp_remote_retrieve_headers( $get_response );
+                        $get_headers_lower = array_change_key_case( (array) $get_headers, CASE_LOWER );
+
+                        if ( 'Unknown' === $stored_remote_date && isset( $get_headers_lower['last-modified'] ) ) {
+                            $stored_remote_date = $get_headers_lower['last-modified'];
+                            update_option( 'csv_file_' . sanitize_key( $file ) . '_remote_date', $stored_remote_date );
+                        }
+
+                        if ( ! $stored_remote_size && isset( $get_headers_lower['content-length'] ) ) {
+                            $stored_remote_size = (int) $get_headers_lower['content-length'];
+                            update_option( 'csv_file_' . sanitize_key( $file ) . '_remote_size', $stored_remote_size );
+                        }
                     }
                 }
             }
