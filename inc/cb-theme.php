@@ -526,36 +526,25 @@ EOT;
                 }
             }
 
-            // Use GET request instead of HEAD (some CDNs don't support HEAD properly)
-            $response = wp_remote_get( CSV_HOST . $remote_file );
-            if ( is_wp_error( $response ) ) {
-                echo 'Error fetching remote file metadata: ' . $response->get_error_message();
-                return;
-            }
-            $headers = wp_remote_retrieve_headers( $response );
-            // Get the actual body to calculate size if headers don't provide it
-            $body = wp_remote_retrieve_body( $response );
-            $body_size = strlen( $body );
-
-            if ( ! empty( $body_size ) && $body_size > 0 ) {
+            // Get the stored remote date from when the file was last downloaded
+            $stored_remote_date = get_option( 'csv_file_' . sanitize_key( $file ) . '_remote_date', 'Unknown' );
+            
+            if ( $stored_remote_date && $stored_remote_date !== 'Unknown' ) {
+                $remote_modification_time = strtotime( $stored_remote_date );
+                $remote_date = gmdate( 'Y-m-d H:i:s', $remote_modification_time );
+                // Calculate file size from local file since we have it
+                $file_full_path = $_SERVER['DOCUMENT_ROOT'] . '/feed/' . $file;
+                $body = file_get_contents( $file_full_path );
+                $body_size = strlen( $body );
                 $remote_size = number_format( $body_size / 1024, 2 ) . ' KB';
             } else {
                 $remote_size = 'Unknown';
-            }
-
-            // Get last-modified from headers
-            $headers_lower = array_change_key_case( (array) $headers, CASE_LOWER );
-            error_log( 'Headers for ' . $file . ': ' . print_r( $headers_lower, true ) );
-            $remote_modification_time = time(); // Default to current time if header missing
-            if ( isset( $headers_lower['last-modified'] ) ) {
-                $remote_modification_time = strtotime( $headers_lower['last-modified'] );
-                $remote_date = gmdate( 'Y-m-d H:i:s', $remote_modification_time );
-            } else {
                 $remote_date = 'Unknown';
+                $remote_modification_time = time();
+                $file_full_path = $_SERVER['DOCUMENT_ROOT'] . '/feed/' . $file;
             }
 
-
-            $file_full_path = $file_path . $file;
+            $file_full_path = $_SERVER['DOCUMENT_ROOT'] . '/feed/' . $file;
 
             $file_modification_time = filemtime( $file_full_path );
             $local_date             = gmdate( 'Y-m-d H:i:s', $file_modification_time );
@@ -639,12 +628,6 @@ function fetch_and_save_feed_files() {
         }
 
         $file_name = basename( $url );
-        // $upload_dir = wp_upload_dir();
-        // $file_path = $upload_dir['basedir'] . '/feed/' . $file_name;
-
-        // if (!file_exists($upload_dir['basedir'] . '/feed')) {
-        //     wp_mkdir_p($upload_dir['basedir'] . '/feed');
-        // }
         $file_path = $_SERVER['DOCUMENT_ROOT'] . '/feed/' . $file_name;
 
         if ( ! file_exists( $_SERVER['DOCUMENT_ROOT'] . '/feed' ) ) {
@@ -652,6 +635,18 @@ function fetch_and_save_feed_files() {
         }
 
         file_put_contents( $file_path, $file_content );
+        
+        // Capture and store the last-modified header from the response
+        $headers = wp_remote_retrieve_headers( $response );
+        $headers_lower = array_change_key_case( (array) $headers, CASE_LOWER );
+        $last_modified = 'Unknown';
+        
+        if ( isset( $headers_lower['last-modified'] ) ) {
+            $last_modified = $headers_lower['last-modified'];
+        }
+        
+        // Store the remote file's last-modified time
+        update_option( 'csv_file_' . sanitize_key( $file_name ) . '_remote_date', $last_modified );
     }
 }
 add_action( 'download_feed_files', 'fetch_and_save_feed_files' );
