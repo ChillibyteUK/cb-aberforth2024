@@ -173,9 +173,13 @@ $classes = $block['className'] ?? null;
         echo '<nav class="fund-nav">';
         foreach ( $pages as $page ) {
             $page_permalink = get_permalink( $page->ID );
-            $active_class   = ( $current_page_id === $page->ID ) ? ' class="active"' : '';
-            $title          = ( $page->ID === $root_page_id ) ? 'Information' : get_the_title( $page->ID );
-            echo '<a href="' . esc_url( $page_permalink ) . '"' . esc_attr( $active_class ) . '>' . esc_html( $title ) . '</a>';
+            $active_class   = ( $current_page_id === $page->ID ) ? 'active' : '';
+            $the_title      = ( $page->ID === $root_page_id ) ? 'Information' : get_the_title( $page->ID );
+            if ( $active_class ) {
+                echo '<a href="' . esc_url( $page_permalink ) . '" class="' . esc_attr( $active_class ) . '">' . esc_html( $the_title ) . '</a>';
+            } else {
+                echo '<a href="' . esc_url( $page_permalink ) . '">' . esc_html( $the_title ) . '</a>';
+            }
         }
         echo '</nav>';
         ?>
