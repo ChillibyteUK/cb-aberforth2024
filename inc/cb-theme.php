@@ -38,12 +38,11 @@ add_filter('gform_validation_1', function($validation_result) { // _1 is the for
 define( 'CSV_HOST', 'https://ap01.chillihosting.co.uk' );
 
 // FTP Configuration for downloading from 20i
-define( 'CSV_FTP_HOST', 'ftp.gb.stackcp.com' ); // 20i FTP CNAME
-define( 'CSV_FTP_USER', '' ); // Set in wp-config.php or ACF options
-define( 'CSV_FTP_PASS', '' ); // Set in wp-config.php or ACF options
+define( 'CSV_FTP_HOST', 'ftp.gb.stackcp.com' ); // 20i SFTP CNAME
+define( 'CSV_FTP_USER', 'aberforth-sftp@ap01.chillihosting.co.uk' );
+define( 'CSV_FTP_PASS', '@£nTl9BEqaR5' );
 define( 'CSV_FTP_PATH', '/www/aberforthcouk_699/public/feed/' );
-define( 'CSV_FTP_PORT', 21 );
-define( 'CSV_USE_FTP', true ); // Set to false to use HTTP instead
+define( 'CSV_FTP_PORT', 22 ); // Port 22 = SFTP (requires SSH2 extension)
 
 define(
 	'CSV_FILES',
@@ -104,274 +103,83 @@ function cb_get_outbound_ip() {
     return 'Unable to detect';
 }
 
-function cb_normalize_http_headers( $headers ) {
-    if ( is_object( $headers ) && method_exists( $headers, 'getAll' ) ) {
-        return $headers->getAll();
-    }
 
-    return (array) $headers;
-}
 
-function cb_get_response_header_value( $response, $header_name ) {
-    $value = wp_remote_retrieve_header( $response, $header_name );
-    if ( is_array( $value ) ) {
-        $value = reset( $value );
-    }
-    return $value ?: null;
-}
-
-function cb_parse_content_range_size( $content_range ) {
-    if ( ! $content_range ) {
-        return null;
-    }
-
-    if ( preg_match( '/\/(\d+)\s*$/', $content_range, $matches ) ) {
-        return (int) $matches[1];
-    }
-
-    return null;
-}
-
-function cb_fetch_csv_via_ftp( $remote_filename ) {
-    if ( ! defined( 'CSV_USE_FTP' ) || ! CSV_USE_FTP ) {
+function cb_fetch_csv_via_sftp( $remote_filename ) {
+    if ( ! function_exists( 'ssh2_connect' ) ) {
+        error_log( 'SSH2 extension not available. Install php-ssh2 for SFTP support.' );
         return false;
     }
     
-    $ftp_host = defined( 'CSV_FTP_HOST' ) ? CSV_FTP_HOST : '';
-    $ftp_user = defined( 'CSV_FTP_USER' ) ? CSV_FTP_USER : get_field( 'csv_ftp_user', 'option' );
-    $ftp_pass = defined( 'CSV_FTP_PASS' ) ? CSV_FTP_PASS : get_field( 'csv_ftp_pass', 'option' );
-    $ftp_path = defined( 'CSV_FTP_PATH' ) ? CSV_FTP_PATH : '/www/aberforthcouk_699/public/feed/';
-    $ftp_port = defined( 'CSV_FTP_PORT' ) ? CSV_FTP_PORT : 21;
+    $remote_file = rtrim( CSV_FTP_PATH, '/' ) . '/' . $remote_filename;
     
-    if ( empty( $ftp_host ) || empty( $ftp_user ) || empty( $ftp_pass ) ) {
-        error_log( 'FTP credentials not configured for CSV download' );
+    $connection = @ssh2_connect( CSV_FTP_HOST, CSV_FTP_PORT );
+    if ( ! $connection ) {
+        error_log( "SFTP connection failed to " . CSV_FTP_HOST . ":" . CSV_FTP_PORT );
         return false;
     }
     
-    $remote_file = rtrim( $ftp_path, '/' ) . '/' . $remote_filename;
-    
-    $ftp_conn = @ftp_connect( $ftp_host, $ftp_port, 30 );
-    if ( ! $ftp_conn ) {
-        error_log( "FTP connection failed to {$ftp_host}:{$ftp_port}" );
+    if ( ! @ssh2_auth_password( $connection, CSV_FTP_USER, CSV_FTP_PASS ) ) {
+        error_log( "SFTP authentication failed for user " . CSV_FTP_USER );
         return false;
     }
     
-    $login = @ftp_login( $ftp_conn, $ftp_user, $ftp_pass );
-    if ( ! $login ) {
-        error_log( "FTP login failed for user {$ftp_user}" );
-        ftp_close( $ftp_conn );
+    $sftp = @ssh2_sftp( $connection );
+    if ( ! $sftp ) {
+        error_log( "SFTP subsystem initialization failed" );
         return false;
     }
     
-    ftp_pasv( $ftp_conn, true );
-    
-    $temp_file = tmpfile();
-    $temp_path = stream_get_meta_data( $temp_file )['uri'];
-    
-    $download = @ftp_get( $ftp_conn, $temp_path, $remote_file, FTP_BINARY );
-    
-    if ( ! $download ) {
-        error_log( "FTP download failed for {$remote_file}" );
-        fclose( $temp_file );
-        ftp_close( $ftp_conn );
+    $stream = @fopen( "ssh2.sftp://" . intval( $sftp ) . $remote_file, 'r' );
+    if ( ! $stream ) {
+        error_log( "SFTP file open failed for {$remote_file}" );
         return false;
     }
     
-    $file_content = file_get_contents( $temp_path );
-    fclose( $temp_file );
-    ftp_close( $ftp_conn );
+    $file_content = stream_get_contents( $stream );
+    fclose( $stream );
     
     return $file_content;
 }
 
-function cb_fetch_csv_metadata_via_ftp( $remote_filename ) {
+function cb_fetch_csv_metadata_via_sftp( $remote_filename ) {
     $metadata = array(
         'last_modified'  => null,
         'content_length' => null,
         'response_code'  => null,
     );
     
-    if ( ! defined( 'CSV_USE_FTP' ) || ! CSV_USE_FTP ) {
+    if ( ! function_exists( 'ssh2_connect' ) ) {
         return $metadata;
     }
     
-    $ftp_host = defined( 'CSV_FTP_HOST' ) ? CSV_FTP_HOST : '';
-    $ftp_user = defined( 'CSV_FTP_USER' ) ? CSV_FTP_USER : get_field( 'csv_ftp_user', 'option' );
-    $ftp_pass = defined( 'CSV_FTP_PASS' ) ? CSV_FTP_PASS : get_field( 'csv_ftp_pass', 'option' );
-    $ftp_path = defined( 'CSV_FTP_PATH' ) ? CSV_FTP_PATH : '/www/aberforthcouk_699/public/feed/';
-    $ftp_port = defined( 'CSV_FTP_PORT' ) ? CSV_FTP_PORT : 21;
+    $remote_file = rtrim( CSV_FTP_PATH, '/' ) . '/' . $remote_filename;
     
-    if ( empty( $ftp_host ) || empty( $ftp_user ) || empty( $ftp_pass ) ) {
+    $connection = @ssh2_connect( CSV_FTP_HOST, CSV_FTP_PORT );
+    if ( ! $connection ) {
         return $metadata;
     }
     
-    $remote_file = rtrim( $ftp_path, '/' ) . '/' . $remote_filename;
-    
-    $ftp_conn = @ftp_connect( $ftp_host, $ftp_port, 30 );
-    if ( ! $ftp_conn ) {
+    if ( ! @ssh2_auth_password( $connection, CSV_FTP_USER, CSV_FTP_PASS ) ) {
         return $metadata;
     }
     
-    $login = @ftp_login( $ftp_conn, $ftp_user, $ftp_pass );
-    if ( ! $login ) {
-        ftp_close( $ftp_conn );
+    $sftp = @ssh2_sftp( $connection );
+    if ( ! $sftp ) {
         return $metadata;
     }
     
-    ftp_pasv( $ftp_conn, true );
-    
-    $metadata['response_code'] = 200;
-    $metadata['content_length'] = @ftp_size( $ftp_conn, $remote_file );
-    $modified_time = @ftp_mdtm( $ftp_conn, $remote_file );
-    if ( $modified_time !== -1 ) {
-        $metadata['last_modified'] = gmdate( 'D, d M Y H:i:s \\G\\M\\T', $modified_time );
+    $stat = @ssh2_sftp_stat( $sftp, $remote_file );
+    if ( $stat ) {
+        $metadata['response_code'] = 200;
+        $metadata['content_length'] = $stat['size'];
+        $metadata['last_modified'] = gmdate( 'D, d M Y H:i:s \\G\\M\\T', $stat['mtime'] );
     }
-    
-    ftp_close( $ftp_conn );
     
     return $metadata;
 }
 
-function cb_fetch_remote_metadata( $url ) {
-    $metadata = array(
-        'last_modified'  => null,
-        'content_length' => null,
-        'content_type'   => null,
-        'response_code'  => null,
-    );
 
-    if ( function_exists( 'curl_init' ) ) {
-        $headers = array();
-        $ch = curl_init( $url );
-        curl_setopt( $ch, CURLOPT_NOBODY, true );
-        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-        curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
-        curl_setopt( $ch, CURLOPT_USERAGENT, 'curl/8.5.0' );
-        curl_setopt( $ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2_0 );
-        curl_setopt( $ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4 );
-        curl_setopt( $ch, CURLOPT_HEADERFUNCTION, function ( $curl, $header ) use ( &$headers ) {
-            $len = strlen( $header );
-            $header = explode( ':', $header, 2 );
-            if ( count( $header ) < 2 ) {
-                return $len;
-            }
-            $key = strtolower( trim( $header[0] ) );
-            $value = trim( $header[1] );
-            $headers[ $key ] = $value;
-            return $len;
-        } );
-        curl_exec( $ch );
-        $metadata['response_code'] = curl_getinfo( $ch, CURLINFO_RESPONSE_CODE );
-        curl_close( $ch );
-
-        if ( isset( $headers['last-modified'] ) ) {
-            $metadata['last_modified'] = $headers['last-modified'];
-        }
-        if ( isset( $headers['content-length'] ) ) {
-            $metadata['content_length'] = (int) $headers['content-length'];
-        }
-        if ( isset( $headers['content-type'] ) ) {
-            $metadata['content_type'] = $headers['content-type'];
-        }
-
-        if ( $metadata['last_modified'] || $metadata['content_length'] ) {
-            return $metadata;
-        }
-
-        $headers = array();
-        $ch = curl_init( $url );
-        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-        curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
-        curl_setopt( $ch, CURLOPT_USERAGENT, 'curl/8.5.0' );
-        curl_setopt( $ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2_0 );
-        curl_setopt( $ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4 );
-        curl_setopt( $ch, CURLOPT_RANGE, '0-0' );
-        curl_setopt( $ch, CURLOPT_HEADERFUNCTION, function ( $curl, $header ) use ( &$headers ) {
-            $len = strlen( $header );
-            $header = explode( ':', $header, 2 );
-            if ( count( $header ) < 2 ) {
-                return $len;
-            }
-            $key = strtolower( trim( $header[0] ) );
-            $value = trim( $header[1] );
-            $headers[ $key ] = $value;
-            return $len;
-        } );
-        curl_exec( $ch );
-        $metadata['response_code'] = curl_getinfo( $ch, CURLINFO_RESPONSE_CODE );
-        curl_close( $ch );
-
-        if ( isset( $headers['last-modified'] ) ) {
-            $metadata['last_modified'] = $headers['last-modified'];
-        }
-        if ( isset( $headers['content-length'] ) ) {
-            $metadata['content_length'] = (int) $headers['content-length'];
-        }
-        if ( ! $metadata['content_length'] && isset( $headers['content-range'] ) ) {
-            $metadata['content_length'] = cb_parse_content_range_size( $headers['content-range'] );
-        }
-        if ( isset( $headers['content-type'] ) ) {
-            $metadata['content_type'] = $headers['content-type'];
-        }
-
-        return $metadata;
-    }
-
-    $head_response = wp_remote_head(
-        $url,
-        array(
-            'redirection' => 5,
-            'timeout'     => 20,
-            'headers'     => array(
-                'Accept' => 'text/csv,*/*;q=0.9',
-            ),
-            'user-agent'  => 'curl/7.88.1',
-            'ip_resolve'  => 'v4',
-        )
-    );
-
-    if ( ! is_wp_error( $head_response ) ) {
-        $metadata['response_code'] = wp_remote_retrieve_response_code( $head_response );
-        $metadata['last_modified'] = cb_get_response_header_value( $head_response, 'last-modified' );
-        $metadata['content_length'] = cb_get_response_header_value( $head_response, 'content-length' );
-        $metadata['content_type'] = cb_get_response_header_value( $head_response, 'content-type' );
-    }
-
-    if ( ! $metadata['last_modified'] || ! $metadata['content_length'] ) {
-        $get_response = wp_remote_get(
-            $url,
-            array(
-                'redirection' => 5,
-                'timeout'     => 20,
-                'headers'     => array(
-                    'Range'  => 'bytes=0-0',
-                    'Accept' => 'text/csv,*/*;q=0.9',
-                ),
-                'user-agent'  => 'curl/7.88.1',
-                'ip_resolve'  => 'v4',
-            )
-        );
-
-        if ( ! is_wp_error( $get_response ) ) {
-            $metadata['response_code'] = wp_remote_retrieve_response_code( $get_response );
-            if ( ! $metadata['last_modified'] ) {
-                $metadata['last_modified'] = cb_get_response_header_value( $get_response, 'last-modified' );
-            }
-            if ( ! $metadata['content_length'] ) {
-                $metadata['content_length'] = cb_get_response_header_value( $get_response, 'content-length' );
-                if ( ! $metadata['content_length'] ) {
-                    $content_range = cb_get_response_header_value( $get_response, 'content-range' );
-                    $metadata['content_length'] = cb_parse_content_range_size( $content_range );
-                }
-            }
-            if ( ! $metadata['content_type'] ) {
-                $metadata['content_type'] = cb_get_response_header_value( $get_response, 'content-type' );
-            }
-        }
-    }
-
-    return $metadata;
-}
 
 // Remove comment-reply.min.js from footer
 function remove_comment_reply_header_hook() {
@@ -794,22 +602,21 @@ function display_pricing_data_status() {
 
     $output .= '</div>';
     
-    // Add FTP/Connection Status Section
-    $use_ftp = defined( 'CSV_USE_FTP' ) && CSV_USE_FTP;
+    // Add SFTP Connection Status Section
     $outbound_ip = cb_get_outbound_ip();
-    $ftp_host = defined( 'CSV_FTP_HOST' ) ? CSV_FTP_HOST : 'Not configured';
-    $ftp_user = defined( 'CSV_FTP_USER' ) && CSV_FTP_USER ? CSV_FTP_USER : get_field( 'csv_ftp_user', 'option' );
-    $ftp_configured = ! empty( $ftp_user );
+    $ssh2_available = function_exists( 'ssh2_connect' );
     
     $output .= '<div class="mb-4 p-3 border rounded">';
-    $output .= '<h3>Connection Configuration</h3>';
-    $output .= '<p><strong>Download Method:</strong> ' . ( $use_ftp ? 'FTP' : 'HTTP' ) . '</p>';
-    if ( $use_ftp ) {
-        $output .= '<p><strong>FTP Host:</strong> ' . esc_html( $ftp_host ) . '</p>';
-        $output .= '<p><strong>FTP User:</strong> ' . ( $ftp_configured ? esc_html( $ftp_user ) : '<span style="color:red;">Not configured</span>' ) . '</p>';
+    $output .= '<h3>SFTP Configuration</h3>';
+    $output .= '<p><strong>Protocol:</strong> SFTP (SSH File Transfer)</p>';
+    $output .= '<p><strong>SFTP Host:</strong> ' . esc_html( CSV_FTP_HOST ) . ':' . CSV_FTP_PORT . '</p>';
+    $output .= '<p><strong>SFTP User:</strong> ' . esc_html( CSV_FTP_USER ) . '</p>';
+    $output .= '<p><strong>SSH2 Extension:</strong> ' . ( $ssh2_available ? '<span style="color:green;">✓ Available</span>' : '<span style="color:red;">✗ Not installed</span>' ) . '</p>';
+    if ( ! $ssh2_available ) {
+        $output .= '<p class="text-danger"><small>Install php-ssh2 extension to enable SFTP downloads</small></p>';
     }
     $output .= '<p><strong>Kinsta Outbound IP:</strong> <code>' . esc_html( $outbound_ip ) . '</code></p>';
-    $output .= '<p class="text-muted small">Whitelist this IP in 20i FTP firewall settings</p>';
+    $output .= '<p class="text-muted small">Whitelist this IP in 20i SFTP firewall settings</p>';
     $output .= '</div>';
     
     $output .= <<<EOT
@@ -869,13 +676,7 @@ EOT;
             }
 
             if ( $missing_remote_meta ) {
-                if ( defined( 'CSV_USE_FTP' ) && CSV_USE_FTP ) {
-                    $metadata = cb_fetch_csv_metadata_via_ftp( $file );
-                } elseif ( $remote_url ) {
-                    $metadata = cb_fetch_remote_metadata( $remote_url );
-                } else {
-                    $metadata = array( 'last_modified' => null, 'content_length' => null );
-                }
+                $metadata = cb_fetch_csv_metadata_via_sftp( $file );
                 if ( $metadata['last_modified'] ) {
                     $stored_remote_date = $metadata['last_modified'];
                     update_option( 'csv_file_' . sanitize_key( $file ) . '_remote_date', $stored_remote_date );
@@ -967,62 +768,23 @@ EOT;
 }
 add_shortcode( 'pricing_data_status', 'display_pricing_data_status' );
 
-// CSV Feed
+// CSV Feed - SFTP Only
 function fetch_and_save_feed_files() {
-
     $urls = CSV_FILES;
-    $use_ftp = defined( 'CSV_USE_FTP' ) && CSV_USE_FTP;
 
     foreach ( $urls as $url ) {
         $file_name = basename( $url );
-        $file_content = null;
-        $remote_last_modified = 'Unknown';
-        $remote_content_length = null;
         
-        if ( $use_ftp ) {
-            // Try FTP first
-            $metadata = cb_fetch_csv_metadata_via_ftp( $file_name );
-            $remote_last_modified = $metadata['last_modified'] ? $metadata['last_modified'] : 'Unknown';
-            $remote_content_length = $metadata['content_length'] ? (int) $metadata['content_length'] : null;
-            
-            $file_content = cb_fetch_csv_via_ftp( $file_name );
-            
-            if ( false === $file_content ) {
-                error_log( "FTP download failed for {$file_name}, falling back to HTTP" );
-            }
-        }
+        // Fetch metadata
+        $metadata = cb_fetch_csv_metadata_via_sftp( $file_name );
+        $remote_last_modified = $metadata['last_modified'] ? $metadata['last_modified'] : 'Unknown';
+        $remote_content_length = $metadata['content_length'] ? (int) $metadata['content_length'] : null;
         
-        // Fallback to HTTP if FTP disabled or failed
-        if ( ! $use_ftp || false === $file_content ) {
-            $full_url = CSV_HOST . $url;
-            
-            $metadata = cb_fetch_remote_metadata( $full_url );
-            $remote_last_modified = $metadata['last_modified'] ? $metadata['last_modified'] : 'Unknown';
-            $remote_content_length = $metadata['content_length'] ? (int) $metadata['content_length'] : null;
-
-            $response = wp_remote_get(
-                $full_url,
-                array(
-                    'redirection' => 5,
-                    'timeout'     => 20,
-                    'headers'     => array(
-                        'Accept' => 'text/csv,*/*;q=0.9',
-                    ),
-                    'user-agent'  => 'curl/7.88.1',
-                    'ip_resolve'  => 'v4',
-                )
-            );
-
-            if ( is_wp_error( $response ) ) {
-                error_log( "Failed to download $url: " . $response->get_error_message() );
-                continue;
-            }
-	
-            $file_content = wp_remote_retrieve_body( $response );
-        }
+        // Download file via SFTP
+        $file_content = cb_fetch_csv_via_sftp( $file_name );
         
-        if ( empty( $file_content ) ) {
-            error_log( "Empty file or error retrieving content for {$file_name}" );
+        if ( false === $file_content || empty( $file_content ) ) {
+            error_log( "SFTP download failed or empty for {$file_name}" );
             continue;
         }
 
