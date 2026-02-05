@@ -545,9 +545,11 @@ EOT;
 
             // Get last-modified from headers
             $headers_lower = array_change_key_case( (array) $headers, CASE_LOWER );
+            error_log( 'Headers for ' . $file . ': ' . print_r( $headers_lower, true ) );
+            $remote_modification_time = time(); // Default to current time if header missing
             if ( isset( $headers_lower['last-modified'] ) ) {
                 $remote_modification_time = strtotime( $headers_lower['last-modified'] );
-                $remote_date              = gmdate( 'Y-m-d H:i:s', $remote_modification_time );
+                $remote_date = gmdate( 'Y-m-d H:i:s', $remote_modification_time );
             } else {
                 $remote_date = 'Unknown';
             }
