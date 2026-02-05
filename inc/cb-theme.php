@@ -646,7 +646,9 @@ function fetch_and_save_feed_files() {
         }
         
         // Store the remote file's last-modified time
-        update_option( 'csv_file_' . sanitize_key( $file_name ) . '_remote_date', $last_modified );
+        $option_key = 'csv_file_' . sanitize_key( $file_name ) . '_remote_date';
+        update_option( $option_key, $last_modified );
+        error_log( "Stored remote date for {$file_name}: {$last_modified} (key: {$option_key})" );
     }
 }
 add_action( 'download_feed_files', 'fetch_and_save_feed_files' );
