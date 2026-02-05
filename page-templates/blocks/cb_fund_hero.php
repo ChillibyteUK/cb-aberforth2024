@@ -20,58 +20,34 @@ $funds = array(
     'aslit' => 'Aberforth Split Level Income Trust plc',
 );
 
-// Page-specific overrides.
-// FOR THE LOVE OF ODIN STOP USING PAGE IDS!!!
-if ( is_page( '/trusts-and-funds/aberforth-smaller-companies-trust-plc/portfolio/' ) ) {
-    $funds['ascot'] = 'Aberforth Smaller Companies Trust plc - Portfolio';
-}
-if ( is_page( '/trusts-and-funds/aberforth-smaller-companies-trust-plc/fees-charges/' ) ) {
-    $funds['ascot'] = 'Aberforth Smaller Companies Trust plc - Fees & Charges';
-}
-if ( is_page( '/trusts-and-funds/aberforth-smaller-companies-trust-plc/performance/' ) ) {
-    $funds['ascot'] = 'Aberforth Smaller Companies Trust plc - Share Price';
-}
-if ( is_page( '/trusts-and-funds/aberforth-smaller-companies-trust-plc/dividends/' ) ) {
-    $funds['ascot'] = 'Aberforth Smaller Companies Trust plc - Dividends';
-}
-if ( is_page( '/trusts-and-funds/aberforth-smaller-companies-trust-plc/documents/' ) ) {
-    $funds['ascot'] = 'Aberforth Smaller Companies Trust plc - Documents';
-}
-if ( is_page( '/trusts-and-funds/aberforth-geared-value-income-trust-plc/capital-structure/' ) ) {
-    $funds['agvit'] = 'Aberforth Geared Value & Income Trust - Capital Structure';
-}
-if ( is_page( '/trusts-and-funds/aberforth-geared-value-income-trust-plc/dividends/' ) ) {
-    $funds['agvit'] = 'Aberforth Geared Value & Income Trust plc - Dividends';
-}
-if ( is_page( '/trusts-and-funds/aberforth-geared-value-income-trust-plc/performance/' ) ) {
-    $funds['agvit'] = 'Aberforth Geared Value & Income Trust plc - Share Price';
-}
-if ( is_page( '/trusts-and-funds/aberforth-geared-value-income-trust-plc/portfolio/' ) ) {
-    $funds['agvit'] = 'Aberforth Geared Value & Income Trust plc - Portfolio';
-}
-if ( is_page( '/trusts-and-funds/aberforth-geared-value-income-trust-plc/fees-charges/' ) ) {
-    $funds['agvit'] = 'Aberforth Geared Value & Income Trust plc - Fees & Charges';
-}
-if ( is_page( '/trusts-and-funds/aberforth-geared-value-income-trust-plc/launch-information/' ) ) {
-    $funds['agvit'] = 'Aberforth Geared Value & Income Trust plc - Launch Information';
-}
-if ( is_page( '/trusts-and-funds/aberforth-geared-value-income-trust-plc/documents/' ) ) {
-    $funds['agvit'] = 'Aberforth Geared Value & Income Trust plc - Documents';
-}
-if ( is_page( '/trusts-and-funds/aberforth-uk-small-companies-fund/portfolio/' ) ) {
-    $funds['afund'] = 'Aberforth UK Small Companies Fund - Portfolio';
-}
-if ( is_page( '/trusts-and-funds/aberforth-uk-small-companies-fund/income/' ) ) {
-    $funds['afund'] = 'Aberforth UK Small Companies Fund - Income';
-}
-if ( is_page( '/trusts-and-funds/aberforth-uk-small-companies-fund/fees-charges/' ) ) {
-    $funds['afund'] = 'Aberforth UK Small Companies Fund - Fees & Charges';
-}
-if ( is_page( '/trusts-and-funds/aberforth-uk-small-companies-fund/documents/' ) ) {
-    $funds['afund'] = 'Aberforth UK Small Companies Fund - Documents';
-}
-if ( is_page( '/trusts-and-funds/aberforth-uk-small-companies-fund/performance/' ) ) {
-    $funds['afund'] = 'Aberforth UK Small Companies Fund - Performance';
+// Page-specific overrides - using path-based lookup for better performance.
+$current_page_path = wp_make_link_relative( get_permalink() );
+
+$page_title_overrides = array(
+	'trusts-and-funds/aberforth-smaller-companies-trust-plc/portfolio'       => array( 'ascot', 'Aberforth Smaller Companies Trust plc - Portfolio' ),
+	'trusts-and-funds/aberforth-smaller-companies-trust-plc/fees-charges'    => array( 'ascot', 'Aberforth Smaller Companies Trust plc - Fees & Charges' ),
+	'trusts-and-funds/aberforth-smaller-companies-trust-plc/performance'     => array( 'ascot', 'Aberforth Smaller Companies Trust plc - Share Price' ),
+	'trusts-and-funds/aberforth-smaller-companies-trust-plc/dividends'       => array( 'ascot', 'Aberforth Smaller Companies Trust plc - Dividends' ),
+	'trusts-and-funds/aberforth-smaller-companies-trust-plc/documents'       => array( 'ascot', 'Aberforth Smaller Companies Trust plc - Documents' ),
+	'trusts-and-funds/aberforth-geared-value-income-trust-plc/capital-structure' => array( 'agvit', 'Aberforth Geared Value & Income Trust - Capital Structure' ),
+	'trusts-and-funds/aberforth-geared-value-income-trust-plc/dividends'     => array( 'agvit', 'Aberforth Geared Value & Income Trust plc - Dividends' ),
+	'trusts-and-funds/aberforth-geared-value-income-trust-plc/performance'   => array( 'agvit', 'Aberforth Geared Value & Income Trust plc - Share Price' ),
+	'trusts-and-funds/aberforth-geared-value-income-trust-plc/portfolio'     => array( 'agvit', 'Aberforth Geared Value & Income Trust plc - Portfolio' ),
+	'trusts-and-funds/aberforth-geared-value-income-trust-plc/fees-charges'  => array( 'agvit', 'Aberforth Geared Value & Income Trust plc - Fees & Charges' ),
+	'trusts-and-funds/aberforth-geared-value-income-trust-plc/launch-information' => array( 'agvit', 'Aberforth Geared Value & Income Trust plc - Launch Information' ),
+	'trusts-and-funds/aberforth-geared-value-income-trust-plc/documents'     => array( 'agvit', 'Aberforth Geared Value & Income Trust plc - Documents' ),
+	'trusts-and-funds/aberforth-uk-small-companies-fund/portfolio'           => array( 'afund', 'Aberforth UK Small Companies Fund - Portfolio' ),
+	'trusts-and-funds/aberforth-uk-small-companies-fund/income'              => array( 'afund', 'Aberforth UK Small Companies Fund - Income' ),
+	'trusts-and-funds/aberforth-uk-small-companies-fund/fees-charges'        => array( 'afund', 'Aberforth UK Small Companies Fund - Fees & Charges' ),
+	'trusts-and-funds/aberforth-uk-small-companies-fund/documents'           => array( 'afund', 'Aberforth UK Small Companies Fund - Documents' ),
+	'trusts-and-funds/aberforth-uk-small-companies-fund/performance'         => array( 'afund', 'Aberforth UK Small Companies Fund - Performance' ),
+);
+
+// Normalize path (remove leading/trailing slashes) and check for override.
+$normalized_path = trim( $current_page_path, '/' );
+if ( isset( $page_title_overrides[ $normalized_path ] ) ) {
+	list( $fund_key, $title ) = $page_title_overrides[ $normalized_path ];
+	$funds[ $fund_key ]       = $title;
 }
 
 $fund_options = array(
