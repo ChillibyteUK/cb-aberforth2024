@@ -41,7 +41,7 @@ define( 'CSV_HOST', 'https://ap01.chillihosting.co.uk' );
 define( 'CSV_FTP_HOST', 'ftp.gb.stackcp.com' ); // 20i FTP CNAME
 define( 'CSV_FTP_USER', 'aberforth-sftp@ap01.chillihosting.co.uk' );
 define( 'CSV_FTP_PASS', '@£nTl9BEqaR5' );
-define( 'CSV_FTP_PATH', '/www/aberforthcouk_699/public/feed/' );
+define( 'CSV_FTP_PATH', '/sftp/uploads/csv/' ); // Path on 20i FTP server where CSVs are stored
 define( 'CSV_FTP_PORT', 21 );
 
 define(
@@ -122,6 +122,16 @@ function cb_fetch_csv_via_ftp( $remote_filename ) {
     
     ftp_pasv( $ftp_conn, true );
     
+    // Debug: Check if file exists and get size
+    $size = @ftp_size( $ftp_conn, $remote_file );
+    if ( $size === -1 ) {
+        error_log( "FTP file not found or error: {$remote_file}" );
+        ftp_close( $ftp_conn );
+        return false;
+    }
+    
+    error_log( "FTP file info: {$remote_file} - Size: {$size} bytes" );
+    
     $temp_file = tmpfile();
     $temp_path = stream_get_meta_data( $temp_file )['uri'];
     
@@ -136,6 +146,7 @@ function cb_fetch_csv_via_ftp( $remote_filename ) {
     fclose( $temp_file );
     ftp_close( $ftp_conn );
     
+    error_log( "FTP download success: {$remote_file} - Downloaded {$size} bytes" );
     return $file_content;
 }
 
@@ -150,27 +161,38 @@ function cb_fetch_csv_metadata_via_ftp( $remote_filename ) {
     
     $ftp_conn = @ftp_connect( CSV_FTP_HOST, CSV_FTP_PORT, 30 );
     if ( ! $ftp_conn ) {
+        error_log( "FTP metadata: Connection failed to " . CSV_FTP_HOST . ":" . CSV_FTP_PORT );
         return $metadata;
     }
     
     if ( ! @ftp_login( $ftp_conn, CSV_FTP_USER, CSV_FTP_PASS ) ) {
+        error_log( "FTP metadata: Login failed for user " . CSV_FTP_USER );
         ftp_close( $ftp_conn );
         return $metadata;
     }
     
     ftp_pasv( $ftp_conn, true );
     
+    $size = @ftp_size( $ftp_conn, $remote_file );
+    if ( $size === -1 ) {
+        error_log( "FTP metadata: File not found at {$remote_file}" );
+        ftp_close( $ftp_conn );
+        return $metadata;
+    }
+    
     $metadata['response_code'] = 200;
-    $metadata['content_length'] = @ftp_size( $ftp_conn, $remote_file );
+    $metadata['content_length'] = $size;
+    
     $modified_time = @ftp_mdtm( $ftp_conn, $remote_file );
     if ( $modified_time !== -1 ) {
         $metadata['last_modified'] = gmdate( 'D, d M Y H:i:s \\G\\M\\T', $modified_time );
     }
     
+    error_log( "FTP metadata: {$remote_file} - Size: {$size} bytes, Modified: {$metadata['last_modified']}" );
     ftp_close( $ftp_conn );
     
     return $metadata;
-}
+}}
 
 
 
