@@ -95,6 +95,145 @@ function cb_parse_content_range_size( $content_range ) {
     return null;
 }
 
+function cb_fetch_remote_metadata( $url ) {
+    $metadata = array(
+        'last_modified'  => null,
+        'content_length' => null,
+        'content_type'   => null,
+        'response_code'  => null,
+    );
+
+    if ( function_exists( 'curl_init' ) ) {
+        $headers = array();
+        $ch = curl_init( $url );
+        curl_setopt( $ch, CURLOPT_NOBODY, true );
+        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+        curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
+        curl_setopt( $ch, CURLOPT_USERAGENT, 'curl/7.88.1' );
+        curl_setopt( $ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4 );
+        curl_setopt( $ch, CURLOPT_HEADERFUNCTION, function ( $curl, $header ) use ( &$headers ) {
+            $len = strlen( $header );
+            $header = explode( ':', $header, 2 );
+            if ( count( $header ) < 2 ) {
+                return $len;
+            }
+            $key = strtolower( trim( $header[0] ) );
+            $value = trim( $header[1] );
+            $headers[ $key ] = $value;
+            return $len;
+        } );
+        curl_exec( $ch );
+        $metadata['response_code'] = curl_getinfo( $ch, CURLINFO_RESPONSE_CODE );
+        curl_close( $ch );
+
+        if ( isset( $headers['last-modified'] ) ) {
+            $metadata['last_modified'] = $headers['last-modified'];
+        }
+        if ( isset( $headers['content-length'] ) ) {
+            $metadata['content_length'] = (int) $headers['content-length'];
+        }
+        if ( isset( $headers['content-type'] ) ) {
+            $metadata['content_type'] = $headers['content-type'];
+        }
+
+        if ( $metadata['last_modified'] || $metadata['content_length'] ) {
+            return $metadata;
+        }
+
+        $headers = array();
+        $ch = curl_init( $url );
+        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+        curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
+        curl_setopt( $ch, CURLOPT_USERAGENT, 'curl/7.88.1' );
+        curl_setopt( $ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4 );
+        curl_setopt( $ch, CURLOPT_RANGE, '0-0' );
+        curl_setopt( $ch, CURLOPT_HEADERFUNCTION, function ( $curl, $header ) use ( &$headers ) {
+            $len = strlen( $header );
+            $header = explode( ':', $header, 2 );
+            if ( count( $header ) < 2 ) {
+                return $len;
+            }
+            $key = strtolower( trim( $header[0] ) );
+            $value = trim( $header[1] );
+            $headers[ $key ] = $value;
+            return $len;
+        } );
+        curl_exec( $ch );
+        $metadata['response_code'] = curl_getinfo( $ch, CURLINFO_RESPONSE_CODE );
+        curl_close( $ch );
+
+        if ( isset( $headers['last-modified'] ) ) {
+            $metadata['last_modified'] = $headers['last-modified'];
+        }
+        if ( isset( $headers['content-length'] ) ) {
+            $metadata['content_length'] = (int) $headers['content-length'];
+        }
+        if ( ! $metadata['content_length'] && isset( $headers['content-range'] ) ) {
+            $metadata['content_length'] = cb_parse_content_range_size( $headers['content-range'] );
+        }
+        if ( isset( $headers['content-type'] ) ) {
+            $metadata['content_type'] = $headers['content-type'];
+        }
+
+        return $metadata;
+    }
+
+    $head_response = wp_remote_head(
+        $url,
+        array(
+            'redirection' => 5,
+            'timeout'     => 20,
+            'headers'     => array(
+                'Accept' => 'text/csv,*/*;q=0.9',
+            ),
+            'user-agent'  => 'curl/7.88.1',
+            'ip_resolve'  => 'v4',
+        )
+    );
+
+    if ( ! is_wp_error( $head_response ) ) {
+        $metadata['response_code'] = wp_remote_retrieve_response_code( $head_response );
+        $metadata['last_modified'] = cb_get_response_header_value( $head_response, 'last-modified' );
+        $metadata['content_length'] = cb_get_response_header_value( $head_response, 'content-length' );
+        $metadata['content_type'] = cb_get_response_header_value( $head_response, 'content-type' );
+    }
+
+    if ( ! $metadata['last_modified'] || ! $metadata['content_length'] ) {
+        $get_response = wp_remote_get(
+            $url,
+            array(
+                'redirection' => 5,
+                'timeout'     => 20,
+                'headers'     => array(
+                    'Range'  => 'bytes=0-0',
+                    'Accept' => 'text/csv,*/*;q=0.9',
+                ),
+                'user-agent'  => 'curl/7.88.1',
+                'ip_resolve'  => 'v4',
+            )
+        );
+
+        if ( ! is_wp_error( $get_response ) ) {
+            $metadata['response_code'] = wp_remote_retrieve_response_code( $get_response );
+            if ( ! $metadata['last_modified'] ) {
+                $metadata['last_modified'] = cb_get_response_header_value( $get_response, 'last-modified' );
+            }
+            if ( ! $metadata['content_length'] ) {
+                $metadata['content_length'] = cb_get_response_header_value( $get_response, 'content-length' );
+                if ( ! $metadata['content_length'] ) {
+                    $content_range = cb_get_response_header_value( $get_response, 'content-range' );
+                    $metadata['content_length'] = cb_parse_content_range_size( $content_range );
+                }
+            }
+            if ( ! $metadata['content_type'] ) {
+                $metadata['content_type'] = cb_get_response_header_value( $get_response, 'content-type' );
+            }
+        }
+    }
+
+    return $metadata;
+}
+
 // Remove comment-reply.min.js from footer
 function remove_comment_reply_header_hook() {
     wp_deregister_script('comment-reply');
@@ -521,6 +660,8 @@ function display_pricing_data_status() {
 EOT;
 
     $file_path = $_SERVER['DOCUMENT_ROOT'] . '/feed/';
+    error_log( "DEBUG: DOCUMENT_ROOT = " . $_SERVER['DOCUMENT_ROOT'] );
+    error_log( "DEBUG: Scanning file_path = " . $file_path );
     $files = scandir($file_path);
 
     // Filter out '.' and '..' to only include actual files/directories.
@@ -570,104 +711,17 @@ EOT;
             }
 
             if ( $missing_remote_meta && $remote_url ) {
-                $head_response = wp_remote_head(
-                    $remote_url,
-                    array(
-                        'redirection' => 5,
-                        'timeout'     => 20,
-                        'headers'     => array(
-                            'Accept' => 'text/csv,*/*;q=0.9',
-                        ),
-                        'user-agent'  => 'curl/7.88.1',
-                        'ip_resolve'  => 'v4',
-                    )
-                );
-
-                $head_failed = is_wp_error( $head_response );
-                if ( $head_failed ) {
-                    error_log( "HEAD failed for {$file}: " . $head_response->get_error_message() );
+                $metadata = cb_fetch_remote_metadata( $remote_url );
+                if ( $metadata['last_modified'] ) {
+                    $stored_remote_date = $metadata['last_modified'];
+                    update_option( 'csv_file_' . sanitize_key( $file ) . '_remote_date', $stored_remote_date );
                 }
-
-                if ( ! $head_failed ) {
-                    $head_code = wp_remote_retrieve_response_code( $head_response );
-                    $head_last_modified = cb_get_response_header_value( $head_response, 'last-modified' );
-                    if ( $head_last_modified ) {
-                        $stored_remote_date = $head_last_modified;
-                        update_option( 'csv_file_' . sanitize_key( $file ) . '_remote_date', $stored_remote_date );
-                    }
-
-                    $head_content_length = cb_get_response_header_value( $head_response, 'content-length' );
-                    if ( $head_content_length ) {
-                        $stored_remote_size = (int) $head_content_length;
-                        update_option( 'csv_file_' . sanitize_key( $file ) . '_remote_size', $stored_remote_size );
-                    } else {
-                        $head_content_range = cb_get_response_header_value( $head_response, 'content-range' );
-                        $head_range_size = cb_parse_content_range_size( $head_content_range );
-                        if ( $head_range_size ) {
-                            $stored_remote_size = $head_range_size;
-                            update_option( 'csv_file_' . sanitize_key( $file ) . '_remote_size', $stored_remote_size );
-                        }
-                    }
-
-                    if ( ! $head_last_modified && ! $head_content_length ) {
-                        $head_content_type = cb_get_response_header_value( $head_response, 'content-type' );
-                        $head_server = cb_get_response_header_value( $head_response, 'server' );
-                        $head_date = cb_get_response_header_value( $head_response, 'date' );
-                        $head_content_range = cb_get_response_header_value( $head_response, 'content-range' );
-                        error_log( "HEAD returned no last-modified/content-length for {$file} (code={$head_code}, type={$head_content_type}, server={$head_server}, date={$head_date}, range={$head_content_range})" );
-                    }
+                if ( $metadata['content_length'] ) {
+                    $stored_remote_size = (int) $metadata['content_length'];
+                    update_option( 'csv_file_' . sanitize_key( $file ) . '_remote_size', $stored_remote_size );
                 }
-
-                if ( $head_failed || ( 'Unknown' === $stored_remote_date && ! $stored_remote_size ) ) {
-                    $get_response = wp_remote_get(
-                        $remote_url,
-                        array(
-                            'redirection' => 5,
-                            'timeout'     => 20,
-                            'headers'     => array(
-                                'Range'  => 'bytes=0-0',
-                                'Accept' => 'text/csv,*/*;q=0.9',
-                            ),
-                            'user-agent'  => 'curl/7.88.1',
-                            'ip_resolve'  => 'v4',
-                        )
-                    );
-
-                    if ( ! is_wp_error( $get_response ) ) {
-                        $get_code = wp_remote_retrieve_response_code( $get_response );
-                        if ( 'Unknown' === $stored_remote_date ) {
-                            $get_last_modified = cb_get_response_header_value( $get_response, 'last-modified' );
-                            if ( $get_last_modified ) {
-                                $stored_remote_date = $get_last_modified;
-                            update_option( 'csv_file_' . sanitize_key( $file ) . '_remote_date', $stored_remote_date );
-                            }
-                        }
-
-                        if ( ! $stored_remote_size ) {
-                            $get_content_length = cb_get_response_header_value( $get_response, 'content-length' );
-                            if ( $get_content_length ) {
-                                $stored_remote_size = (int) $get_content_length;
-                                update_option( 'csv_file_' . sanitize_key( $file ) . '_remote_size', $stored_remote_size );
-                            } else {
-                                $get_content_range = cb_get_response_header_value( $get_response, 'content-range' );
-                                $get_range_size = cb_parse_content_range_size( $get_content_range );
-                                if ( $get_range_size ) {
-                                    $stored_remote_size = $get_range_size;
-                                    update_option( 'csv_file_' . sanitize_key( $file ) . '_remote_size', $stored_remote_size );
-                                }
-                            }
-                        }
-
-                        if ( ( 'Unknown' === $stored_remote_date || ! $stored_remote_size ) ) {
-                            $get_content_type = cb_get_response_header_value( $get_response, 'content-type' );
-                            $get_server = cb_get_response_header_value( $get_response, 'server' );
-                            $get_date = cb_get_response_header_value( $get_response, 'date' );
-                            $get_content_range = cb_get_response_header_value( $get_response, 'content-range' );
-                            error_log( "GET range returned no last-modified/content-length for {$file} (code={$get_code}, type={$get_content_type}, server={$get_server}, date={$get_date}, range={$get_content_range})" );
-                        }
-                    } else {
-                        error_log( "GET range failed for {$file}: " . $get_response->get_error_message() );
-                    }
+                if ( ( ! $metadata['last_modified'] && ! $metadata['content_length'] ) ) {
+                    error_log( "Remote metadata fetch returned no last-modified/content-length for {$file} (code={$metadata['response_code']}, type={$metadata['content_type']})" );
                 }
             }
             
@@ -757,39 +811,9 @@ function fetch_and_save_feed_files() {
     foreach ( $urls as $url ) {
         $full_url = CSV_HOST . $url;
 
-        $head_response = wp_remote_head(
-            $full_url,
-            array(
-                'redirection' => 5,
-                'timeout'     => 20,
-                'headers'     => array(
-                    'Accept' => 'text/csv,*/*;q=0.9',
-                ),
-                'user-agent'  => 'curl/7.88.1',
-                'ip_resolve'  => 'v4',
-            )
-        );
-
-        $remote_last_modified = 'Unknown';
-        $remote_content_length = null;
-
-        if ( ! is_wp_error( $head_response ) ) {
-            $head_last_modified = cb_get_response_header_value( $head_response, 'last-modified' );
-            if ( $head_last_modified ) {
-                $remote_last_modified = $head_last_modified;
-            }
-
-            $head_content_length = cb_get_response_header_value( $head_response, 'content-length' );
-            if ( $head_content_length ) {
-                $remote_content_length = (int) $head_content_length;
-            } else {
-                $head_content_range = cb_get_response_header_value( $head_response, 'content-range' );
-                $head_range_size = cb_parse_content_range_size( $head_content_range );
-                if ( $head_range_size ) {
-                    $remote_content_length = $head_range_size;
-                }
-            }
-        }
+        $metadata = cb_fetch_remote_metadata( $full_url );
+        $remote_last_modified = $metadata['last_modified'] ? $metadata['last_modified'] : 'Unknown';
+        $remote_content_length = $metadata['content_length'] ? (int) $metadata['content_length'] : null;
 
         $response = wp_remote_get(
             $full_url,
@@ -823,26 +847,6 @@ function fetch_and_save_feed_files() {
         }
 
         file_put_contents( $file_path, $file_content );
-
-        if ( 'Unknown' === $remote_last_modified ) {
-            $get_last_modified = cb_get_response_header_value( $response, 'last-modified' );
-            if ( $get_last_modified ) {
-                $remote_last_modified = $get_last_modified;
-            }
-
-            if ( null === $remote_content_length ) {
-                $get_content_length = cb_get_response_header_value( $response, 'content-length' );
-                if ( $get_content_length ) {
-                    $remote_content_length = (int) $get_content_length;
-                } else {
-                    $get_content_range = cb_get_response_header_value( $response, 'content-range' );
-                    $get_range_size = cb_parse_content_range_size( $get_content_range );
-                    if ( $get_range_size ) {
-                        $remote_content_length = $get_range_size;
-                    }
-                }
-            }
-        }
 
         $file_size = strlen( $file_content );
         $stored_remote_size = null !== $remote_content_length ? $remote_content_length : $file_size;
