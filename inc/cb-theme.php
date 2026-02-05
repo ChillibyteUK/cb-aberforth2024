@@ -526,9 +526,40 @@ EOT;
                 }
             }
 
+            if ( $remote_file ) {
+                $remote_url = CSV_HOST . $remote_file;
+            } else {
+                $remote_url = null;
+            }
+
             // Get the stored remote date and size from when the file was last downloaded
             $stored_remote_date = get_option( 'csv_file_' . sanitize_key( $file ) . '_remote_date', 'Unknown' );
             $stored_remote_size = get_option( 'csv_file_' . sanitize_key( $file ) . '_remote_size', false );
+
+            if ( ( ! $stored_remote_date || 'Unknown' === $stored_remote_date || ! $stored_remote_size ) && $remote_url ) {
+                $head_response = wp_remote_head(
+                    $remote_url,
+                    array(
+                        'redirection' => 5,
+                        'timeout'     => 20,
+                    )
+                );
+
+                if ( ! is_wp_error( $head_response ) ) {
+                    $head_headers = wp_remote_retrieve_headers( $head_response );
+                    $head_headers_lower = array_change_key_case( (array) $head_headers, CASE_LOWER );
+
+                    if ( isset( $head_headers_lower['last-modified'] ) ) {
+                        $stored_remote_date = $head_headers_lower['last-modified'];
+                        update_option( 'csv_file_' . sanitize_key( $file ) . '_remote_date', $stored_remote_date );
+                    }
+
+                    if ( isset( $head_headers_lower['content-length'] ) ) {
+                        $stored_remote_size = (int) $head_headers_lower['content-length'];
+                        update_option( 'csv_file_' . sanitize_key( $file ) . '_remote_size', $stored_remote_size );
+                    }
+                }
+            }
             
             if ( $stored_remote_date && $stored_remote_date !== 'Unknown' ) {
                 $remote_date = $stored_remote_date;
