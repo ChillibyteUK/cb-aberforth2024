@@ -37,6 +37,14 @@ add_filter('gform_validation_1', function($validation_result) { // _1 is the for
 
 define( 'CSV_HOST', 'https://ap01.chillihosting.co.uk' );
 
+// FTP Configuration for downloading from 20i
+define( 'CSV_FTP_HOST', 'ftp.gb.stackcp.com' ); // 20i FTP CNAME
+define( 'CSV_FTP_USER', '' ); // Set in wp-config.php or ACF options
+define( 'CSV_FTP_PASS', '' ); // Set in wp-config.php or ACF options
+define( 'CSV_FTP_PATH', '/www/aberforthcouk_699/public/feed/' );
+define( 'CSV_FTP_PORT', 21 );
+define( 'CSV_USE_FTP', true ); // Set to false to use HTTP instead
+
 define(
 	'CSV_FILES',
 	array(
@@ -67,6 +75,35 @@ define(
 	)
 );
 
+function cb_get_outbound_ip() {
+    $transient_key = 'cb_outbound_ip';
+    $cached_ip = get_transient( $transient_key );
+    
+    if ( $cached_ip ) {
+        return $cached_ip;
+    }
+    
+    // Try multiple services to detect outbound IP
+    $services = array(
+        'https://api.ipify.org',
+        'https://icanhazip.com',
+        'https://ifconfig.me/ip',
+    );
+    
+    foreach ( $services as $service ) {
+        $response = wp_remote_get( $service, array( 'timeout' => 5 ) );
+        if ( ! is_wp_error( $response ) && 200 === wp_remote_retrieve_response_code( $response ) ) {
+            $ip = trim( wp_remote_retrieve_body( $response ) );
+            if ( filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+                set_transient( $transient_key, $ip, DAY_IN_SECONDS );
+                return $ip;
+            }
+        }
+    }
+    
+    return 'Unable to detect';
+}
+
 function cb_normalize_http_headers( $headers ) {
     if ( is_object( $headers ) && method_exists( $headers, 'getAll' ) ) {
         return $headers->getAll();
@@ -93,6 +130,106 @@ function cb_parse_content_range_size( $content_range ) {
     }
 
     return null;
+}
+
+function cb_fetch_csv_via_ftp( $remote_filename ) {
+    if ( ! defined( 'CSV_USE_FTP' ) || ! CSV_USE_FTP ) {
+        return false;
+    }
+    
+    $ftp_host = defined( 'CSV_FTP_HOST' ) ? CSV_FTP_HOST : '';
+    $ftp_user = defined( 'CSV_FTP_USER' ) ? CSV_FTP_USER : get_field( 'csv_ftp_user', 'option' );
+    $ftp_pass = defined( 'CSV_FTP_PASS' ) ? CSV_FTP_PASS : get_field( 'csv_ftp_pass', 'option' );
+    $ftp_path = defined( 'CSV_FTP_PATH' ) ? CSV_FTP_PATH : '/www/aberforthcouk_699/public/feed/';
+    $ftp_port = defined( 'CSV_FTP_PORT' ) ? CSV_FTP_PORT : 21;
+    
+    if ( empty( $ftp_host ) || empty( $ftp_user ) || empty( $ftp_pass ) ) {
+        error_log( 'FTP credentials not configured for CSV download' );
+        return false;
+    }
+    
+    $remote_file = rtrim( $ftp_path, '/' ) . '/' . $remote_filename;
+    
+    $ftp_conn = @ftp_connect( $ftp_host, $ftp_port, 30 );
+    if ( ! $ftp_conn ) {
+        error_log( "FTP connection failed to {$ftp_host}:{$ftp_port}" );
+        return false;
+    }
+    
+    $login = @ftp_login( $ftp_conn, $ftp_user, $ftp_pass );
+    if ( ! $login ) {
+        error_log( "FTP login failed for user {$ftp_user}" );
+        ftp_close( $ftp_conn );
+        return false;
+    }
+    
+    ftp_pasv( $ftp_conn, true );
+    
+    $temp_file = tmpfile();
+    $temp_path = stream_get_meta_data( $temp_file )['uri'];
+    
+    $download = @ftp_get( $ftp_conn, $temp_path, $remote_file, FTP_BINARY );
+    
+    if ( ! $download ) {
+        error_log( "FTP download failed for {$remote_file}" );
+        fclose( $temp_file );
+        ftp_close( $ftp_conn );
+        return false;
+    }
+    
+    $file_content = file_get_contents( $temp_path );
+    fclose( $temp_file );
+    ftp_close( $ftp_conn );
+    
+    return $file_content;
+}
+
+function cb_fetch_csv_metadata_via_ftp( $remote_filename ) {
+    $metadata = array(
+        'last_modified'  => null,
+        'content_length' => null,
+        'response_code'  => null,
+    );
+    
+    if ( ! defined( 'CSV_USE_FTP' ) || ! CSV_USE_FTP ) {
+        return $metadata;
+    }
+    
+    $ftp_host = defined( 'CSV_FTP_HOST' ) ? CSV_FTP_HOST : '';
+    $ftp_user = defined( 'CSV_FTP_USER' ) ? CSV_FTP_USER : get_field( 'csv_ftp_user', 'option' );
+    $ftp_pass = defined( 'CSV_FTP_PASS' ) ? CSV_FTP_PASS : get_field( 'csv_ftp_pass', 'option' );
+    $ftp_path = defined( 'CSV_FTP_PATH' ) ? CSV_FTP_PATH : '/www/aberforthcouk_699/public/feed/';
+    $ftp_port = defined( 'CSV_FTP_PORT' ) ? CSV_FTP_PORT : 21;
+    
+    if ( empty( $ftp_host ) || empty( $ftp_user ) || empty( $ftp_pass ) ) {
+        return $metadata;
+    }
+    
+    $remote_file = rtrim( $ftp_path, '/' ) . '/' . $remote_filename;
+    
+    $ftp_conn = @ftp_connect( $ftp_host, $ftp_port, 30 );
+    if ( ! $ftp_conn ) {
+        return $metadata;
+    }
+    
+    $login = @ftp_login( $ftp_conn, $ftp_user, $ftp_pass );
+    if ( ! $login ) {
+        ftp_close( $ftp_conn );
+        return $metadata;
+    }
+    
+    ftp_pasv( $ftp_conn, true );
+    
+    $metadata['response_code'] = 200;
+    $metadata['content_length'] = @ftp_size( $ftp_conn, $remote_file );
+    $modified_time = @ftp_mdtm( $ftp_conn, $remote_file );
+    if ( $modified_time !== -1 ) {
+        $metadata['last_modified'] = gmdate( 'D, d M Y H:i:s \\G\\M\\T', $modified_time );
+    }
+    
+    ftp_close( $ftp_conn );
+    
+    return $metadata;
 }
 
 function cb_fetch_remote_metadata( $url ) {
@@ -656,6 +793,25 @@ function display_pricing_data_status() {
     }
 
     $output .= '</div>';
+    
+    // Add FTP/Connection Status Section
+    $use_ftp = defined( 'CSV_USE_FTP' ) && CSV_USE_FTP;
+    $outbound_ip = cb_get_outbound_ip();
+    $ftp_host = defined( 'CSV_FTP_HOST' ) ? CSV_FTP_HOST : 'Not configured';
+    $ftp_user = defined( 'CSV_FTP_USER' ) && CSV_FTP_USER ? CSV_FTP_USER : get_field( 'csv_ftp_user', 'option' );
+    $ftp_configured = ! empty( $ftp_user );
+    
+    $output .= '<div class="mb-4 p-3 border rounded">';
+    $output .= '<h3>Connection Configuration</h3>';
+    $output .= '<p><strong>Download Method:</strong> ' . ( $use_ftp ? 'FTP' : 'HTTP' ) . '</p>';
+    if ( $use_ftp ) {
+        $output .= '<p><strong>FTP Host:</strong> ' . esc_html( $ftp_host ) . '</p>';
+        $output .= '<p><strong>FTP User:</strong> ' . ( $ftp_configured ? esc_html( $ftp_user ) : '<span style="color:red;">Not configured</span>' ) . '</p>';
+    }
+    $output .= '<p><strong>Kinsta Outbound IP:</strong> <code>' . esc_html( $outbound_ip ) . '</code></p>';
+    $output .= '<p class="text-muted small">Whitelist this IP in 20i FTP firewall settings</p>';
+    $output .= '</div>';
+    
     $output .= <<<EOT
 <div class="mb-5">
 <h2>CSV Data Files Feed</h2>
@@ -712,8 +868,14 @@ EOT;
                 error_log( "Missing cached remote metadata for {$file}. url=" . ( $remote_url ?: 'N/A' ) );
             }
 
-            if ( $missing_remote_meta && $remote_url ) {
-                $metadata = cb_fetch_remote_metadata( $remote_url );
+            if ( $missing_remote_meta ) {
+                if ( defined( 'CSV_USE_FTP' ) && CSV_USE_FTP ) {
+                    $metadata = cb_fetch_csv_metadata_via_ftp( $file );
+                } elseif ( $remote_url ) {
+                    $metadata = cb_fetch_remote_metadata( $remote_url );
+                } else {
+                    $metadata = array( 'last_modified' => null, 'content_length' => null );
+                }
                 if ( $metadata['last_modified'] ) {
                     $stored_remote_date = $metadata['last_modified'];
                     update_option( 'csv_file_' . sanitize_key( $file ) . '_remote_date', $stored_remote_date );
@@ -809,35 +971,58 @@ add_shortcode( 'pricing_data_status', 'display_pricing_data_status' );
 function fetch_and_save_feed_files() {
 
     $urls = CSV_FILES;
+    $use_ftp = defined( 'CSV_USE_FTP' ) && CSV_USE_FTP;
 
     foreach ( $urls as $url ) {
-        $full_url = CSV_HOST . $url;
-
-        $metadata = cb_fetch_remote_metadata( $full_url );
-        $remote_last_modified = $metadata['last_modified'] ? $metadata['last_modified'] : 'Unknown';
-        $remote_content_length = $metadata['content_length'] ? (int) $metadata['content_length'] : null;
-
-        $response = wp_remote_get(
-            $full_url,
-            array(
-                'redirection' => 5,
-                'timeout'     => 20,
-                'headers'     => array(
-                    'Accept' => 'text/csv,*/*;q=0.9',
-                ),
-                'user-agent'  => 'curl/7.88.1',
-                'ip_resolve'  => 'v4',
-            )
-        );
-
-        if ( is_wp_error( $response ) ) {
-            error_log( "Failed to download $url: " . $response->get_error_message() );
-            continue;
+        $file_name = basename( $url );
+        $file_content = null;
+        $remote_last_modified = 'Unknown';
+        $remote_content_length = null;
+        
+        if ( $use_ftp ) {
+            // Try FTP first
+            $metadata = cb_fetch_csv_metadata_via_ftp( $file_name );
+            $remote_last_modified = $metadata['last_modified'] ? $metadata['last_modified'] : 'Unknown';
+            $remote_content_length = $metadata['content_length'] ? (int) $metadata['content_length'] : null;
+            
+            $file_content = cb_fetch_csv_via_ftp( $file_name );
+            
+            if ( false === $file_content ) {
+                error_log( "FTP download failed for {$file_name}, falling back to HTTP" );
+            }
         }
+        
+        // Fallback to HTTP if FTP disabled or failed
+        if ( ! $use_ftp || false === $file_content ) {
+            $full_url = CSV_HOST . $url;
+            
+            $metadata = cb_fetch_remote_metadata( $full_url );
+            $remote_last_modified = $metadata['last_modified'] ? $metadata['last_modified'] : 'Unknown';
+            $remote_content_length = $metadata['content_length'] ? (int) $metadata['content_length'] : null;
+
+            $response = wp_remote_get(
+                $full_url,
+                array(
+                    'redirection' => 5,
+                    'timeout'     => 20,
+                    'headers'     => array(
+                        'Accept' => 'text/csv,*/*;q=0.9',
+                    ),
+                    'user-agent'  => 'curl/7.88.1',
+                    'ip_resolve'  => 'v4',
+                )
+            );
+
+            if ( is_wp_error( $response ) ) {
+                error_log( "Failed to download $url: " . $response->get_error_message() );
+                continue;
+            }
 	
-        $file_content = wp_remote_retrieve_body( $response );
+            $file_content = wp_remote_retrieve_body( $response );
+        }
+        
         if ( empty( $file_content ) ) {
-            error_log( "Empty file or error retrieving content from $url" );
+            error_log( "Empty file or error retrieving content for {$file_name}" );
             continue;
         }
 
