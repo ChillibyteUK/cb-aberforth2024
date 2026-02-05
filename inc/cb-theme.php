@@ -38,30 +38,30 @@ add_filter('gform_validation_1', function($validation_result) { // _1 is the for
 define('CSV_HOST', 'https://ap01.chillihosting.co.uk');
 
 define('CSV_FILES', [
-    '/sftp/uploads/csv/Dividends/AFUND_Dividends.csv',
-    '/sftp/uploads/csv/Dividends/AGVIT_Dividends.csv',
-    '/sftp/uploads/csv/Dividends/ASCOT_Dividends.csv',
-    '/sftp/uploads/csv/Dividends/ASLIT_Dividends.csv',
-    '/sftp/uploads/csv/IndustryWeights/AFUND_IndustryWeights.csv',
-    '/sftp/uploads/csv/IndustryWeights/AGVIT_IndustryWeights.csv',
-    '/sftp/uploads/csv/IndustryWeights/ASCOT_IndustryWeights.csv',
-    '/sftp/uploads/csv/IndustryWeights/ASLIT_IndustryWeights.csv',
-    '/sftp/uploads/csv/Performance/AFUND_CompoundPerformance.csv',
-    '/sftp/uploads/csv/Performance/AFUND_CumulativePerformance.csv',
-    '/sftp/uploads/csv/Performance/AFUND_DiscretePerformance.csv',
-    '/sftp/uploads/csv/Performance/AGVIT_CompoundPerformance.csv',
-    '/sftp/uploads/csv/Performance/AGVIT_CumulativePerformance.csv',
-    '/sftp/uploads/csv/Performance/AGVIT_DiscretePerformance.csv',
-    '/sftp/uploads/csv/Performance/ASCOT_CompoundPerformance.csv',
-    '/sftp/uploads/csv/Performance/ASCOT_CumulativePerformance.csv',
-    '/sftp/uploads/csv/Performance/ASCOT_DiscretePerformance.csv',
-    '/sftp/uploads/csv/Performance/ASLIT_CompoundPerformance.csv',
-    '/sftp/uploads/csv/Performance/ASLIT_CumulativePerformance.csv',
-    '/sftp/uploads/csv/Performance/ASLIT_DiscretePerformance.csv',
-    '/sftp/uploads/csv/PortfolioHoldings/AFUND_PortfolioHoldings.csv',
-    '/sftp/uploads/csv/PortfolioHoldings/AGVIT_PortfolioHoldings.csv',
-    '/sftp/uploads/csv/PortfolioHoldings/ASCOT_PortfolioHoldings.csv',
-    '/sftp/uploads/csv/PortfolioHoldings/ASLIT_PortfolioHoldings.csv',
+    '/sftp/uploads/csv/AFUND_Dividends.csv',
+    '/sftp/uploads/csv/AGVIT_Dividends.csv',
+    '/sftp/uploads/csv/ASCOT_Dividends.csv',
+    '/sftp/uploads/csv/ASLIT_Dividends.csv',
+    '/sftp/uploads/csv/AFUND_IndustryWeights.csv',
+    '/sftp/uploads/csv/AGVIT_IndustryWeights.csv',
+    '/sftp/uploads/csv/ASCOT_IndustryWeights.csv',
+    '/sftp/uploads/csv/ASLIT_IndustryWeights.csv',
+    '/sftp/uploads/csv/AFUND_CompoundPerformance.csv',
+    '/sftp/uploads/csv/AFUND_CumulativePerformance.csv',
+    '/sftp/uploads/csv/AFUND_DiscretePerformance.csv',
+    '/sftp/uploads/csv/AGVIT_CompoundPerformance.csv',
+    '/sftp/uploads/csv/AGVIT_CumulativePerformance.csv',
+    '/sftp/uploads/csv/AGVIT_DiscretePerformance.csv',
+    '/sftp/uploads/csv/ASCOT_CompoundPerformance.csv',
+    '/sftp/uploads/csv/ASCOT_CumulativePerformance.csv',
+    '/sftp/uploads/csv/ASCOT_DiscretePerformance.csv',
+    '/sftp/uploads/csv/ASLIT_CompoundPerformance.csv',
+    '/sftp/uploads/csv/ASLIT_CumulativePerformance.csv',
+    '/sftp/uploads/csv/ASLIT_DiscretePerformance.csv',
+    '/sftp/uploads/csv/AFUND_PortfolioHoldings.csv',
+    '/sftp/uploads/csv/AGVIT_PortfolioHoldings.csv',
+    '/sftp/uploads/csv/ASCOT_PortfolioHoldings.csv',
+    '/sftp/uploads/csv/ASLIT_PortfolioHoldings.csv',
 ]);
 
 // Remove comment-reply.min.js from footer
@@ -445,9 +445,8 @@ function fetch_and_update_pricing_data()
 add_action('check_pricing_data', 'fetch_and_update_pricing_data');
 
 
-function display_pricing_data_status()
-{
-    // Get the latest data from WordPress options
+function display_pricing_data_status() {
+    // Get the latest data from WordPress options.
     $ascot_data = get_option('ascot_pricing_data');
     $agvit_data = get_option('agvit_pricing_data');
     $ascot_last_success = get_option('ascot_pricing_data_last_success');
