@@ -35,45 +35,184 @@ add_filter('gform_validation_1', function($validation_result) { // _1 is the for
 
 
 
-define('CSV_HOST', 'https://ap01.chillihosting.co.uk');
+define( 'CSV_HOST', 'https://ap01.chillihosting.co.uk' );
 
-define('CSV_FILES', [
-    '/sftp/uploads/csv/Dividends/AFUND_Dividends.csv',
-    '/sftp/uploads/csv/Dividends/AGVIT_Dividends.csv',
-    '/sftp/uploads/csv/Dividends/ASCOT_Dividends.csv',
-    '/sftp/uploads/csv/Dividends/ASLIT_Dividends.csv',
-    '/sftp/uploads/csv/IndustryWeights/AFUND_IndustryWeights.csv',
-    '/sftp/uploads/csv/IndustryWeights/AGVIT_IndustryWeights.csv',
-    '/sftp/uploads/csv/IndustryWeights/ASCOT_IndustryWeights.csv',
-    '/sftp/uploads/csv/IndustryWeights/ASLIT_IndustryWeights.csv',
-    '/sftp/uploads/csv/Performance/AFUND_CompoundPerformance.csv',
-    '/sftp/uploads/csv/Performance/AFUND_CumulativePerformance.csv',
-    '/sftp/uploads/csv/Performance/AFUND_DiscretePerformance.csv',
-    '/sftp/uploads/csv/Performance/AGVIT_CompoundPerformance.csv',
-    '/sftp/uploads/csv/Performance/AGVIT_CumulativePerformance.csv',
-    '/sftp/uploads/csv/Performance/AGVIT_DiscretePerformance.csv',
-    '/sftp/uploads/csv/Performance/ASCOT_CompoundPerformance.csv',
-    '/sftp/uploads/csv/Performance/ASCOT_CumulativePerformance.csv',
-    '/sftp/uploads/csv/Performance/ASCOT_DiscretePerformance.csv',
-    '/sftp/uploads/csv/Performance/ASLIT_CompoundPerformance.csv',
-    '/sftp/uploads/csv/Performance/ASLIT_CumulativePerformance.csv',
-    '/sftp/uploads/csv/Performance/ASLIT_DiscretePerformance.csv',
-    '/sftp/uploads/csv/PortfolioHoldings/AFUND_PortfolioHoldings.csv',
-    '/sftp/uploads/csv/PortfolioHoldings/AGVIT_PortfolioHoldings.csv',
-    '/sftp/uploads/csv/PortfolioHoldings/ASCOT_PortfolioHoldings.csv',
-    '/sftp/uploads/csv/PortfolioHoldings/ASLIT_PortfolioHoldings.csv',
-]);
+// FTP Configuration for downloading from 20i
+if ( ! defined( 'CSV_FTP_HOST' ) ) {
+    define( 'CSV_FTP_HOST', 'ftp.gb.stackcp.com' ); // 20i FTP CNAME
+}
+if ( ! defined( 'CSV_FTP_USER' ) ) {
+    define( 'CSV_FTP_USER', 'aberforth-sftp@ap01.chillihosting.co.uk' );
+}
+if ( ! defined( 'CSV_FTP_PASS' ) ) {
+    define( 'CSV_FTP_PASS', '@£nTl9BEqaR5' );
+}
+if ( ! defined( 'CSV_FTP_PATH' ) ) {
+    define( 'CSV_FTP_PATH', '/uploads/csv/' ); // Path on 20i FTP server where CSVs are stored
+}
+if ( ! defined( 'CSV_FTP_PORT' ) ) {
+    define( 'CSV_FTP_PORT', 21 );
+}
+
+define(
+	'CSV_FILES',
+	array(
+		'/uploads/csv/AFUND_Dividends.csv',
+		'/uploads/csv/AGVIT_Dividends.csv',
+		'/uploads/csv/ASCOT_Dividends.csv',
+		'/uploads/csv/ASLIT_Dividends.csv',
+		'/uploads/csv/AFUND_IndustryWeights.csv',
+		'/uploads/csv/AGVIT_IndustryWeights.csv',
+		'/uploads/csv/ASCOT_IndustryWeights.csv',
+		'/uploads/csv/ASLIT_IndustryWeights.csv',
+		'/uploads/csv/AFUND_CompoundPerformance.csv',
+		'/uploads/csv/AFUND_CumulativePerformance.csv',
+		'/uploads/csv/AFUND_DiscretePerformance.csv',
+		'/uploads/csv/AGVIT_CompoundPerformance.csv',
+		'/uploads/csv/AGVIT_CumulativePerformance.csv',
+		'/uploads/csv/AGVIT_DiscretePerformance.csv',
+		'/uploads/csv/ASCOT_CompoundPerformance.csv',
+		'/uploads/csv/ASCOT_CumulativePerformance.csv',
+		'/uploads/csv/ASCOT_DiscretePerformance.csv',
+		'/uploads/csv/ASLIT_CompoundPerformance.csv',
+		'/uploads/csv/ASLIT_CumulativePerformance.csv',
+		'/uploads/csv/ASLIT_DiscretePerformance.csv',
+		'/uploads/csv/AFUND_PortfolioHoldings.csv',
+		'/uploads/csv/AGVIT_PortfolioHoldings.csv',
+		'/uploads/csv/ASCOT_PortfolioHoldings.csv',
+		'/uploads/csv/ASLIT_PortfolioHoldings.csv',
+	)
+);
+
+function cb_get_outbound_ip() {
+    $transient_key = 'cb_outbound_ip';
+    $cached_ip = get_transient( $transient_key );
+    
+    if ( $cached_ip ) {
+        return $cached_ip;
+    }
+    
+    // Try multiple services to detect outbound IP
+    $services = array(
+        'https://api.ipify.org',
+        'https://icanhazip.com',
+        'https://ifconfig.me/ip',
+    );
+    
+    foreach ( $services as $service ) {
+        $response = wp_remote_get( $service, array( 'timeout' => 5 ) );
+        if ( ! is_wp_error( $response ) && 200 === wp_remote_retrieve_response_code( $response ) ) {
+            $ip = trim( wp_remote_retrieve_body( $response ) );
+            if ( filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+                set_transient( $transient_key, $ip, DAY_IN_SECONDS );
+                return $ip;
+            }
+        }
+    }
+    
+    return 'Unable to detect';
+}
+
+
+
+function cb_fetch_csv_via_ftp( $remote_filename ) {
+    $remote_file = rtrim( CSV_FTP_PATH, '/' ) . '/' . $remote_filename;
+    
+    $ftp_conn = @ftp_connect( CSV_FTP_HOST, CSV_FTP_PORT, 30 );
+    if ( ! $ftp_conn ) {
+        error_log( "FTP connection failed to " . CSV_FTP_HOST . ":" . CSV_FTP_PORT );
+        return false;
+    }
+    
+    if ( ! @ftp_login( $ftp_conn, CSV_FTP_USER, CSV_FTP_PASS ) ) {
+        error_log( "FTP login failed for user " . CSV_FTP_USER );
+        ftp_close( $ftp_conn );
+        return false;
+    }
+    
+    ftp_pasv( $ftp_conn, true );
+    
+    // Debug: Check if file exists and get size
+    $size = @ftp_size( $ftp_conn, $remote_file );
+    if ( $size === -1 ) {
+        error_log( "FTP file not found or error: {$remote_file}" );
+        ftp_close( $ftp_conn );
+        return false;
+    }
+    
+    error_log( "FTP file info: {$remote_file} - Size: {$size} bytes" );
+    
+    $temp_file = tmpfile();
+    $temp_path = stream_get_meta_data( $temp_file )['uri'];
+    
+    if ( ! @ftp_get( $ftp_conn, $temp_path, $remote_file, FTP_BINARY ) ) {
+        error_log( "FTP download failed for {$remote_file}" );
+        fclose( $temp_file );
+        ftp_close( $ftp_conn );
+        return false;
+    }
+    
+    $file_content = file_get_contents( $temp_path );
+    fclose( $temp_file );
+    ftp_close( $ftp_conn );
+    
+    error_log( "FTP download success: {$remote_file} - Downloaded {$size} bytes" );
+    return $file_content;
+}
+
+function cb_fetch_csv_metadata_via_ftp( $remote_filename ) {
+    $metadata = array(
+        'last_modified'  => null,
+        'content_length' => null,
+        'response_code'  => null,
+    );
+    
+    $remote_file = rtrim( CSV_FTP_PATH, '/' ) . '/' . $remote_filename;
+    
+    $ftp_conn = @ftp_connect( CSV_FTP_HOST, CSV_FTP_PORT, 30 );
+    if ( ! $ftp_conn ) {
+        error_log( "FTP metadata: Connection failed to " . CSV_FTP_HOST . ":" . CSV_FTP_PORT );
+        return $metadata;
+    }
+    
+    if ( ! @ftp_login( $ftp_conn, CSV_FTP_USER, CSV_FTP_PASS ) ) {
+        error_log( "FTP metadata: Login failed for user " . CSV_FTP_USER );
+        ftp_close( $ftp_conn );
+        return $metadata;
+    }
+    
+    ftp_pasv( $ftp_conn, true );
+    
+    $size = @ftp_size( $ftp_conn, $remote_file );
+    if ( $size === -1 ) {
+        error_log( "FTP metadata: File not found at {$remote_file}" );
+        ftp_close( $ftp_conn );
+        return $metadata;
+    }
+    
+    $metadata['response_code'] = 200;
+    $metadata['content_length'] = $size;
+    
+    $modified_time = @ftp_mdtm( $ftp_conn, $remote_file );
+    if ( $modified_time !== -1 ) {
+        $metadata['last_modified'] = gmdate( 'D, d M Y H:i:s \\G\\M\\T', $modified_time );
+    }
+    
+    error_log( "FTP metadata: {$remote_file} - Size: {$size} bytes, Modified: {$metadata['last_modified']}" );
+    ftp_close( $ftp_conn );
+    
+    return $metadata;
+}
+
 
 // Remove comment-reply.min.js from footer
-function remove_comment_reply_header_hook()
-{
+function remove_comment_reply_header_hook() {
     wp_deregister_script('comment-reply');
 }
 add_action('init', 'remove_comment_reply_header_hook');
 
 add_action('admin_menu', 'remove_comments_menu');
-function remove_comments_menu()
-{
+function remove_comments_menu() {
     remove_menu_page('edit-comments.php');
 }
 
@@ -448,45 +587,44 @@ function fetch_and_update_pricing_data()
 add_action('check_pricing_data', 'fetch_and_update_pricing_data');
 
 
-function display_pricing_data_status()
-{
-    // Get the latest data from WordPress options
-    $ascot_data = get_option('ascot_pricing_data');
-    $agvit_data = get_option('agvit_pricing_data');
-    $ascot_last_success = get_option('ascot_pricing_data_last_success');
-    $agvit_last_success = get_option('agvit_pricing_data_last_success');
-    $ascot_last_failure = get_option('ascot_pricing_data_last_failure');
-    $agvit_last_failure = get_option('agvit_pricing_data_last_failure');
+function display_pricing_data_status() {
+    // Get the latest data from WordPress options.
+    $ascot_data         = get_option( 'ascot_pricing_data' );
+    $agvit_data         = get_option( 'agvit_pricing_data' );
+    $ascot_last_success = get_option( 'ascot_pricing_data_last_success' );
+    $agvit_last_success = get_option( 'agvit_pricing_data_last_success' );
+    $ascot_last_failure = get_option( 'ascot_pricing_data_last_failure' );
+    $agvit_last_failure = get_option( 'agvit_pricing_data_last_failure' );
 
-    // Initialise the output variable
+    // Initialise the output variable.
     $output = '<div class="pricing-data-status mb-5">';
 
-    // Convert timestamps to comparable format
-    $ascot_success_time = $ascot_last_success ? strtotime($ascot_last_success) : 0;
-    $ascot_failure_time = $ascot_last_failure ? strtotime($ascot_last_failure) : 0;
-    $agvit_success_time = $agvit_last_success ? strtotime($agvit_last_success) : 0;
-    $agvit_failure_time = $agvit_last_failure ? strtotime($agvit_last_failure) : 0;
+    // Convert timestamps to comparable format.
+    $ascot_success_time = $ascot_last_success ? strtotime( $ascot_last_success ) : 0;
+    $ascot_failure_time = $ascot_last_failure ? strtotime( $ascot_last_failure ) : 0;
+    $agvit_success_time = $agvit_last_success ? strtotime( $agvit_last_success ) : 0;
+    $agvit_failure_time = $agvit_last_failure ? strtotime( $agvit_last_failure ) : 0;
 
-    // Check and display Ascot data
-    if ($ascot_data && $ascot_success_time > $ascot_failure_time) {
+    // Check and display Ascot data.
+    if ( $ascot_data && $ascot_success_time > $ascot_failure_time ) {
         $output .= '<h3>ASCOT Pricing Data:</h3>';
-        $output .= '<div class="fs-300 mb-4 bg-light p-2"><code>' . esc_html($ascot_data) . '</code></div>';
-        $output .= '<p>Last successful update: ' . ($ascot_last_success ? esc_html($ascot_last_success) : 'N/A') . '</p>';
+        $output .= '<div class="fs-300 mb-4 bg-light p-2"><code>' . esc_html( $ascot_data ) . '</code></div>';
+        $output .= '<p>Last successful update: ' . ( $ascot_last_success ? esc_html( $ascot_last_success ) : 'N/A' ) . '</p>';
     } else {
         $output .= '<h3>Ascot Pricing Data:</h3>';
         $output .= '<p style="color: red;">Failed to fetch the Ascot pricing data.</p>';
-        $output .= '<p>Last failure: ' . ($ascot_last_failure ? esc_html($ascot_last_failure) : 'N/A') . '</p>';
+        $output .= '<p>Last failure: ' . ( $ascot_last_failure ? esc_html( $ascot_last_failure ) : 'N/A' ) . '</p>';
     }
 
-    // Check and display AGVIT data
-    if ($agvit_data && $agvit_success_time > $agvit_failure_time) {
+    // Check and display AGVIT data.
+    if ( $agvit_data && $agvit_success_time > $agvit_failure_time ) {
         $output .= '<h3 class="mt-5">AGVIT Pricing Data:</h3>';
-        $output .= '<div class="fs-300 mb-4 bg-light p-2"><code>' . esc_html($agvit_data) . '</code></div>';
-        $output .= '<p>Last successful update: ' . ($agvit_last_success ? esc_html($agvit_last_success) : 'N/A') . '</p>';
+        $output .= '<div class="fs-300 mb-4 bg-light p-2"><code>' . esc_html( $agvit_data ) . '</code></div>';
+        $output .= '<p>Last successful update: ' . ( $agvit_last_success ? esc_html( $agvit_last_success ) : 'N/A' ) . '</p>';
     } else {
         $output .= '<h3>AGVIT Pricing Data:</h3>';
         $output .= '<p style="color: red;">Failed to fetch the AGVIT pricing data.</p>';
-        $output .= '<p>Last failure: ' . ($agvit_last_failure ? esc_html($agvit_last_failure) : 'N/A') . '</p>';
+        $output .= '<p>Last failure: ' . ( $agvit_last_failure ? esc_html( $agvit_last_failure ) : 'N/A' ) . '</p>';
     }
 
     $output .= '</div>';
@@ -496,13 +634,18 @@ function display_pricing_data_status()
 EOT;
 
     $file_path = $_SERVER['DOCUMENT_ROOT'] . '/feed/';
+    error_log( "DEBUG: DOCUMENT_ROOT = " . $_SERVER['DOCUMENT_ROOT'] );
+    error_log( "DEBUG: Scanning file_path = " . $file_path );
     $files = scandir($file_path);
 
-    // Filter out '.' and '..' to only include actual files/directories
-    $files = array_filter($files, function ($file) use ($file_path) {
-        return is_file($file_path . $file); // Include only files
-    });
-    if (!empty($files)) {
+    // Filter out '.' and '..' to only include actual files/directories.
+    $files = array_filter(
+		$files,
+		function ( $file ) use ( $file_path ) {
+        	return is_file( $file_path . $file ); // Include only files.
+    	}
+	);
+    if ( ! empty( $files ) ) {
         $output .= <<<EOT
 <table class="table table-sm fs-300 mb-4">
     <thead>
@@ -516,57 +659,80 @@ EOT;
     </thead>
     <tbody>
 EOT;
-        foreach ($files as $file) {
+        foreach ( $files as $file ) {
 
             $remote_file = null;
-            foreach (CSV_FILES as $file_with_path) {
-                if (basename($file_with_path) === $file) {
+            foreach ( CSV_FILES as $file_with_path ) {
+                if ( basename( $file_with_path ) === $file ) {
                     $remote_file = $file_with_path;
                     break;
                 }
             }
 
-            $response = wp_remote_get(CSV_HOST . $remote_file, array('method' => 'HEAD'));
-            if (is_wp_error($response)) {
-                echo 'Error fetching remote file metadata: ' . $response->get_error_message();
-                return;
+            if ( $remote_file ) {
+                $remote_url = CSV_HOST . $remote_file;
+            } else {
+                $remote_url = null;
             }
-            $headers = wp_remote_retrieve_headers($response);
-            if (isset($headers['content-length'])) {
-                $remote_size = intval($headers['content-length']); // remote size in bytes
-                $remote_size = number_format($remote_size / 1024, 2) . ' KB'; // Convert to KB
+
+            // Get the stored remote date and size from when the file was last downloaded
+            $stored_remote_date = get_option( 'csv_file_' . sanitize_key( $file ) . '_remote_date', 'Unknown' );
+            $stored_remote_size = get_option( 'csv_file_' . sanitize_key( $file ) . '_remote_size', false );
+
+            $missing_remote_meta = ( ! $stored_remote_date || 'Unknown' === $stored_remote_date || ! $stored_remote_size );
+            if ( $missing_remote_meta ) {
+                error_log( "Missing cached remote metadata for {$file}. url=" . ( $remote_url ?: 'N/A' ) );
+            }
+
+            if ( $missing_remote_meta ) {
+                $metadata = cb_fetch_csv_metadata_via_ftp( $file );
+                if ( $metadata['last_modified'] ) {
+                    $stored_remote_date = $metadata['last_modified'];
+                    update_option( 'csv_file_' . sanitize_key( $file ) . '_remote_date', $stored_remote_date );
+                }
+                if ( $metadata['content_length'] ) {
+                    $stored_remote_size = (int) $metadata['content_length'];
+                    update_option( 'csv_file_' . sanitize_key( $file ) . '_remote_size', $stored_remote_size );
+                }
+                if ( ( ! $metadata['last_modified'] && ! $metadata['content_length'] ) ) {
+                    error_log( "Remote metadata fetch returned no last-modified/content-length for {$file} (code={$metadata['response_code']}, type={$metadata['content_type']})" );
+                }
+            }
+            
+            if ( $stored_remote_date && $stored_remote_date !== 'Unknown' ) {
+                $remote_date = $stored_remote_date;
+                if ( $stored_remote_size ) {
+                    $remote_size = number_format( $stored_remote_size / 1024, 2 ) . ' KB';
+                } else {
+                    $remote_size = 'Unknown';
+                }
+                $remote_modification_time = strtotime( $stored_remote_date );
             } else {
                 $remote_size = 'Unknown';
-            }
-
-            if (isset($headers['last-modified'])) {
-                $remote_modification_time = strtotime($headers['last-modified']); // Convert to Unix timestamp
-                $remote_date = date('Y-m-d H:i:s', $remote_modification_time); // Format the modification date
-            } else {
                 $remote_date = 'Unknown';
+                $remote_modification_time = 0;
             }
 
+            $file_full_path = $_SERVER['DOCUMENT_ROOT'] . '/feed/' . $file;
 
-            $file_full_path = $file_path . $file;
+            $file_modification_time = filemtime( $file_full_path );
+            $local_date             = gmdate( 'Y-m-d H:i:s', $file_modification_time );
 
-            $file_modification_time = filemtime($file_full_path);
-            $local_date = date('Y-m-d H:i:s', $file_modification_time);
+            $local_size = filesize( $file_full_path );
+            $local_size = number_format( $local_size / 1024, 2 ) . ' KB';
 
-            $local_size = filesize($file_full_path);
-            $local_size = number_format($local_size / 1024, 2) . ' KB';
+            $size_mismatch = ( 'Unknown' === $remote_size || $remote_size === $local_size ) ? '' : ' class="table-warning"';
+            $size_msg      = ( 'Unknown' === $remote_size || $remote_size === $local_size ) ? '' : 'title="Local size is different to remote size - Run CSV download"';
 
-            $size_mismatch = $remote_size == $local_size ? '' : ' class="table-warning"';
-            $size_msg = $remote_size == $local_size ? '' : 'title="Local size is different to remote size - Run CSV download"';
-
-            $local_old = (time() - $file_modification_time) > (6 * 60 * 60 + 10 * 60); // 6h10m (7 * 60 * 60);
-            $local_old = $local_old ? ' class="table-warning"' : '';
+            $local_old  = ( time() - $file_modification_time ) > ( 6 * 60 * 60 + 10 * 60 ); // 6h10m (7 * 60 * 60);
+            $local_old  = $local_old ? ' class="table-warning"' : '';
             $local_icon = $local_old ? '<i class="far fa-clock"></i>&nbsp;' : '';
-            $local_msg = $local_old ? 'title="Local file is too old - Run CSV download"' : '';
+            $local_msg  = $local_old ? 'title="Local file is too old - Run CSV download"' : '';
 
-            $remote_old = (time() - $remote_modification_time) > (6 * 60 * 60 + 10 * 60); // 6h10m (12 * 60 * 60);
-            $remote_old = $remote_old ? ' class="table-warning"' : '';
-            $remote_icon = $remote_old ? ' <i class="far fa-clock"></i>&nbsp;' : '';
-            $remote_msg = $remote_old ? 'title="Remote file is too old - Check sFTP job"' : '';
+            $remote_is_old = $remote_modification_time > 0 && ( time() - $remote_modification_time ) > ( 6 * 60 * 60 + 10 * 60 ); // 6h10m
+            $remote_old  = $remote_is_old ? ' class="table-warning"' : '';
+            $remote_icon = $remote_is_old ? ' <i class="far fa-clock"></i>&nbsp;' : '';
+            $remote_msg  = $remote_is_old ? 'title="Remote file is too old - Check sFTP job"' : '';
 
             $output .= '<tr>';
             $output .= "<td title='{$file_full_path}'>{$file}</td>";
@@ -576,32 +742,98 @@ EOT;
             $output .= "<td {$remote_old} {$remote_msg}>{$remote_icon}{$remote_date}</td>";
             $output .= '</tr>';
         }
-        $output .= "</tbody></table>";
+        $output .= '</tbody></table>';
     } else {
-        $output .= "No files found in the directory.";
+        $output .= 'No files found in the directory.';
     }
 
     $output .= <<<EOT
-    <button id="triggerButton" class="button">Run Data CSV Download Now</button>
+    <div class="d-flex flex-wrap gap-2">
+        <button id="triggerButton" class="button">Run Data CSV Download Now</button>
+        <button id="ipButton" class="button button-secondary">Show outbound IP to whitelist</button>
+    </div>
+    <div id="ipOutput" class="mt-3"></div>
     <div id="outputDiv" class="mt-4"></div>
 </div>
 <script>
 document.getElementById('triggerButton').addEventListener('click', function () {
     const outputDiv = document.getElementById('outputDiv');
-    outputDiv.textContent = 'Loading...'; // Display a loading message while fetching
-
+    const button = this;
+    button.disabled = true;
+    
+    outputDiv.innerHTML = '<div class="alert alert-info">Starting download...</div>';
+    
     fetch('/?trigger_feed_download=run')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok ' + response.statusText);
             }
-            return response.text();
+            return response.json();
         })
         .then(data => {
-            outputDiv.textContent = data; // Display the returned string in the div
+            let html = '<div class="mt-3">';
+            html += '<p><strong>\u2705 Download completed at ' + data.completed_at + '</strong></p>';
+            html += '<p>Processed ' + data.summary.success + ' file(s) successfully, ' + data.summary.failed + ' failed.</p>';
+            
+            html += '<div class="mt-3"><strong>Details:</strong></div>';
+            html += '<div style="max-height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background: #f5f5f5; font-size: 12px; font-family: monospace;">';
+            
+            data.files.forEach(function(file) {
+                const success = file.steps[file.steps.length - 1].status === 'success';
+                html += '<div style="margin-bottom: 15px; padding: 8px; background: ' + (success ? '#e8f5e9' : '#ffebee') + '; border-left: 3px solid ' + (success ? '#4caf50' : '#f44336') + ';">';
+                html += '<strong>' + file.name + '</strong>';
+                html += '<ul style="margin: 5px 0; padding-left: 20px;">';
+                
+                file.steps.forEach(function(step) {
+                    let icon = '⏳';
+                    if (step.status === 'success') icon = '✓';
+                    if (step.status === 'error') icon = '✗';
+                    
+                    html += '<li>' + icon + ' ' + step.step + ' (' + step.timestamp + ')';
+                    if (step.size) html += ' - ' + (step.size / 1024).toFixed(2) + ' KB';
+                    if (step.bytes) html += ' - ' + (step.bytes / 1024).toFixed(2) + ' KB';
+                    if (step.error) html += ' - <span style="color: red;">' + step.error + '</span>';
+                    html += '</li>';
+                });
+                
+                html += '</ul></div>';
+            });
+            
+            html += '</div>';
+            html += '</div>';
+            
+            outputDiv.innerHTML = html;
         })
         .catch(error => {
-            outputDiv.textContent = 'An error occurred: ' + error.message; // Display error message
+            outputDiv.innerHTML = '<div class="alert alert-danger">Error: ' + error.message + '</div>';
+        })
+        .finally(() => {
+            button.disabled = false;
+        });
+});
+
+document.getElementById('ipButton').addEventListener('click', function () {
+    const ipOutput = document.getElementById('ipOutput');
+    const button = this;
+    button.disabled = true;
+
+    ipOutput.innerHTML = '<div class="alert alert-info">Checking outbound IP...</div>';
+
+    fetch('/?get_outbound_ip=1')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            ipOutput.innerHTML = '<div class="alert alert-success">Outbound IP: <strong>' + data.ip + '</strong> <span class="text-muted">(' + data.timestamp + ')</span></div>';
+        })
+        .catch(error => {
+            ipOutput.innerHTML = '<div class="alert alert-danger">Error: ' + error.message + '</div>';
+        })
+        .finally(() => {
+            button.disabled = false;
         });
 });
 </script>
@@ -609,54 +841,187 @@ EOT;
 
     return $output;
 }
-add_shortcode('pricing_data_status', 'display_pricing_data_status');
+add_shortcode( 'pricing_data_status', 'display_pricing_data_status' );
 
-// CSV Feed
-function fetch_and_save_feed_files()
-{
-
+// CSV Feed - FTP Only
+function fetch_and_save_feed_files() {
     $urls = CSV_FILES;
 
-    foreach ($urls as $url) {
-        $response = wp_remote_get(CSV_HOST . $url);
-
-        if (is_wp_error($response)) {
-            error_log("Failed to download $url: " . $response->get_error_message());
+    foreach ( $urls as $url ) {
+        $file_name = basename( $url );
+        
+        // Fetch metadata
+        $metadata = cb_fetch_csv_metadata_via_ftp( $file_name );
+        $remote_last_modified = $metadata['last_modified'] ? $metadata['last_modified'] : 'Unknown';
+        $remote_content_length = $metadata['content_length'] ? (int) $metadata['content_length'] : null;
+        
+        // Download file via FTP
+        $file_content = cb_fetch_csv_via_ftp( $file_name );
+        
+        if ( false === $file_content || empty( $file_content ) ) {
+            error_log( "FTP download failed or empty for {$file_name}" );
             continue;
         }
 
-        $file_content = wp_remote_retrieve_body($response);
-        if (empty($file_content)) {
-            error_log("Empty file or error retrieving content from $url");
-            continue;
-        }
-
-        $file_name = basename($url);
-        // $upload_dir = wp_upload_dir();
-        // $file_path = $upload_dir['basedir'] . '/feed/' . $file_name;
-
-        // if (!file_exists($upload_dir['basedir'] . '/feed')) {
-        //     wp_mkdir_p($upload_dir['basedir'] . '/feed');
-        // }
+        $file_name = basename( $url );
         $file_path = $_SERVER['DOCUMENT_ROOT'] . '/feed/' . $file_name;
 
-        if (!file_exists($_SERVER['DOCUMENT_ROOT'] . '/feed')) {
-            mkdir($_SERVER['DOCUMENT_ROOT'] . '/feed', 0755, true);
+        if ( ! file_exists( $_SERVER['DOCUMENT_ROOT'] . '/feed' ) ) {
+            mkdir( $_SERVER['DOCUMENT_ROOT'] . '/feed', 0755, true );
         }
 
-        file_put_contents($file_path, $file_content);
+        file_put_contents( $file_path, $file_content );
+
+        $file_size = strlen( $file_content );
+        $stored_remote_size = null !== $remote_content_length ? $remote_content_length : $file_size;
+
+        $option_key_date = 'csv_file_' . sanitize_key( $file_name ) . '_remote_date';
+        $option_key_size = 'csv_file_' . sanitize_key( $file_name ) . '_remote_size';
+
+        update_option( $option_key_date, $remote_last_modified );
+        update_option( $option_key_size, $stored_remote_size );
     }
 }
-add_action('download_feed_files', 'fetch_and_save_feed_files');
+add_action( 'download_feed_files', 'fetch_and_save_feed_files' );
 
-
-// manual trigger
+// manual trigger with detailed JSON output
 // http://aberforth.local/?trigger_feed_download=run
 function trigger_feed_download()
 {
+    if (isset($_GET['get_outbound_ip']) && $_GET['get_outbound_ip'] == '1') {
+        header( 'Content-Type: application/json' );
+        echo wp_json_encode(
+            array(
+                'ip' => cb_get_outbound_ip(),
+                'timestamp' => current_time( 'Y-m-d H:i:s' ),
+            )
+        );
+        exit;
+    }
+
     if (isset($_GET['trigger_feed_download']) && $_GET['trigger_feed_download'] == 'run') {
-        fetch_and_save_feed_files();
-        echo 'Feed files have been fetched and saved.';
+        header( 'Content-Type: application/json' );
+        
+        $progress = array(
+            'status' => 'started',
+            'timestamp' => current_time( 'Y-m-d H:i:s' ),
+            'files' => array(),
+            'summary' => array(
+                'total' => 0,
+                'success' => 0,
+                'failed' => 0,
+            ),
+        );
+        
+        $urls = CSV_FILES;
+        foreach ( $urls as $url ) {
+            $file_name = basename( $url );
+            $file_log = array(
+                'name' => $file_name,
+                'steps' => array(),
+            );
+            
+            // Fetch metadata
+            $file_log['steps'][] = array(
+                'step' => 'Fetching metadata',
+                'status' => 'in_progress',
+                'timestamp' => current_time( 'Y-m-d H:i:s' ),
+            );
+            
+            $metadata = cb_fetch_csv_metadata_via_ftp( $file_name );
+            $remote_last_modified = $metadata['last_modified'] ? $metadata['last_modified'] : 'Unknown';
+            $remote_content_length = $metadata['content_length'] ? (int) $metadata['content_length'] : null;
+            
+            $file_log['steps'][] = array(
+                'step' => 'Metadata fetched',
+                'status' => 'success',
+                'size' => $remote_content_length,
+                'modified' => $remote_last_modified,
+                'timestamp' => current_time( 'Y-m-d H:i:s' ),
+            );
+            
+            // Download file via FTP
+            $file_log['steps'][] = array(
+                'step' => 'Downloading via FTP',
+                'status' => 'in_progress',
+                'timestamp' => current_time( 'Y-m-d H:i:s' ),
+            );
+            
+            $file_content = cb_fetch_csv_via_ftp( $file_name );
+            
+            if ( false === $file_content || empty( $file_content ) ) {
+                error_log( "FTP download failed or empty for {$file_name}" );
+                $file_log['steps'][] = array(
+                    'step' => 'Download failed',
+                    'status' => 'error',
+                    'error' => 'FTP download returned empty content',
+                    'timestamp' => current_time( 'Y-m-d H:i:s' ),
+                );
+                $progress['summary']['failed']++;
+                $progress['files'][] = $file_log;
+                continue;
+            }
+            
+            $file_log['steps'][] = array(
+                'step' => 'Downloaded successfully',
+                'status' => 'success',
+                'bytes' => strlen( $file_content ),
+                'timestamp' => current_time( 'Y-m-d H:i:s' ),
+            );
+            
+            // Save to local disk
+            $file_log['steps'][] = array(
+                'step' => 'Saving to local storage',
+                'status' => 'in_progress',
+                'timestamp' => current_time( 'Y-m-d H:i:s' ),
+            );
+            
+            $file_path = $_SERVER['DOCUMENT_ROOT'] . '/feed/' . $file_name;
+            
+            if ( ! file_exists( $_SERVER['DOCUMENT_ROOT'] . '/feed' ) ) {
+                mkdir( $_SERVER['DOCUMENT_ROOT'] . '/feed', 0755, true );
+            }
+            
+            file_put_contents( $file_path, $file_content );
+            
+            $file_log['steps'][] = array(
+                'step' => 'Saved to disk',
+                'status' => 'success',
+                'path' => $file_path,
+                'timestamp' => current_time( 'Y-m-d H:i:s' ),
+            );
+            
+            // Update options
+            $file_log['steps'][] = array(
+                'step' => 'Updating WordPress options',
+                'status' => 'in_progress',
+                'timestamp' => current_time( 'Y-m-d H:i:s' ),
+            );
+            
+            $file_size = strlen( $file_content );
+            $stored_remote_size = null !== $remote_content_length ? $remote_content_length : $file_size;
+            
+            $option_key_date = 'csv_file_' . sanitize_key( $file_name ) . '_remote_date';
+            $option_key_size = 'csv_file_' . sanitize_key( $file_name ) . '_remote_size';
+            
+            update_option( $option_key_date, $remote_last_modified );
+            update_option( $option_key_size, $stored_remote_size );
+            
+            $file_log['steps'][] = array(
+                'step' => 'Complete',
+                'status' => 'success',
+                'timestamp' => current_time( 'Y-m-d H:i:s' ),
+            );
+            
+            $progress['summary']['success']++;
+            $progress['files'][] = $file_log;
+        }
+        
+        $progress['summary']['total'] = count( CSV_FILES );
+        $progress['status'] = 'completed';
+        $progress['completed_at'] = current_time( 'Y-m-d H:i:s' );
+        
+        echo wp_json_encode( $progress );
         exit;
     }
 }
