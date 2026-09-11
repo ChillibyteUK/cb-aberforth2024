@@ -1,5 +1,19 @@
 <?php
 
+/**
+ * Formats a plain number field (Site-Wide Settings -> Data) for display,
+ * e.g. cb_format_stat(1465.7, 1, '£') -> '£1,465.7', cb_format_stat(-46.4, 1, '£', 'm') -> '-£46.4m'.
+ */
+function cb_format_stat($value, $decimals, $prepend = '', $append = '')
+{
+    if ($value === null || $value === '') {
+        return '';
+    }
+    $negative  = ((float) $value) < 0;
+    $formatted = number_format(abs((float) $value), $decimals);
+    return ($negative ? '-' : '') . $prepend . $formatted . $append;
+}
+
 function parse_phone($phone)
 {
     $phone = preg_replace('/\s+/', '', $phone);
