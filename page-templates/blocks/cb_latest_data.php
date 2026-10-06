@@ -73,7 +73,7 @@ switch ( $theme ) {
 				'title'      => 'Latest Net Asset Values & Financial Information',
 				'rows'       => array(
 					array( 'All data as at ' . $date, 'Values' ),
-					array( 'Ordinary Share NAV', cb_format_stat( get_field( 'ascot_nav', 'option' ), 1, '', 'p' ) ),
+					array( 'Ordinary Share NAV', cb_format_stat( get_field( 'ascot_nav', 'option' ), 2, '', 'p' ) ),
 					array( 'Market value of investments', cb_format_stat( get_field( 'ascot_market_value', 'option' ), 1, '£', 'm' ) ),
 					array( "Total Shareholders' funds", cb_format_stat( get_field( 'ascot_total_shareholders_funds', 'option' ), 1, '£', 'm' ) ),
 					array( 'Gearing', cb_format_stat( get_field( 'ascot_gearing', 'option' ), 1, '', '%' ) ),
